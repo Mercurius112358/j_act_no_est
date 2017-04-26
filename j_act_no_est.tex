@@ -1,0 +1,91 @@
+\documentclass{IEEEtran}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+\usepackage{color}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{subfigure}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{siunitx}
+\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+\newcolumntype{C}[1]{>{\PreserveBackslash\centering}p{#1}}
+\newcolumntype{R}[1]{>{\PreserveBackslash\raggedleft}p{#1}}
+\newcolumntype{L}[1]{>{\PreserveBackslash\raggedright}p{#1}}
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+%\renewcommand{\baselinestretch}{0.99}
+
+\newtheorem{theory}{Theory}
+
+\DeclareMathOperator{\orth}{orth}
+\DeclareMathOperator{\qr}{QR}
+\DeclareMathOperator{\svd}{SVD}
+\DeclareMathOperator{\card}{card}
+\IEEEoverridecommandlockouts
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{GDP: A Greedy Based Dynamic Power Budgeting Method for Multi-Core
+  Systems in Dark Silicon}
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+
+% \author{
+% \IEEEauthorblockN{Jiachun Wan\IEEEauthorrefmark{1}, Hai Wang\IEEEauthorrefmark{1}, Sheldon
+%   X.-D. Tan\IEEEauthorrefmark{2}, Chi Zhang\IEEEauthorrefmark{1}, Yuan
+%   Yuan\IEEEauthorrefmark{3}, Keheng Huang\IEEEauthorrefmark{4}, and Zhenghong Zhang\IEEEauthorrefmark{4}}
+% \IEEEauthorblockA{\IEEEauthorrefmark{1}School of Microelectronics \&
+%   Solid-State Electronics, \\
+% University of Electronic Science \&
+%   Technology of China, Chengdu, 610054 China}
+% \IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Electrical Engineering, University
+%       of California, Riverside, CA 92521 USA}
+% \IEEEauthorblockA{\IEEEauthorrefmark{3}School of Automation Engineering, University of Electronic Science \&
+%   Technology of China, Chengdu, 610054 China}
+% \IEEEauthorblockA{\IEEEauthorrefmark{4}Southwest China Research
+% Institute of Electronic Equipment, Chengdu, 610036 China}
+
+\author{
+
+ \thanks{
+This work is supported in part by National Natural Science Foundation of China under grant No. 61404024, in part by the Scientific Research Foundation for the Returned Overseas Chinese Scholars, State Education Ministry.
+}
+}
+
+% make the title area
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+\maketitle
+%\IEEEpeerreviewmaketitle
+
+\input intro.tex
+
+\input background.tex
+
+\input new_method.tex
+
+\input exp.tex
+
+%% \input future_work.tex
+\section{Conclusion}\label{sec:conclusion}
+
+
+% references section
+\bibliographystyle{IEEEtran}
+\bibliography{../bib/uestc_eda.bib}
+
+\end{document}
