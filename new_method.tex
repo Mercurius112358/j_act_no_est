@@ -58,8 +58,8 @@ G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{max}\\
 \xi_i \in \left\{0,1\right\}, &i=1,2,\ldots,l
 \end{cases}
 \end{align*}
-Solving this optimization problem, we can get the best $\alpha_i$ and $\xi_i$£¬then get best number and distribution of active cores using the number of
-non-zero elements in $\xi$, and also get the power budget of cores with the value of $\alpha_i$.
+Solving this optimization problem, we can get the best $\alpha_i$ and $\xi_i$, then get the best number and distribution of active cores using the number of
+non-zero elements in $\xi$, and also get the power budget of cores with the value of $\alpha_i$. 
 \subsection{use greedy algorithm to solve the optimization problem}
 A basic solution for the above equation is to traverse all possible values of $\lambda_i$, $\alpha_i$ and $\xi_i$ of all cores under the thermal limit,
 and choose the values that result in maximum total performance. However, although this method can allow us to find the optimal solution, the time consumption
@@ -96,9 +96,9 @@ excepted. Fig.~\ref{fig:performance_compare} shows the comparison of our new met
 performance when a certain number of active cores is given. It is clear that the result of our new method is nearly the
 same as that of the time consuming ergodic method. We also show the distribution given by these two methods when the
 active-core number is \SI{10}, which result in the maximum total performance for this 16-core chip just as shown in
-Fig.~\ref{fig:dis_compare}, as we can see, the two distribution are just the same because of the symmetry of cores. 
-As for time cost, the ergodic method takes \SI{13.507}s to go through all possible active-core numbers and distributions 
-while our greedy method only cost \SI{0.056}s. 
+Fig.~\ref{fig:dis_compare}, as we can see, the two distribution are just the same because of the symmetry of cores.
+As for time cost, the ergodic method takes \SI{13.507}s to go through all possible active-core numbers and distributions
+while our greedy method only cost \SI{0.056}s.
 
 \begin{figure}
 \centering
