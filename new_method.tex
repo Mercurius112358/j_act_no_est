@@ -45,7 +45,7 @@ not: $\xi_i=0$ represents inactive and $\xi_i=1$ represents active situation.
 As mentioned before, we could use operating frequency to measure the performance of cores, and DVFS operation determine the real frequency, our
 optimization goal can be expressed as $\sum_{i=1}^l \xi_i \theta_i f_{max_i}$. Because the main limit of chip performance is the cooling capacity,
 so we can express the steady temperature use thermal model and let it under the temperature threshold:
-$G^{-1} B \xi \left( \Lambda P_{d_0} + \alpha P_{s_0} \right) \prec T_{max}$.
+$G^{-1} B \xi \left( \Lambda P_{d_0} + \alpha P_{s_0} \right) \prec T_{th}$.
 Where $\Lambda \in \mathbb{R}^{l \times l} $, $\alpha \in \mathbb{R}^{l \times l} $ and $\xi \in \mathbb{R}^{l \times l}$ are all diagonal matrices,
 their i-th diagonal element are $\lambda_i$, $\alpha_i$ and $\xi_i$ respectively. $\prec$ is vector inequality, for m-dimensional vector, $u$ and $v$,
 $u \prec v$ represents that $u_i < v_i$ for $i = 1$,$2$,$\ldots$,$m$.
@@ -68,7 +68,7 @@ Finally, we can express the whole optimization problem using following equation:
 \text{maximize} \,\, &\sum_{i=1}^l \xi_i \theta_i f_{max_i}\\
 \text{subject to}
 &\begin{cases}
-G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{max} \\
+G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{th} \\
 \alpha_i \in \left(0,1\right], i=1,2,\ldots,l  \\
 \xi_i \in \left\{0,1\right\}, i=1,2,\ldots,l
 \end{cases}
@@ -79,6 +79,9 @@ G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{max} \\
 
 Solving this optimization problem, we can get the best $\alpha_i$ and $\xi_i$, then get the best number and distribution of active cores using the number of
 non-zero elements in $\xi$, and also get the power budget of cores with the value of $\alpha_i$.
+A basic solution for the above equation is to traverse all possible values of $\lambda_i$, $\alpha_i$ and $\xi_i$ of all cores under the thermal limit,
+and choose the values that result in maximum total performance. However, although this method can allow us to find the optimal solution, the time consumption
+is unacceptable, with number of cores increasing, this method will soon be useless.
 \subsection{Problem approximation}
 First, for a certain core on the chip, we consider the relation between the total power $p_{tot_{i}}$ and the scaling ratio of operating frequency 
 $\theta_i$:
@@ -89,31 +92,44 @@ p_{tot_{i}} &=p_d + p_s\\
 \end{split}
 \end{equation}  
 It is easy to see that $\theta_i$ and $p_{tot_{i}}$ are third-order related, and $\theta_i$ will monotonically increase as 
-$P_{tot_{i}}$ increase. We also test this relationship for a certain chip and get the result as shown in Fig.~\ref{}, and we 
+$P_{tot_{i}}$ increase. We also test this relationship for a certain chip and get the result as shown in Fig.~\ref{fig:p_tot_f}, and we 
 can see that these two variables are approximately of linear relation. 
-What is more, we can easily prove that for a certain dark-silicon chip under a thermal constraint $T_{max}$ and certain number of active cores, 
-the summary of total power of all active cores $\sum_{i=1}^l p_{tot_{i}}$ will achieve the maximum value just when temperatures of all active cores achieve $T_{max}$.  
+What is more, we can easily prove that for a certain dark-silicon chip under a thermal constraint $T_{th}$ and certain number of active cores, 
+the summary of total power of all active cores $\sum_{i=1}^l p_{tot_{i}}$ will achieve the maximum value just when temperatures of all active cores achieve $T_{th}$.  
 
 Inspired by these two facts, if we assume that $p_{tot_{i}}$ and $\theta_i$ are just linearly related, then we can change our optimal goal to be $\sum_{i=1}^l p_{tot_{i}}$ 
 while keeping the constraint conditions. 
 Thus, we can take some advantages from this approximation and simplify the solving process. When the number of active cores is fixed as $m$, as well as the detail 
 distribution of these $m$ active cores, which means the matrix $\xi$ is fixed ,too. 
-Let $A=G^{-1} B \xi$ and we can simplify the first constraint condition in \eqref{optimal_problem} as $A p_{tot} \prec T_{max}$, where $p_{tot}=[p_{{tot}_{1}},p_{{tot}_{2}},\ldots,p_{{tot}_{l}}]^ \mathrm{ T }$.
+Let $A=G^{-1} B \xi$ and we can simplify the first constraint condition in \eqref{optimal_problem} as $A p_{tot} \prec T_{th}$, where $p_{tot}=[p_{{tot}_{1}},p_{{tot}_{2}},\ldots,p_{{tot}_{l}}]^ \mathrm{ T }$.
 Assume the $m$ columns of $A$ corresponding to these fixed $m$ active cores are collected into matrix $A_m \in \mathbb{R}^{m \times l}$, and the total 
 power budget of them are expressed as vector $P{{tot}_m} \in \mathbb{R}^{m \times 1}$. Then, we can form the following optimization problem to describe the approximated problem:
 \begin{equation}
 \begin{split}
 %&\min\,\,  \left\|T_{max}-A_m P_m\right\|_2 \\
-\text{minimize} \,\, &\left\|T_{max}-A_m P_{{tot}_m}\right\|_2 \\
-\text{subject to}\,\, &A_m P_{{tot}_m} \prec T_{max}
+\text{minimize} \,\, &\left\|T_{th}-A_m P_{{tot}_m}\right\|_2 \\
+\text{subject to}\,\, &A_m P_{{tot}_m} \prec T_{th}
 \end{split}
 \end{equation}
- 
+This optimization problem can be equivalently transformed into a quadratic programming (QP) problem as
+\begin{equation}\label{optimal_simple}
+\begin{split}
+%&\min\,\,  \left\|T_{max}-A_m P_m\right\|_2 \\
+\text{minimize} \,\, &p_{{tot}_m}^\mathrm{T} A_m A_m p_{{tot}_m}^\mathrm{T}-2 T_{th}^\mathrm{T} A_m p_{{tot}_m}^\mathrm{T} + T_{th}^\mathrm{T} T_{th}  \\
+\text{subject to}\,\, &A_m P_{{tot}_m} \prec T_{th}
+\end{split}
+\end{equation}
+which can be solved efficiently by calling the standard QP solving routines for the power budget $P_{{tot}_m}$. With $p_{{tot}_m}$, we can 
+easily calculate the maximum chip performance for these fixed active-core number $m$ and fixed active-core distribution. 
+
+Based on these derivation, we can generate a better method to solve the original problem: we can go through all possible active-core numbers and all possible 
+distributions for a certain chip and calculate the corresponding performance, and choose the one result in global maximum total performance as the best 
+solution. This improved method can save some time of testing all possible value of $\alpha_i$ and $\lambda_i$ when $m$ and $\xi$ are fixed by directly 
+calculate the maximum chip performance using \eqref{optimal_simple}, but the cost of going through all possible active-core numbers and active-core distributions 
+are still huge and make it hard to be realized.     
 
 \subsection{use greedy algorithm to solve the optimization problem}
-A basic solution for the above equation is to traverse all possible values of $\lambda_i$, $\alpha_i$ and $\xi_i$ of all cores under the thermal limit,
-and choose the values that result in maximum total performance. However, although this method can allow us to find the optimal solution, the time consumption
-is unacceptable, with number of cores increasing, this method will soon be useless.
+
 
 To reduce the time cost and find a acceptable approximate solution, we propose a greedy algorithm to replace the ergodic method.
 For a chip with $m$ total cores, the basic idea of our proposed greedy algorithm can be described as follow: first we find a sub-optimal distribution for each active
@@ -149,6 +165,17 @@ active-core number is \SI{10}, which result in the maximum total performance for
 Fig.~\ref{fig:dis_compare}, as we can see, the two distribution are just the same because of the symmetry of cores.
 As for time cost, the ergodic method takes \SI{13.507}s to go through all possible active-core numbers and distributions
 while our greedy method only cost \SI{0.056}s.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\columnwidth]{fig/p_tot_f.eps}
+\caption{The relation between total power and performance for a single core.
+}
+\label{fig:p_tot_f}
+\end{figure}
+
+
 
 \begin{figure}
 \centering
