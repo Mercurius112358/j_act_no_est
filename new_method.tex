@@ -51,15 +51,32 @@ their i-th diagonal element are $\lambda_i$, $\alpha_i$ and $\xi_i$ respectively
 $u \prec v$ represents that $u_i < v_i$ for $i = 1$,$2$,$\ldots$,$m$.
 
 Finally, we can express the whole optimization problem using following equation:
-\begin{align*}
-&\max\,\, \sum_{i=1}^l \xi_i \theta_i f_{max_i}\\
-&s.t.\quad
-\begin{cases}
-G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{max}\\
-\alpha_i \in \left(0,1\right], &i=1,2,\ldots,l  \\
-\xi_i \in \left\{0,1\right\}, &i=1,2,\ldots,l
+
+%\begin{equation}\label{optimal_problem}
+%\begin{aligned}
+%%&\max\,\, \sum_{i=1}^l \xi_i \theta_i f_{max_i}\\
+%\text{maximize}\,\,  &\sum_{i=1}^l \xi_i \theta_i f_{{max}_i}
+%\begin{cases}
+%&G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{max}\\
+%&\alpha_i \in \left(0,1\right], i=1,2,\ldots,l  \\
+%&\xi_i \in \left\{0,1\right\}, i=1,2,\ldots,l
+%\end{cases}
+%\begin{aligned}
+%\end{equation}
+\begin{equation}
+\begin{split}
+\text{maximize} \,\, &\sum_{i=1}^l \xi_i \theta_i f_{max_i}\\
+\text{subject to}
+&\begin{cases}
+G^{-1} B \xi \left( \Lambda P_{d_0}+ \alpha P_{s_0} \right) \prec T_{max} \\
+\alpha_i \in \left(0,1\right], i=1,2,\ldots,l  \\
+\xi_i \in \left\{0,1\right\}, i=1,2,\ldots,l
 \end{cases}
-\end{align*}
+\end{split}
+\end{equation}
+
+
+
 Solving this optimization problem, we can get the best $\alpha_i$ and $\xi_i$, then get the best number and distribution of active cores using the number of
 non-zero elements in $\xi$, and also get the power budget of cores with the value of $\alpha_i$.
 \subsection{Problem approximation}
@@ -77,7 +94,21 @@ can see that these two variables are approximately of linear relation.
 What is more, we can easily prove that for a certain dark-silicon chip under a thermal constraint $T_{max}$ and certain number of active cores, 
 the summary of total power of all active cores $\sum_{i=1}^l p_{tot_{i}}$ will achieve the maximum value just when temperatures of all active cores achieve $T_{max}$.  
 
-Inspired by these two facts, if we assume that $p_{tot_{i}}$ and $\theta_i$ are just linearly related, then we can change our   
+Inspired by these two facts, if we assume that $p_{tot_{i}}$ and $\theta_i$ are just linearly related, then we can change our optimal goal to be $\sum_{i=1}^l p_{tot_{i}}$ 
+while keeping the constraint conditions. 
+Thus, we can take some advantages from this approximation and simplify the solving process. When the number of active cores is fixed as $m$, as well as the detail 
+distribution of these $m$ active cores, which means the matrix $\xi$ is fixed ,too. 
+Let $A=G^{-1} B \xi$ and we can simplify the first constraint condition in \eqref{optimal_problem} as $A p_{tot} \prec T_{max}$, where $p_{tot}=[p_{{tot}_{1}},p_{{tot}_{2}},\ldots,p_{{tot}_{l}}]^ \mathrm{ T }$.
+Assume the $m$ columns of $A$ corresponding to these fixed $m$ active cores are collected into matrix $A_m \in \mathbb{R}^{m \times l}$, and the total 
+power budget of them are expressed as vector $P{{tot}_m} \in \mathbb{R}^{m \times 1}$. Then, we can form the following optimization problem to describe the approximated problem:
+\begin{equation}
+\begin{split}
+%&\min\,\,  \left\|T_{max}-A_m P_m\right\|_2 \\
+\text{minimize} \,\, &\left\|T_{max}-A_m P_{{tot}_m}\right\|_2 \\
+\text{subject to}\,\, &A_m P_{{tot}_m} \prec T_{max}
+\end{split}
+\end{equation}
+ 
 
 \subsection{use greedy algorithm to solve the optimization problem}
 A basic solution for the above equation is to traverse all possible values of $\lambda_i$, $\alpha_i$ and $\xi_i$ of all cores under the thermal limit,
