@@ -1,0 +1,33 @@
+\section{New Method}
+In the coming many-core era, due to the tight power budget, power efficiency is cricital for
+many-core processor design. In the previous work by Dong Hyuk Woo, evaluation of energy
+efficiency on the basis of performance and power (PPW) models is developed, which shows the
+tendency of PPW with number of cores. We implement the dark silicon and thermal model into
+evaluation of PPW to gain a better understanding of PPW in the dark silicon era.
+Different from previous work, the performance of the many-core processor is expressed with
+the summary of operating frequency of all cores:
+\begin{equation}\label{perf}
+Perf = \sum_{i=1}^n f_{i}
+\end{equation}
+
+However, the $Perf$ is not able to take into account of fraction of computation that can be
+parallelized, it should be replaced in further versions.
+The average power consumption of the many-core processor is as follows:
+\begin{equation}\label{average_power}
+W = \frac{P_{1} \times (1-f)+P_{n} \times f/n}{(1-f)+f/n}
+\end{equation}
+
+$P_{1}$ is the power consumption during the sequential computation phase, $P_{n}$ is the power consumption during the parallel computation phase. 
+
+$Perf/W$ of a many-core processor is expressed as
+\begin{equation}\label{perf/w}
+\frac{Perf}{W} = \sum_{i=1}^n f_{i} \times \frac{(1-f)+f/n}{P_{1} \times (1-f)+P_{n} \times f/n}
+\end{equation}
+
+\subsection{Power consumption of during sequential phase}
+
+In (2) and (3), $P_{1}$ is consisted of the power consumption of n-1 idle cores and 1 active 
+core. The expression of $P_{1} = 1+(n-1)k$ is not implemented, for the power consumption of 
+idle cores and active core is not consistant, due to the influence of the temperature.
+
+By applying thermal model, the effect of temperature on cores can be introduced. 
