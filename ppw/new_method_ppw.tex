@@ -1,9 +1,85 @@
 \section{New Method}
+In order to estimate the performance-per-watt of a multi-core chip for different number of 
+active cores and various active core distributions, we first propose an iteration based 
+full-chip power estimation method, which can apply the thermal model into the analysis of
+performance-per-watt of multi-core chips. Furthermore, a non-iteration based method is 
+proposed, which can implement local linearization to avoid time-consuming iterations. 
+Additionally, a greedy based method can be integrated into the non-iteration based power
+estimation method to achieve further acceleration.
+
+\subsection{Iteration based leakage-aware power estimation}
+Because of the dependency of static power on temperature, it's not straightforward to compute
+the static power and temperature of next steady state based on current static power and 
+temperature. Iteration method can be implemented to solve such problem, the computation flow 
+is shown in Fig.x.
+
+The initial value of $P^0_s(T,t+h)$ is a guess we provide based on the process technology.
+The temperature distribution $T(t+h)^0$ can be calculated with such guess. $P^1_s(T,t+h)$,
+the static power of next time step is updated with $T(t+h)^0$. Next, the temperature 
+distribution $T(t+h)^1$ can be derived from $P^1_s(T,t+h)$, which concludes one iteration
+loop. Such iteration goes on until the convergence test is satisfied as 
+$\parallel P^i_s(T,t+h)$-$P^(i-1)_s(T,t+h)\parallel<\epsilon$. Finally, the static power and
+temperature of steady state is outputted.
+
+The iteration based method can produce an accurate outcome providing the $\epsilon$ is 
+chosen tobe small enough, yet the computing time is a serious problem, especially when the
+number of cores is large enough.
+
+\subsection{Local linearized thermal model}
+
+
+\subsection{Non-iteration based power estimation}
+
+\subsection{Greedy based acceleration of power estimation}
+
+
+
+
+
+
 In the coming many-core era, due to the tight power budget, power efficiency is cricital for
 many-core processor design. In the previous work by Dong Hyuk Woo, evaluation of energy
 efficiency on the basis of performance and power (PPW) models is developed, which shows the
 tendency of PPW with number of cores. We implement the dark silicon and thermal model into the
 evaluation of PPW to gain a better understanding of PPW in the dark silicon era.
+
+It is widely acknowledged that the total power of a chip is composed of dynamic and 
+static power. The dynamic power is dependent on the activities of the chip, therefore it's 
+easily estimated by methods such as performance counter.
+Yet the static power $p_{s}$ of the chip is mainly affected by temperature, for it's caused by
+leakage current $I_{leak}$ as
+\begin{equation}\label{ps}
+p_{s} = V_{dd}I_{leak}
+\end{equation}
+
+Due to the non-linear relationship between $I_{leak}$ and temperature, $p_{s}$ cannot be
+calculated directly. The iteration method is traditionally implemented to solve such problems.
+
+To reduce the long computing time caused by iteration method, the leakage current $I_{leak}$ 
+can be linearized to eliminate the non-linearity between $p_{s}$ and temperature, thus 
+accelerating the computation.
+Taylor expansion is performed on the original $I_{leak}$ model at a expansion point $T_{0}$. 
+Thus the linearized relation of $I_{leak}$ and temperature is obtained. The relation between 
+static power and temperature in linear form can also be achieved as:
+\begin{equation}\label{linear_static}
+\begin{split}
+p_{s} &= V_{dd}I_{leak}\\
+&= V_{dd} \times (I_{lin}+I_{gate})\\
+&= V_{dd} \times (I_{lin}(T_{p})+I_{const})
+\end{split}
+\end{equation}
+
+The linearized static power equation in matrix form is
+\begin{equation}\label{linear_static_matrix}
+P_{s} = P_{0}+A_{s}T
+\end{equation}
+
+The above mentioned Taylor expansion based method still costs too much computing time, it's 
+especially impractical when the number of cores is too big. To furture accelerate the 
+processing, a greedy based method can be applied to handle this problem. 
+
+
+
 
 The average power consumption of the many-core processor is as follows:
 \begin{equation}\label{average_power}
@@ -15,10 +91,12 @@ consumption during the parallel computation phase.
 
 $Perf/W$ of a many-core processor is expressed as
 
-\begin{align*}
+\begin{equation}\label{ppw}
+\begin{split}
 \frac{Perf}{W} &= \frac{1}{(1-f)+f/n} \times \frac{(1-f)+f/n}{P_{1} \times (1-f)+P_{n} \times f/n}\\
 &= \frac{1}{P_{1} \times (1-f)+P_{n} \times f/n}
-\end{align*}
+\end{split}
+\end{equation}
 
 
 \subsection{Power consumption with thermal constraints}
