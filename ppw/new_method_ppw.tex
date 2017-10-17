@@ -26,7 +26,7 @@ chosen to be small enough, yet the computing time is a serious problem, especial
 number of cores is large enough.
 
 \subsection{Local linearized thermal model}
-The major difficulty of calculating leakage-aware power estimationcomes from the nonlinear 
+The major difficulty of calculating leakage-aware power estimation comes from the nonlinear 
 thermal model shown in (x), which is caused by the nonlinear relation between subthreshold 
 current and temperature.
 
@@ -60,11 +60,11 @@ P_{s} = P_{0}+A_{s}T
 \subsection{Non-iteration based power estimation}
 
 \subsection{Greedy based acceleration of power estimation}
-The above mentioned Taylor expansion based method still costs too much computing time, it's 
-especially impractical when the number of cores is too big. To furture accelerate the 
-processing, a greedy based method can be applied to handle this problem. 
-
-
+In previous sections, to find the optimal active core distribution which leads to highest 
+performance-per-watt, for a $n$-core system with different active core numbers,  a 
+combinational method with high complexity is implemented. However, it's  especially 
+impractical when the number of cores is too big. Therefore, a greedy based method which can
+find a sub-optimal active core distribution with much less time consumption is applied.
 
 
 
