@@ -8,7 +8,7 @@
 \end{figure*}
 
 \section{New Method}
-In order to estimate the performance-per-watt of a multi-core chip for different number of active cores and various active core distributions, we first propose an iteration based full-chip power estimation method, which can apply the thermal model into the analysis of performance-per-watt of multi-core chips. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based method can be integrated into the non-iteration based power estimation method to achieve further acceleration.
+This work aims to find the optimal number and distribution of active cores for a fixed set of cores to achieve the highest performance-per-watt, with consideration of thermal model. In order to estimate the power consumption of a multi-core chip for different number of active cores and various active core distributions, we first propose an iteration based full-chip power estimation method, which can accurately estimate the. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based method can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
 \subsection{Iteration based leakage-aware power estimation}
 Because of the dependency of static power on temperature, it's not straightforward to compute the static power and temperature of next steady state based on current static power and temperature. Iteration method can be implemented to solve such problem, the computation flow is shown in Fig.x.
@@ -40,8 +40,7 @@ I_{lin} = &K(\frac{k}{q})^{2}e^(\frac{q(V_{GS}-V{th})}{\eta kT_{p0}}\\
 
 Provided the actual temperature value $T_{p}$ is close to the reference temperature point $T_{p0}$, the approximation accuracy of $I_{lin}$ can be guaranteed. From previous research, it has been shown that due to the characteristic of today's semiconductor process, such local linear approximation of leakage current has high accuracy around the expansion point.
 
-\subsection{Non-iteration based power estimation}
-The relation between static power and temperature in linear form can also be achieved as:
+With the linearized relation of subthreshold current and temperature, the relation between static power and temperature in linear form can also be achieved as:
 \begin{equation}\label{linear_static}
 \begin{split}
 p_{s} &= V_{dd}I_{leak}\\
@@ -49,10 +48,17 @@ p_{s} &= V_{dd}I_{leak}\\
 &= V_{dd} \times (I_{lin}(T_{p})+I_{const})
 \end{split}
 \end{equation}
+
+
 The linearized static power equation in matrix form is
 \begin{equation}\label{linear_static_matrix}
 P_{s} = P_{0}+A_{s}T
 \end{equation}
+
+
+\subsection{Non-iteration based power estimation}
+
+
 
 \subsection{Greedy based acceleration of power estimation}
 In previous sections, to find the optimal active core distribution which leads to highest performance-per-watt, for a $n$-core system with different active core numbers,  a combinational method with high complexity is implemented. However, it's  especially impractical when the number of cores is too big. Therefore, a greedy based method which can find a sub-optimal active core distribution with much less time consumption is applied.

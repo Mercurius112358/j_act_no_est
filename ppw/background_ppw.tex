@@ -1,4 +1,3 @@
-\section{Background}
 In the coming many-core era, due to the tight power budget, power efficiency is cricital for many-core processor design. In the previous work by Dong Hyuk Woo, evaluation of energy efficiency on the basis of performance and power (PPW) models is developed, which shows the tendency of PPW with number of cores. In this paper, We implement the dark silicon and thermal model into the evaluation of PPW to gain a better understanding of PPW in the dark silicon era.
 
 \subsection{Amdahl's law}
@@ -26,13 +25,13 @@ $P_{1}$ is composed of power consumption of 1 active core and $n-1$ idle cores, 
 
 \subsection{Power consumption with thermal constraints}
 
-It is widely acknowledged that the total power of a chip is composed of dynamic and static power. The dynamic power is dependent on the activities of the chip, therefore it's easily estimated by methods such as performance counter. Yet the static power $p_{s}$ of the chip is mainly affected by temperature, for it's caused by leakage current $I_{leak}$ as:
+It is widely acknowledged that the total power of a chip is composed of dynamic and static power. The dynamic power is dependent on the activities of the chip, therefore it's easily estimated by methods implemented with performance counter. Yet the static power $p_{s}$ of the chip is caused by leakage current $I_{leak}$ as:
 \begin{equation}\label{ps}
 p_{s} = V_{dd}I_{leak}
 \end{equation}
+Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain. 
 
-Due to the non-linear relationship between $I_{leak}$ and temperature, $p_{s}$ cannot be
-calculated directly. The iteration method is traditionally implemented to solve such problems.
+$I_{leak}$ is composed of many components, including subthreshold current, gate current, reverse-biased junction leakage current, et cetera. During which, subthreshold current and gate current are the main parts of leakage current.
 
 $P_{n}$ is made up of the power consumption of n active cores. Please note that in dark silicon
 era, $P_{n} = nk$ is not the correct expression. Due to thermal constraint, Dynamic Voltage and
