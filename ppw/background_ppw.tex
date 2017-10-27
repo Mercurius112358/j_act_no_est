@@ -1,5 +1,7 @@
 In the coming many-core era, due to the tight power budget, power efficiency is cricital for many-core processor design. In the previous work by Dong Hyuk Woo, evaluation of energy efficiency on the basis of performance and power (PPW) models is developed, which shows the tendency of PPW with number of cores. In this paper, We implement the dark silicon and thermal model into the evaluation of PPW to gain a better understanding of PPW in the dark silicon era.
 
+In this section, we first present the Amdahl's law and performance-per-watt's traditional expression in multi-core processor. Then the static power modeling and thermal modeling is introduced, with which we can write the revised expression of performance-per-watt in multi-core processor.
+
 \subsection{Amdahl's law}
 Amdahl's law put an upper bound for the speedup that a multi-core processor can achieve by parallelization as:
 \begin{equation}\label{speedup}
@@ -21,9 +23,9 @@ $Perf/W$ of a many-core processor is expressed as:
 \end{split}
 \end{equation}
 
-$P_{1}$ is composed of power consumption of 1 active core and $n-1$ idle cores, in previous works, due to lack of consideration of thermal model, $P_{1}$ is expressed as $1+(n-1)k$, in which $k$ stands for the fraction of power the processor consumes in idle state $(0 \le k \le 1)$. For parallel computation phase, $P_{n}$ consists of power consumption of $n$ active cores, which is previously defined as $n$.
+$P_{1}$ is composed of power consumption of 1 active core and $n-1$ idle cores, in previous works, due to lack of consideration of thermal constraints, $P_{1}$ is expressed as $1+(n-1)k$, in which $k$ stands for the fraction of power the processor consumes in idle state $(0 \le k \le 1)$. For parallel computation phase, $P_{n}$ consists of power consumption of $n$ active cores, which is previously defined as $n$.
 
-\subsection{Power consumption with thermal constraints}
+\subsection{Static power modeling}
 
 It is widely acknowledged that the total power of a chip is composed of dynamic and static power. The dynamic power is dependent on the activities of the chip, therefore it's easily estimated by methods implemented with performance counter. Yet the static power $p_{s}$ of the chip is caused by leakage current $I_{leak}$ as:
 \begin{equation}\label{ps}
@@ -31,24 +33,29 @@ p_{s} = V_{dd}I_{leak}
 \end{equation}
 Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain. 
 
-$I_{leak}$ is composed of many components, including subthreshold current, gate current, reverse-biased junction leakage current, et cetera. During which, subthreshold current and gate current are the main parts of leakage current.
+$I_{leak}$ is composed of many components, including subthreshold current, gate current, reverse-biased junction leakage current, et cetera. Among which, subthreshold current and gate current are the main parts of leakage current, therefore $I_{leak}$ can be approximated as:
+\begin{equation}\label{I_leak}
+I_{leak}=I_{sub}+I_{gate}
+\end{equation}
 
-$P_{n}$ is made up of the power consumption of n active cores. Please note that in dark silicon
-era, $P_{n} = nk$ is not the correct expression. Due to thermal constraint, Dynamic Voltage and
-Frequency Scaling(DVFS) is necessary for Thermal Design Power(TDP) consideration. As a result,
-the power consumption of each of the core may decrease with the increase of the number of active cores.
-From xx, we have
+Noted that $I_{gate}$ is cause by tunneling between the gate terminal and the other three terminals, does not depend on temperature and can be considered as a technology-dependent constant. Yet $I_{sub}$ is considered to be highly related to temperature, and can be modeled in the commonly accepeted MOSFET transitor model BSIM 4 as:
+\begin{equation}\label{I_sub}
+I_{sub}=Kv_{T}^{2}e^{\frac{V_{GS}-V_{th}} {\eta v_{T}}} (1-e^{\frac {-V_{DS}} {v_{T}} })\approx Kv_{T}^{2}e^{\frac{V_{GS}-V_{th}}{\eta v_{T}}}
+\end{equation}
+
+\subsection{Thermal modeling}
+To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes is computed. With above mentioned information, the thermal mdoel for a chip with $n$ total thermal nodes can be generated:
 \begin{equation}\label{gt=bp}
-(G - B_{c}A_{s})T(t) + C\frac{dT(t)}{dt}= B_{c}(P_{d}(t) + P_{0})
+\begin{split}
+GT(t) + C\frac{dT(t)}{dt} &= BP_{T,t}\\
+Y_{t} &= LT_{t}
+\end{split}
 \end{equation}
 
 By applying thermal model, the effect of temperature on cores can be introduced. 
 Through ergodic method, the distribution of light core with the maximum PPW
 for number of light core from 1 to n can be specified.
 
-In (2) and (3), $P_{1}$ is consisted of the power consumption of n-1 idle cores and 1 active 
-core. The expression of $P_{1} = 1+(n-1)k$ is not implemented, for the power consumption of 
-idle cores and active core is not consistant, due to the influence of the temperature.
 
-By appending idle core model into the above mentioned thermal model, the distribution of idle
-core and active core with the maximum PPW for number of light core from 1 to n can be specified.
+
+
