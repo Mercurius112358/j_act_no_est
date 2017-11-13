@@ -58,8 +58,13 @@ P_{s} = P_{0}+A_{s}T
 \begin{equation}\label{gt=bp}
 (G - B_{c}A_{s})T(t) + C\frac{dT(t)}{dt} = B_{c}(P_{d}(t) + P_{0})
 \end{equation}
+
 \subsection{Non-iteration based power estimation}
-As a property of Taylor expansion approximation, it is accurate only when the actual temperature $T_{p}$ is close to the expansion point $T_{p0}$. To find a totally accurate outcome, $T_{p} = T_{p0}$ is necessary. However, such strategy requires $T_{p0}$ to be updated for each iteration, which would lead to longer computing time than we expected. Therefore, in order to balance the accuracy and computing cost, we set two expansion point $T_{p1}$ and $T_{p2}$, one for active cores and another one for idle state cores.
+As a property of Taylor expansion approximation, it is accurate only when the actual temperature $T_{p}$ is close to the expansion point $T_{p0}$. To find a totally accurate outcome, $T_{p} = T_{p0}$ is necessary. However, such strategy requires $T_{p0}$ to be updated for each iteration, which would lead to longer computing time than we expected. 
+
+We can notice that the temperature of cores can be classified into two parts, one is for active-state cores around 70 \degreeCelsius, one is for idle-state cores around 40 \degreeCelsius. Therefore, the approximation accuracy cannot be guranteed by implementing only one expansion point. 
+
+Therefore, in order to balance the accuracy and computing cost, we set two expansion point $T_{p1}$ and $T_{p2}$, one for active cores and another one for idle state cores.
 
 
 \subsection{Greedy based acceleration of power estimation}
