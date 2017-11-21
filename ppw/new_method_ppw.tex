@@ -8,9 +8,30 @@
 \end{figure*}
 
 \section{New Method}
+
 This work aims to find the optimal number and distribution of active cores for a fixed set of cores to achieve the highest performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core chip for different number of active cores and various active core distributions, we first propose an iteration based full-chip power estimation method, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based method can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
+\subsection{Finding highest PPW by minimizing chip temperatures}
+As discussed above, the maximum PPW for a multicore chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximun PPW can be formulated as the following optimization problem
+\begin{equation}
+\begin{split}
+\text{minimize} & \|P\|_{1}\\
+\text{subject to} = &\left\{
+\begin{array}{c}
+card(P) = n_{a},\\
+T_{c} \preceq T_{th},\\
+\end{array}
+\right.
+\end{split}
+\end{equation}
+where $card(P)$ stands for the cardinality or the size of the vector $P$, which is defined as the number of nonzero components in $P$. In our case, $card(P) = n_{a}$ means there are $n_{a}$ active cores. 
+
 \subsection{Iteration based leakage-aware power estimation}
+The steady state power estimation can be achieved by estimating the steady state temperature first, which is calculated using model (x) by neglecting the differential term $C\frac{dT(t)}{dt}$, leading to
+\begin{equation}\label{steady_state_temperature}
+Y(t) = L^{T}G^{-1}BP
+\end{equation}
+Then the steady state power can be deduced with (4), (5), and (6).
 Because of the dependency of static power on temperature, it's not straightforward to compute the static power and temperature of next steady state based on current static power and temperature. Iteration method can be implemented to solve such problem, the computation flow is shown in Fig.x.
 
 The initial value of $P^0_s(T,t+h)$ is a guess we provide based on the process technology. The temperature distribution $T(t+h)^0$ can be calculated with such guess. $P^1_s(T,t+h)$, the static power of next time step is updated with $T(t+h)^0$. Next, the temperature distribution $T(t+h)^1$ can be derived from $P^1_s(T,t+h)$, which concludes one iteration loop. Such iteration goes on until the convergence test is satisfied as $\parallel P^i_s(T,t+h)$-$P^(i-1)_s(T,t+h)\parallel<\epsilon$. Finally, the static power and temperature of steady state is outputted.
@@ -62,7 +83,7 @@ P_{s} = P_{0}+A_{s}T
 \subsection{Non-iteration based power estimation}
 As a property of Taylor expansion approximation, it is accurate only when the actual temperature $T_{p}$ is close to the expansion point $T_{p0}$. To find a totally accurate outcome, $T_{p} = T_{p0}$ is necessary. However, such strategy requires $T_{p0}$ to be updated for each iteration, which would lead to longer computing time than we expected. 
 
-We can notice that the temperature of cores can be classified into two parts, one is for active-state cores around 70 \degreeCelsius, one is for idle-state cores around 40 \degreeCelsius. Therefore, the approximation accuracy cannot be guranteed by implementing only one expansion point. 
+We can notice that the temperature of cores can be classified into two parts, one is for active-state cores around \SI{70}{\degreeCelsius}, one is for idle-state cores around \SI{40}{\degreeCelsius}. Therefore, the approximation accuracy cannot be guranteed by implementing only one expansion point. 
 
 Therefore, in order to balance the accuracy and computing cost, we set two expansion point $T_{p1}$ and $T_{p2}$, one for active cores and another one for idle state cores.
 
@@ -71,4 +92,3 @@ Therefore, in order to balance the accuracy and computing cost, we set two expan
 In previous sections, to find the optimal active core distribution which leads to highest performance-per-watt, for a $n$-core system with different active core numbers,  a combinational method with high complexity is implemented. However, it's  especially impractical when the number of cores is too big. Therefore, a greedy based method which can find a sub-optimal active core distribution with much less time consumption is applied.
 
 For a $n$-core system with $n_{a}$ active cores, the basic idea of finding such sub-optimal solution is described as follows: we first find the optimal solution for only one active core. Next, we fix the first active core position determined by the first step, and find the optimal solution of two cores, with the second active core position determined. Please note that although we say “optimal” in the second step, such solution is only the optimal solution with the first active core fixed at the position determined by the first step, but not the true optimal solution for general two active cores. Similarly, in the ($i$ + 1)-th step, we look for the optimal solution for $i$ + 1 active cores with the positions of $i$ active cores found in all previous steps remain fixed. By proceeding such strategy for $n_{a}$ steps, the sub-optimal solution for $n_{a}$ active cores can be achieved.
-

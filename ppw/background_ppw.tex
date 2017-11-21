@@ -48,9 +48,10 @@ To estimate the power consumption of a IC chip, we first divide the chip and its
 \begin{equation}\label{gt=bp}
 \begin{split}
 GT(t) + C\frac{dT(t)}{dt} &= BP_{T,t}\\
-Y_{t} &= LT_{t}
+Y(t) &= LT_{t}
 \end{split}
 \end{equation}
+where $T(t) \in \mathbb{R}^n$ is the temperature vector (distinguished from $T_p$, which is a scalar representing temperature at only one place), representing temperatures at $n$ places of the chip and package; $G \in \mathbb{R}^{n\times n}$ and  $C \in \mathbb{R}^{n \times n}$ contain equivalent thermal resistance and capacitance information respectively; $B \in \mathbb{R}^{n \times l}$ stores the information of how powers are injected into the thermal nodes; $P(T, t) \in \mathbb{R}^{l}$ is the power vector, which contains power consumptions of $l$ components on chip, including both dynamic power vector $P_d$ and static power vector $P_s$, i.e., $P(T, t)=P_s(T, t)+P_d(t)$, reminding that static power $P_s(T, t)$ is actually a function of temperature $T$;  $Y(t) \in \mathbb{R}^m$ is the output temperature vector, containing only temperatures of thermal nodes that the user is interested in, for example, thermal nodes on the chip only (excluding package thermal nodes); $L \in \mathbb{R}^{m \times n}$ is the corresponding output selection matrix which selects the $m$ chip temperatures from $T(t)$.
 
 By applying thermal model, the effect of temperature on cores can be introduced. 
 Through ergodic method, the distribution of light core with the maximum PPW
