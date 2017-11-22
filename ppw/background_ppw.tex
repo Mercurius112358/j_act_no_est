@@ -1,5 +1,4 @@
-In the coming many-core era, due to the tight power budget, power efficiency is cricital for multicore processor design. In the previous work by Dong Hyuk Woo, evaluation of energy efficiency on the basis of performance and power (PPW) models is developed, which shows the tendency of PPW with number of cores. However, due to the dependency of leakage current on temperature and the prevalence of DVFS and dark silicon in multicore processor, the speedup potential given by existing extending methods of Amdahl's law no longer works out. In this paper, We implement dark silicon and thermal model into the evaluation of PPW to provide an alternative suitable with the dark silicon era.
-
+\section{Background}
 In this section, we first present the Amdahl's law and performance-per-watt's traditional expression in multi-core processor. Then the static power modeling and thermal modeling is introduced, with which we can write the revised expression of performance-per-watt in multi-core processor.
 
 \subsection{Amdahl's law}
@@ -13,7 +12,7 @@ The average power consumption of the many-core processor is as follows:
 \begin{equation}\label{average_power}
 W = \frac{P_{1} \times (1-f)+P_{n} \times f/n}{(1-f)+f/n}
 \end{equation}
-$P_{1}$ is the power consumption during the sequential computation phase, $P_{n}$ is the power consumption during the parallel computation phase.
+$P_{1}$ is the power consumption during the sequential computation process, $P_{n}$ is the power consumption during the parallel computation process.
 
 $Perf/W$ of a many-core processor is expressed as:
 \begin{equation}\label{ppw}

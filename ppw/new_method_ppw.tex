@@ -9,13 +9,13 @@
 
 \section{New Method}
 
-This work aims to find the optimal number and distribution of active cores for a fixed set of cores to achieve the highest performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core chip for different number of active cores and various active core distributions, we first propose an iteration based full-chip power estimation method, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based method can be integrated into the non-iteration based power estimation method to achieve further acceleration.
+This work aims to find the optimal number and distribution of light cores for a fixed set of cores to achieve the maximum performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core chip for different number of light cores and various light core distributions, we first propose an iteration based full-chip power estimation method, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based method can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
-\subsection{Finding highest PPW by minimizing chip temperatures}
+\subsection{Finding maximum PPW by minimizing chip temperatures}
 As discussed above, the maximum PPW for a multicore chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximun PPW can be formulated as the following optimization problem
 \begin{equation}
 \begin{split}
-\text{minimize} & \|P\|_{1}\\
+\text{minimize } & \|P\|_{1}\\
 \text{subject to} = &\left\{
 \begin{array}{c}
 card(P) = n_{a},\\
@@ -24,7 +24,9 @@ T_{c} \preceq T_{th},\\
 \right.
 \end{split}
 \end{equation}
-where $card(P)$ stands for the cardinality or the size of the vector $P$, which is defined as the number of nonzero components in $P$. In our case, $card(P) = n_{a}$ means there are $n_{a}$ active cores. 
+where $card(P)$ stands for the cardinality or the size of the vector $P$, which is defined as the number of nonzero components in $P$. In our case, $card(P) = n_{a}$ means there are $n_{a}$ active cores.
+
+
 
 \subsection{Iteration based leakage-aware power estimation}
 The steady state power estimation can be achieved by estimating the steady state temperature first, which is calculated using model (x) by neglecting the differential term $C\frac{dT(t)}{dt}$, leading to
@@ -89,6 +91,8 @@ Therefore, in order to balance the accuracy and computing cost, we set two expan
 
 
 \subsection{Greedy based acceleration of power estimation}
+For a multicore chip with $n$ cores, to find the light core number and distribution and determining active core during sequential computation process that leads to the maximum PPW, a ergodic method has to be implemented. The ergodic method is very time-consuming because of the high computational complexity of this problem. 
+
 In previous sections, to find the optimal active core distribution which leads to highest performance-per-watt, for a $n$-core system with different active core numbers,  a combinational method with high complexity is implemented. However, it's  especially impractical when the number of cores is too big. Therefore, a greedy based method which can find a sub-optimal active core distribution with much less time consumption is applied.
 
 For a $n$-core system with $n_{a}$ active cores, the basic idea of finding such sub-optimal solution is described as follows: we first find the optimal solution for only one active core. Next, we fix the first active core position determined by the first step, and find the optimal solution of two cores, with the second active core position determined. Please note that although we say “optimal” in the second step, such solution is only the optimal solution with the first active core fixed at the position determined by the first step, but not the true optimal solution for general two active cores. Similarly, in the ($i$ + 1)-th step, we look for the optimal solution for $i$ + 1 active cores with the positions of $i$ active cores found in all previous steps remain fixed. By proceeding such strategy for $n_{a}$ steps, the sub-optimal solution for $n_{a}$ active cores can be achieved.
