@@ -9,32 +9,32 @@
 
 \section{New Method}
 
-This work aims to find the optimal number and distribution of light cores for a fixed set of cores to achieve the maximum performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core chip for different number of light cores and various light core distributions, we first propose an iteration based full-chip power estimation method, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based method can be integrated into the non-iteration based power estimation method to achieve further acceleration.
+This work aims to find the optimal number and distribution of light cores for a fixed set of cores to achieve the maximum performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core system for different number of light cores and various light core distributions, we first propose an iteration based full-chip power estimation method with brute force search static, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based search static can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
-\subsection{Finding maximum PPW by minimizing chip temperatures}
-As discussed above, the maximum PPW for a multicore chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximun PPW can be formulated as the following optimization problem
+\subsection{Finding maximum PPW with brute force search static}
+As discussed above, the maximum PPW for a multicore chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P_{a} = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximun PPW can be formulated as the following optimization problem
 \begin{equation}
 \begin{split}
-\text{minimize } & \|P\|_{1}\\
+\text{minimize } & P_{a}\\
 \text{subject to} = &\left\{
 \begin{array}{c}
-card(P) = n_{a},\\
-T_{c} \preceq T_{th},\\
+T_{c} \preceq T_{th}.\\
 \end{array}
 \right.
 \end{split}
 \end{equation}
-where $card(P)$ stands for the cardinality or the size of the vector $P$, which is defined as the number of nonzero components in $P$. In our case, $card(P) = n_{a}$ means there are $n_{a}$ active cores.
 
-
+The optimization problem above is a combinational problem, and its optimal solution can be found by brute force search of all possible combinations of non-zero value positions in $P$ which satifies $card(P) = n_{a}$. Howerver, this brute force search is very computationally expensive. Especially in this case, the number of light core is not set, which means this static can only be applied to multi-core systems with a small core number.
 
 \subsection{Iteration based leakage-aware power estimation}
-The steady state power estimation can be achieved by estimating the steady state temperature first, which is calculated using model (x) by neglecting the differential term $C\frac{dT(t)}{dt}$, leading to
+For each of the combination in the optimization problem, we can estimate the power consumption of the multi-core system in series computation process and parallel computation process, with which we could estimate the performance-per-watt of this combination. The steady state power is set by temperature, which is calculated using model (x) by neglecting the differential term $C\frac{dT(t)}{dt}$, leading to
 \begin{equation}\label{steady_state_temperature}
-Y(t) = L^{T}G^{-1}BP
+T_{c} = L^{T}G^{-1}BP
 \end{equation}
-Then the steady state power can be deduced with (4), (5), and (6).
-Because of the dependency of static power on temperature, it's not straightforward to compute the static power and temperature of next steady state based on current static power and temperature. Iteration method can be implemented to solve such problem, the computation flow is shown in Fig.x.
+
+It seems straightforward to implement the previous thermal model x for steady state power estimation. By simply providing $P_s(T)$ and $P_d$, we are able to calculate the temperature of each core $T_{c}$. However, such power estimation is valid for dynamic power only scenario and cannot be used when leakage current is considered. This is because $P_{s}(T)$ is a function of current temperature $T_{c}$, leading to the fact that once $T_{c}$ is computed based on $P_{s}(T)$, $P_{s}(T)$ also needs to be updated based on $T_{c}$, which will only stop when steady state is reached.
+
+Because of the dependency of static power on temperature, it's not straightforward to compute the static power and temperature of steady state based on current power. Iteration method can be implemented to solve such problem, the computation flow is shown in Fig.x.
 
 The initial value of $P^0_s(T,t+h)$ is a guess we provide based on the process technology. The temperature distribution $T(t+h)^0$ can be calculated with such guess. $P^1_s(T,t+h)$, the static power of next time step is updated with $T(t+h)^0$. Next, the temperature distribution $T(t+h)^1$ can be derived from $P^1_s(T,t+h)$, which concludes one iteration loop. Such iteration goes on until the convergence test is satisfied as $\parallel P^i_s(T,t+h)$-$P^(i-1)_s(T,t+h)\parallel<\epsilon$. Finally, the static power and temperature of steady state is outputted.
 
