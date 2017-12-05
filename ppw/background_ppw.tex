@@ -53,7 +53,7 @@ In this work, the multi-core dark silicon system is packaged in a common structu
 To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes, with partition granularity determined by the accuracy requirements. For the dark silicon multi-core system (a 16-core chip's floorplan example is shown in Fig. x), we treat each core as a thermal node with a current source, because each core has very small area and highly correlated internal power distribution. The other thermal nodes from the package are divided according to the chip thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes are determinded, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig. x are fullly compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal mdoel for a chip with $n$ total thermal nodes can be generated:
 \begin{equation}\label{gt=bp}
 \begin{split}
-GT(t) + C\frac{dT(t)}{dt} &= BP_{T,t}\\
+GT(t) + C\frac{dT(t)}{dt} &= BP_{T}\\
 T_{c}(t) &= LT_{t}
 \end{split}
 \end{equation}
