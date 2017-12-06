@@ -1,5 +1,13 @@
 \section{New Method}
 
+
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{fig/brute_force.eps}
+\caption{some figure}
+\end{figure*}
+
+
 This work aims to find the optimal number and distribution of light cores for a fixed set of cores to achieve the maximum performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core system for different number of light cores and various light core distributions, we first propose an iteration based full-chip power estimation method with brute force search static, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based search static can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
 \subsection{Finding maximum PPW with brute force search static}
@@ -15,9 +23,7 @@ T_{c} \preceq T_{th}.\\
 \end{split}
 \end{equation}
 
-For a multi-core chip with $n$ cores, to find the light core number and distribution and determining active core during sequential computation process that leads to the maximum PPW, a brute force search method has to be implemented. The brute force search method is very time-consuming because of the high computational complexity of this problem.
-
-In order to solve such optimization problem, we have to try all the possible light core numbers. For a multi-core system with $n$ cores, to find the optimum light core number, that means to try light core numbers ranging from $1$ to $n$. For each light core number, we will have to try all possible light core distributions to find the optimum light core distribution. For each light core distribution, we have to decide which core is active during sequential computation process that can lead to maximum PPW. 
+In order to solve such optimization problem, we have to go through all the possible light core numbers. For a multi-core system with $n$ cores, to find the optimum light core number, that means to try light core numbers ranging from $1$ to $n$. For each light core number, we will have to try all possible light core distributions to find the optimum light core distribution. For each light core distribution, we have to decide which core is active and which cores are idle during sequential computation process that can lead to maximum PPW. The whole process is shown in Fig. x. Therefore, a solution of this optimization problem includs light core number, light core distribution and the state of light cores during sequential computation process. 
 
 The optimization problem above is a combinational problem, and its optimal solution can be found by brute force search of all possible combinations of the cores in the multi-core system. Howerver, this brute force search is very computationally expensive. Especially in this case, the number of light core is not set, which means this brute force search static can only be applied to multi-core systems with a small core number. 
 
@@ -28,18 +34,20 @@ T_{c} = L^{T}G^{-1}BP
 \end{equation}
 
 It seems straightforward to implement the previous thermal model x for steady state power estimation. By simply providing $P_s(T)$ and $P_d$, we are able to calculate the temperature of each core $T_{c}$. However, such power estimation is valid for dynamic power only scenario and cannot be used when leakage current is considered. This is because $P_{s}(T)$ is a function of current temperature $T_{c}$, leading to the fact that once $T_{c}$ is computed based on $P_{s}(T)$, $P_{s}(T)$ also needs to be updated based on $T_{c}$, which will only stop when steady state is reached.
+
+
 \begin{figure}
 \centering
 \includegraphics[width=1\linewidth]{fig/iteration_flow.eps}
 \caption{Flow diagram of iteration based leakage-aware power estimation for one time step}
 \end{figure}
 
+
 Because of the dependency of static power on temperature, it's not straightforward to compute the static power and temperature of steady state based on current power. Iteration method can be implemented to solve such problem, the computation flow is shown in Fig.x.
 
 The initial value of $P^0_s(T)$ is a guess we provide based on the process technology. The temperature distribution $T^0$ can be calculated with such guess. $P^1_s(T)$, the static power of next time step is updated with $T^0$. Next, the temperature distribution $T^1$ can be derived from $P^1_s(T)$, which concludes one iteration loop. Such iteration goes on until the convergence test is satisfied as $\| P^i_s(T)$-$P^(i-1)_s(T)\|<\epsilon$. Finally, the static power and temperature of steady state is outputted.
 
 Combined with the brute force search static, the iteration based power estimation method can produce an accurate outcome providing the $\epsilon$ is chosen to be small enough, which could be considered as the golden accuracy baseline. However, the simulation time for such iteration based method is way too long, especially for multi-core systems with a large core number. 
-
 
 \subsection{Local linearized thermal model}
 The major difficulty of calculating leakage-aware power estimation comes from the nonlinear thermal model shown in (x), which is caused by the nonlinear relation between subthreshold current and temperature.To reduce the long computing time caused by iteration method, the leakage current $I_{leak}$ can be linearized to eliminate the non-linearity between $p_{s}$ and temperature, thus accelerating the computation. The basic idea is to approximate the original nonlinear leakage model using multiple new linear leakage models. By implementing such linear leakage models, we can reformulate the original nonlinear thermal model into multiple linear thermal models, such that traditional non-iteration based thernal estimation method can be applied.
@@ -59,6 +67,14 @@ I_{lin} = &K(\frac{k}{q})^{2}e^(\frac{q(V_{GS}-V{th})}{\eta kT_{p0}}\\
 &\times (T_{p0}^{2}+(2T_{p0}-\frac{q(V_{GS}-V_{th})}{\eta k})(T_{p}-T_{p0})).
 \end{split}
 \end{equation}
+
+
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{fig/greedy_method.eps}
+\caption{some figure}
+\end{figure*}
+
 
 Provided the actual temperature value $T_{p}$ is close to the reference temperature point $T_{p0}$, the approximation accuracy of $I_{lin}$ can be guaranteed. From previous research, it has been shown that due to the characteristic of today's semiconductor process, such local linear approximation of leakage current has high accuracy around the expansion point.
 
@@ -95,7 +111,6 @@ We can notice that the temperature of cores can be classified into two parts, on
 
 \subsection{Greedy based acceleration of power estimation}
 For a multi-core chip with $n$ cores, to find the light core number and distribution and determining active core during sequential computation process that leads to the maximum PPW, a brute force search method has to be implemented. The brute force search method is very time-consuming because of the high computational complexity of this problem.
-
 
 In previous sections, to find the optimal light core distribution which leads to highest performance-per-watt, for a $n$-core system with different light core numbers, a combinational method with high complexity is implemented. However, it's  especially impractical when the number of cores is too big. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective values (measured by cost function) than that of the optimal solution. Therefore, a greedy based method which can find a sub-optimal light core distribution with much less time consumption is applied. 
 
