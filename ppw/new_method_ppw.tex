@@ -11,6 +11,8 @@
 This work aims to find the optimal number and distribution of light cores for a fixed set of cores to achieve the maximum performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core system for different number of light cores and various light core distributions, we first propose an iteration based full-chip power estimation method with brute force search static, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based search static can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
 \subsection{Finding maximum PPW with brute force search static}
+In this paper, there are three different states for cores, dark state, active state and idle state. While in dark state, the core is completely shut down. In active state, the core functions normally, the power consumption of the core include $P_{s}$ and $P_{d}$. In idle state, the power consumption of the core only comes from $P_{s}$. The latter two states can be called light state as a whole.
+
 As discussed above, the maximum PPW for a multicore chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P_{a} = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximum PPW can be formulated as the following optimization problem
 \begin{equation}
 \begin{split}
@@ -106,6 +108,8 @@ With the obtained linear thermal model considering static power and eliminated t
 Since we have generated the linearized thermal model as shown above, the Taylor expansion temperature points need to be determined, for they affect the linearized thermal model's accuracy greatly, also $P_{0}$ and $A_{s}$ in (14) are formulated by the expansion point information. Therefore, we will discuss how to determine the Taylor expansion points for thermal nodes in the system. 
 
 As a property of Taylor expansion approximation, it is accurate only when the actual temperature $T_{p}$ is close to the expansion point $T_{p0}$. As a result, in order to ensure the approximation accuracy, we want each expansion point $T_{p0}$ to be close to the actual temperature $T_{p}$. To find a totally accurate outcome, $T_{p} = T_{p0}$ is necessary. However, such strategy requires $T_{p0}$ to be updated for each iteration, which would lead to much longer computing time than we expected.
+
+
 
 We can notice that the temperature of cores can be classified into two parts, one is for active-state cores around \SI{70}{\degreeCelsius}, one is for idle-state cores around \SI{40}{\degreeCelsius}. Therefore, in order to balance the accuracy and computing cost, we set two expansion point $T_{p1}$ and $T_{p2}$, one for active cores and another one for idle state cores.
 
