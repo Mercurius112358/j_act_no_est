@@ -13,7 +13,7 @@ This work aims to find the optimal number and distribution of light cores for a 
 \subsection{Finding maximum PPW with brute force search static}
 In this paper, there are three different states for cores, dark state, active state and idle state. While in dark state, the core is completely shut down. In active state, the core functions normally, the power consumption of the core include $P_{s}$ and $P_{d}$. In idle state, the power consumption of the core only comes from $P_{s}$. The latter two states can be called light state as a whole.
 
-As discussed above, the maximum PPW for a multicore chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P_{a} = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximum PPW can be formulated as the following optimization problem
+As discussed above, the maximum PPW for a multi-core chip corresponds to the minimum $P_{1} \times (1-f)+P_{n} \times f/n$, let $P_{a} = P_{1} \times (1-f)+P_{n} \times f/n$ to simplify notation. Noted for dark silicon systems, which are extremely temperature limited, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed. The task of finding the maximum PPW can be formulated as the following optimization problem
 \begin{equation}
 \begin{split}
 \text{minimize } & P_{a}\\
@@ -25,9 +25,9 @@ T_{c} \preceq T_{th}.\\
 \end{split}
 \end{equation}
 
-In order to solve such optimization problem, we have to go through all the possible light core numbers. For a multi-core system with $n$ cores, to find the optimum light core number, that means to try light core numbers ranging from $1$ to $n$. For each light core number, we will have to try all possible light core distributions to find the optimum light core distribution. For each light core distribution, we have to decide which core is active and which cores are idle during sequential computation process that can lead to maximum PPW. The whole process is shown in Fig. x. Therefore, a solution of this optimization problem includs light core number, light core distribution and the state of light cores during sequential computation process. 
+In order to solve such optimization problem, we have to go through all the possible light core numbers. For a multi-core system with $n$ cores, to find the optimum light core number, that means to try light core numbers ranging from $1$ to $n$. For each light core number, we will have to try all possible light core distributions to find the optimum light core distribution. For each light core distribution, we have to decide which core is active and which cores are idle during sequential computation process that can lead to maximum PPW. The whole process is shown in Fig. x. Therefore, a solution of this optimization problem includes light core number, light core distribution and the state of light cores during sequential computation process. 
 
-The optimization problem above is a combinational problem, and its optimal solution can be found by brute force search of all possible combinations of the cores in the multi-core system. Howerver, this brute force search is very computationally expensive. Especially in this case, the number of light core is not set, which means this brute force search static can only be applied to multi-core systems with a small core number. 
+The optimization problem above is a combinational problem, and its optimal solution can be found by brute force search of all possible combinations of the cores in the multi-core system. However, this brute force search is very computationally expensive. Especially in this case, the number of light core is not set, which means this brute force search static can only be applied to multi-core systems with a small core number. 
 
 \subsection{Iteration based leakage-aware power estimation}
 For each of the light cores combination in the optimization problem, we can estimate the power consumption of the multi-core system in series computation process and parallel computation process, with which we could estimate the performance-per-watt of this combination. The steady state power is set by temperature, which is calculated using model (x) by neglecting the differential term $C\frac{dT(t)}{dt}$, leading to
@@ -52,7 +52,7 @@ The initial value of $P^0_s(T)$ is a guess we provide based on the process techn
 Combined with the brute force search static, the iteration based power estimation method can produce an accurate outcome providing the $\epsilon$ is chosen to be small enough, which could be considered as the golden accuracy baseline. However, the simulation time for such iteration based method is way too long, especially for multi-core systems with a large core number. 
 
 \subsection{Local linearized thermal model}
-The major difficulty of calculating leakage-aware power estimation comes from the nonlinear thermal model shown in (x), which is caused by the nonlinear relation between subthreshold current and temperature.To reduce the long computing time caused by iteration method, the leakage current $I_{leak}$ can be linearized to eliminate the non-linearity between $p_{s}$ and temperature, thus accelerating the computation. The basic idea is to approximate the original nonlinear leakage model using multiple new linear leakage models. By implementing such linear leakage models, we can reformulate the original nonlinear thermal model into multiple linear thermal models, such that traditional non-iteration based thernal estimation method can be applied.
+The major difficulty of calculating leakage-aware power estimation comes from the nonlinear thermal model shown in (x), which is caused by the nonlinear relation between subthreshold current and temperature.To reduce the long computing time caused by iteration method, the leakage current $I_{leak}$ can be linearized to eliminate the non-linearity between $p_{s}$ and temperature, thus accelerating the computation. The basic idea is to approximate the original nonlinear leakage model using multiple new linear leakage models. By implementing such linear leakage models, we can reformulate the original nonlinear thermal model into multiple linear thermal models, such that traditional non-iteration based thermal estimation method can be applied.
 
 In order to generate a linear leakage model, Taylor expansion is performed on the original $I_{leak}$ model at a expansion point $T_{0}$. Thus the linearized relation of $I_{leak}$ and temperature is obtained as:
 \begin{equation}\label{linear_subthreshold}
@@ -90,7 +90,7 @@ p_{s} &= V_{dd}I_{leak}\\
 \end{equation}
 where $I_{lin}(T_{p})$ represents the terms associated with $T_{p}$ in (x), $I_{const}$ contains constant terms that are not associated with $T_{p}$ and the gate leakage $I_{gate}$.
 
-A new linear thermal model can be built based on this static power model. In order to do that, we need to integrate (x) into (x). Please note that (x) is in scalar form for only one certain thernal node while (5) is in vector/matrix form including information of all thermal nodes. Therefore, by collecting and accumulating scalars $I_{lin}(T_{p})$ and $I_{const}$ at multiple positions of the chip into vectors, we can rewrite (x) in vector/matrix form. The current variables can also be changed to power by multiplying voltage $V_{dd}$. The linearized static power equation in matrix form is
+A new linear thermal model can be built based on this static power model. In order to do that, we need to integrate (x) into (x). Please note that (x) is in scalar form for only one certain thermal node while (5) is in vector/matrix form including information of all thermal nodes. Therefore, by collecting and accumulating scalars $I_{lin}(T_{p})$ and $I_{const}$ at multiple positions of the chip into vectors, we can rewrite (x) in vector/matrix form. The current variables can also be changed to power by multiplying voltage $V_{dd}$. The linearized static power equation in matrix form is
 \begin{equation}\label{linear_static_matrix}
 P_{s} = P_{0}+A_{s}T
 \end{equation}
@@ -109,7 +109,7 @@ Since we have generated the linearized thermal model as shown above, the Taylor 
 
 As a property of Taylor expansion approximation, it is accurate only when the actual temperature $T_{p}$ is close to the expansion point $T_{p0}$. As a result, in order to ensure the approximation accuracy, we want each expansion point $T_{p0}$ to be close to the actual temperature $T_{p}$. To find a totally accurate outcome, $T_{p} = T_{p0}$ is necessary. However, such strategy requires $T_{p0}$ to be updated for each iteration, which would lead to much longer computing time than we expected.
 
-
+If we only set one Taylor expansion temperature point, considering that there are two possible states for light cores, active state and idle state, and the temperature difference between the two states can be 
 
 We can notice that the temperature of cores can be classified into two parts, one is for active-state cores around \SI{70}{\degreeCelsius}, one is for idle-state cores around \SI{40}{\degreeCelsius}. Therefore, in order to balance the accuracy and computing cost, we set two expansion point $T_{p1}$ and $T_{p2}$, one for active cores and another one for idle state cores.
 
