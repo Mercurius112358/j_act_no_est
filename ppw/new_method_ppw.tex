@@ -51,6 +51,14 @@ The initial value of $P^0_s(T)$ is a guess we provide based on the process techn
 
 Combined with the brute force search static, the iteration based power estimation method can produce an accurate outcome providing the $\epsilon$ is chosen to be small enough, which could be considered as the golden accuracy baseline. However, the simulation time for such iteration based method is way too long, especially for multi-core systems with a large core number. 
 
+
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{fig/greedy_method.eps}
+\caption{some figure}
+\end{figure*}
+
+
 \subsection{Local linearized thermal model}
 The major difficulty of calculating leakage-aware power estimation comes from the nonlinear thermal model shown in (x), which is caused by the nonlinear relation between subthreshold current and temperature.To reduce the long computing time caused by iteration method, the leakage current $I_{leak}$ can be linearized to eliminate the non-linearity between $p_{s}$ and temperature, thus accelerating the computation. The basic idea is to approximate the original nonlinear leakage model using multiple new linear leakage models. By implementing such linear leakage models, we can reformulate the original nonlinear thermal model into multiple linear thermal models, such that traditional non-iteration based thermal estimation method can be applied.
 
@@ -69,14 +77,6 @@ I_{lin} = &K(\frac{k}{q})^{2}e^(\frac{q(V_{GS}-V{th})}{\eta kT_{p0}}\\
 &\times (T_{p0}^{2}+(2T_{p0}-\frac{q(V_{GS}-V_{th})}{\eta k})(T_{p}-T_{p0})).
 \end{split}
 \end{equation}
-
-
-\begin{figure*}[htb]
-\centering
-\includegraphics[width=0.8\textwidth]{fig/greedy_method.eps}
-\caption{some figure}
-\end{figure*}
-
 
 Provided the actual temperature value $T_{p}$ is close to the reference temperature point $T_{p0}$, the approximation accuracy of $I_{lin}$ can be guaranteed. From previous research, it has been shown that due to the characteristic of today's semiconductor process, such local linear approximation of leakage current has high accuracy around the expansion point.
 
@@ -109,12 +109,14 @@ Since we have generated the linearized thermal model as shown above, the Taylor 
 
 As a property of Taylor expansion approximation, it is accurate only when the actual temperature $T_{p}$ is close to the expansion point $T_{p0}$. As a result, in order to ensure the approximation accuracy, we want each expansion point $T_{p0}$ to be close to the actual temperature $T_{p}$. To find a totally accurate outcome, $T_{p} = T_{p0}$ is necessary. However, such strategy requires $T_{p0}$ to be updated for each iteration, which would lead to much longer computing time than we expected. In order to balance the accuracy and computing time, the remainder $o[(T_{p}-T_{p0})^{2}]$ introduced by the deviation of $T_{p0}$ from $T_{p}$ can be tolerated if $T_{p0}$ is not far from $T_{p}$.
 
-Considering that the temperature difference between the idle cores and active cores can be very large, it's not possible to find one Taylor expansion temperature point that produces remainder $o[(T_{p}-T_{p0})^{2}]$ within tolerance for idle cores and active cores simultaneously.
+Considering that the temperature difference between the idle cores and active cores can be very large, it's not possible to find a single Taylor expansion temperature point that produces remainder $o[(T_{p}-T_{p0})^{2}]$ within tolerance for idle cores and active cores simultaneously.
 
-In this work, we set two Taylor expansion points $T_{p1}$ and $T_{p2}$, one for active cores, one for idle cores.
-We can notice that the temperature of cores can be classified into two parts, one is for active-state cores around \SI{70}{\degreeCelsius}, one is for idle-state cores around \SI{40}{\degreeCelsius}. Therefore, in order to balance the accuracy and computing cost, we set two expansion point , one for active cores and another one for idle cores.
+In this work, we can notice that the temperature of cores can be classified into two parts, one is for active-state cores around \SI{70}{\degreeCelsius}, one is for idle-state cores around \SI{40}{\degreeCelsius}. Therefore, in order to balance the accuracy and computing cost, we set two Taylor expansion temperature points $T_{p1}$ and $T_{p2}$, one for active cores, one for idle cores. As can be shown in the experimental results, the approximation accuracy of this strategy is satisfactory in this work.
 
-\subsection{Greedy based acceleration of power estimation}
+
+
+
+\subsection{Greedy search static based acceleration of power estimation}
 In previous sections, to find the optimal light core distribution for a multi-core system which leads to highest performance-per-watt, a combinational method with high complexity is implemented. However, it's  especially impractical when the number of cores is too large. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective values (measured by cost function) than that of the optimal solution. Therefore, a greedy based method which can find a sub-optimal light core distribution with much less time consumption is applied. 
 
 Since a sub-optimal solution may have only slightly worse performance compared with the optimal solution, instead of finding the optimal solution using combinational method with high complexity, we seek for a fast method to find a sub-optimal solution.
