@@ -116,7 +116,7 @@ In this work, we can notice that the temperature of cores can be classified into
 
 
 
-\subsection{Greedy search static based acceleration of light core distribution estimation}
+\subsection{Greedy search static based acceleration of power estimation}
 In previous sections, to find the optimal light core distribution for a multi-core system which leads to highest performance-per-watt, a combinational method with high complexity is implemented. However, it's  especially impractical when the number of cores is too large. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective values (measured by cost function) than that of the optimal solution. Therefore, a greedy based method which can find a sub-optimal light core distribution with much less time consumption is applied. 
 
 Since a sub-optimal solution may have only slightly worse performance compared with the optimal solution, instead of finding the optimal solution using combinational method with high complexity, we seek for a fast method to find a sub-optimal solution.

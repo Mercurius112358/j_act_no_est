@@ -10,11 +10,13 @@
 
 \section{Experimental Results}
 
-In this section, we evaluate both accuracy and efficiency of the proposed light core distribution estimation method. All data are collected on a PC with Intel I5 2400 CPU and 3 GB memory. In the experiment, multi-core systems with the number of cores ranging from 9 to 64 are used, and each system is tested with different parallel computation ratios. The thermal models of these systems are extracted from HotSpot [x] with default package and chip parameters. For all test cases, we set the ambient temperature as \SI{20}{\degreeCelsius}, and the thermal constraint as \SI{95}{\degreeCelsius}. 
+In this section, we evaluate both accuracy and efficiency of the proposed light core distribution estimation method. 
 
 \subsection{Experiment setup}
+All data are collected on a PC with Intel I5 2400 CPU and 3 GB memory. In the experiment, multi-core systems with the number of cores ranging from 9 to 64 are used, and each system is tested with different parallel computation ratios. The thermal models of these systems are extracted from HotSpot [x] with default package and chip parameters. For all test cases, we set the ambient temperature as \SI{20}{\degreeCelsius}, and the thermal constraint as \SI{95}{\degreeCelsius}. 
 
+Through HSPICE simulation, the impact of temperature on device leakage can be characterized. With the collected data, we can obtain the parameters of model through curve fitting as shown in Fig.x.
 
-Through HSPICE simulation, the impact of temperature on device leakage can be characterized. With the collected data, we can obtain the parameters of model through curve fitting as shown in Fig.x. The ambient temperature is set to be \SI{20}{\degreeCelsius}.
+For accuracy and speed comparison, we first perform the iteration based power estimation with brute force search static, which is accurate but very time-consuming, therefore we consider it as the golden accuracy baseline (called "golden" for short). Then, because our complete method includes two acceleration techniques (Taylor expansion based linear thermal models, and greedy based search static), we use two cases, each with one more technique than the previous one, to better analyze our method. In the first case, we implement the Taylor expansion based linear thermal models only, i.e., the non-iteration based power estimation method with brute force search static (called "lin-only" for short). In the second case, we further implement the greedy search static, i.e., the non-iteration based power estimation with greedy search static (called "lin & greedy" for short).
 
-For accuracy and speed comparison, we first perform the iteration based power estimation, which is accurate but very time-consuming, therefore we consider it as the golden accuracy baseline (golden for short). Then, two acceleration methods, the Taylor expansion based method 
+\subsection{Estimation accuracy of the proposed method}
