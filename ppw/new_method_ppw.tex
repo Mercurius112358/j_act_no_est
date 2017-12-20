@@ -10,6 +10,10 @@
 
 This work aims to find the optimal number and distribution of light cores for a fixed set of cores to achieve the maximum performance-per-watt, with consideration of thermal constraints. In order to estimate the power consumption of a multi-core system for different number of light cores and various light core distributions, we first propose an iteration based full-chip power estimation method with brute force search static, which is accurate but very time-consuming. Furthermore, a non-iteration based method is proposed, which can implement local linearization to avoid time-consuming iterations. Additionally, a greedy based search static can be integrated into the non-iteration based power estimation method to achieve further acceleration.
 
+\subsection{Amdahl's law extension}
+With thermal constraint considered, it's not common for cores to run at full voltage and frequency
+
+
 \subsection{Finding maximum PPW with brute force search static}
 In this paper, there are three different states for cores, dark state, active state and idle state. While in dark state, the core is completely shut down. In active state, the core functions normally, the power consumption of the core include $P_{s}$ and $P_{d}$. In idle state, the power consumption of the core only comes from $P_{s}$. The latter two states can be called light state as a whole.
 
