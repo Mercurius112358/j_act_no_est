@@ -1,0 +1,13 @@
+\section{Prior work}
+\label{sec:related_works}
+
+
+In this section, we briefly review some important researches in extended Amdahl's law, especially in energy-efficient area.
+
+Extended Amdahl's law in energy-efficient area is widely studied in recent years. Woo and Lee extended Amdahl's law for energy-efficient parallel computation~\cite{woo:Computer'08}, who analyzed the energy efficiency of sysmmetric superscalar processor, symmetric processor with smaller and power-efficient cores, and asymmetric many-core processor. By taking the overhead of data preparation into consideration, the performance-energy efficiency can be reevaluated~\cite{}. The performance change by tuning the operating frequency of cores can also be implemented to achieve better energy efficiency~\cite{kim:CAL'15,wang:access'17}; the dynamic voltage/frequency scaling (DVFS) and heterogeneous microarchitectures (HMs) are also compared in terms of energy efficiency~\cite{lukefahr:ICPAC'14}.
+
+
+
+The works mentioned above share a common problem: they have difficulty in considering the temperature dependent leakage power for energy efficiency estimation, the reason is that most of the work set the power consumption of idle cores to be a constant. Only few research set the power consumption of idle cores to be a variable. For instance, in~\cite{karanikolaou:JS'14}, the fraction of power a processor consumes in idle state is dependent upon the number of active cores for many-core platform. However, the leakage power it provides is too coarse to be used for energy efficiency estimation.
+
+
