@@ -29,32 +29,30 @@ where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector conta
 
 \begin{figure}
   \centering
-  \subfigure[Temperature distribution of maximized energy efficiency and optimal performance.]{
+  \subfigure[MIPS = 279.9, MIPS/Watt = 2.1]{
     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_1.eps}\label{fig:opt_tem_1}
   }
-  \subfigure[Temperature distribution of maximized energy efficiency and worse performance.]{
+  \subfigure[MIPS = 261.2, MIPS/Watt = 2.1]{
     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_2.eps}\label{fig:opt_tem_2}
   }
-  \subfigure[Temperature distribution of optimal active cores distribution and random operating points.]{
+  \subfigure[MIPS = 258.6, MIPS/Watt = 1.7]{
     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_3.eps}\label{fig:opt_tem_3}
   }
-  \subfigure[Temperature distribution of maximized performance.]{
+  \subfigure[MIPS = 345.5, MIPS/Watt = 1.2]{
     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_4.eps}\label{fig:opt_tem_4}
     }
-  \caption{Temperature distributions of a 16-core system with 8 cores active with different power budget.}
+  \caption{Temperature distributions of a 16-core system with 8 cores active in different power budget.}
   \label{fig:opt_tem}
 \end{figure}
 
 
 The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem. Therefore, we need to transform this problem into a problem with low complexity. We find out that an optimal temperature vector $T_{opt}$ exists. If a core is running at its corresponding optimal temperature, then the PPW of the core is maximized.
 
-In Fig.~\ref{fig:opt_tem}, the temperature distributions of a $9$-core system with $5$ active cores in different power budget are shown. In Fig.~\ref{fig:opt_tem_1}, the energy efficiency of the system is maximized, the performance of the system is also optimal. In Fig.~\ref{fig:opt_tem_2}, the energy efficiency of the system is also maximized, however, the performance of the system is far worse than optimal. In Fig.~\ref{fig:opt_tem_3}, the active core distribution is the same as Fig.~\ref{fig:opt_tem_1}, however, due to the random operating points of active cores, the energy efficiency is not maximized. Fig.~\ref{fig:opt_tem_4} shows the temperature distribution of the system with maximized performance, yet the energy efficiency of it is also not optimal.
+In Fig.~\ref{fig:opt_tem}, the temperature distributions of a $9$-core system with $5$ active cores in different power budget are shown. In Fig.~\ref{fig:opt_tem_1}, the energy efficiency of the system is maximized, the performance of the system is also optimal. In Fig.~\ref{fig:opt_tem_2}, the energy efficiency of the system is also maximized, however, the performance of the system is less than optimal. In Fig.~\ref{fig:opt_tem_3}, the active core distribution is the same as Fig.~\ref{fig:opt_tem_1}, however, due to the random DVFS stages of active cores, the energy efficiency is not maximized. Fig.~\ref{fig:opt_tem_4} shows the temperature distribution of the system with maximized performance, yet the energy efficiency of it is far less than optimal.
 
-As can be seen in Fig.~\ref{fig:opt_tem}, the maximized PPW of the system can be obtained if all active cores are running at $T_{opt}$. To further maximized the performance of the system while the energy efficiency is optimal, the distribution of active cores needs to be carefully chosen.
+As can be seen in Fig.~\ref{fig:opt_tem}, the maximized PPW of the system can be obtained if all active cores are running at $T_{opt}$, no matter what active core distribution it is. However, to further maximized the performance of the system while the energy efficiency is optimal, the distribution of active cores needs to be carefully chosen.
 
 Therefore, by minimizing the difference of the core temperature rise $T_{c}$ and the optimal temperature $T_{opt}$, the PPW of the multi-core system can be maximize. In another word, we prefer the power budget induced temperatures of all active cores to be the optimal temperature $T_{opt}$, without violating the thermal constraint.
-
-The optimal temperature vector $T_{opt}$ is actually not a fixed-value vector, it is related to the active core number, and the active core distribution. Also, the optimal temperatures for cores in different positions of the system varies. 
 
 %For the $9$-core system, we can see that there are $3$ unique core positions. We set the active core number to $1$, then we plot the PPW versus the core temperature for each of the $3$ cores in Fig. x. We can see that, as the core temperature rises, the PPW will decrease after reaching a peak value, which means a optimal temperature $T_{opt}$ exists. Also, the $T_{opt}$ for the $3$ cores in different positions varies.
 
@@ -71,14 +69,18 @@ T_{c} \preceq T_{th}.\\
 \end{split}
 \end{equation}
 
-The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{eq:opt_topt} is dependent on active core number and active core distribution, which makes it impossible to efficiently calculate the $T_{opt}$ for all senerios, when the core number is high. Fortunately, such problem can be solved efficiently, as shown next.
+Due to the thermal impact active cores have on each other, the optimal temperature vector $T_{opt}$ is actually not a fixed-value vector, it is related to the active core number, and the active core distribution. Also, the optimal temperatures for cores in different positions of the system varies. The reason is that, for cores in position of better heat dissipation capability (such as the center of the chip), the saturation temperature which leads to maximized PPW is higher.
+
+The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{eq:opt_topt} is dependent on many variables, which makes it impossible to efficiently calculate the $T_{opt}$ for all possible combinations, when the core number is high. Fortunately, such problem can be solved efficiently, as shown next.
 
 \subsection{Optimal temperature calculation}
-The optimal temperature $T_{opt}$ is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible temperatures for each of the senerios, in order to find the corresponding $T_{opt}$ in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the $T_{opt}$ needed to slove the optimization problem in \eqref{eq:opt_topt} is proposed in this section.
+The optimal temperature $T_{opt}$ is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible temperatures for all of the possible combinations, in order to find the corresponding $T_{opt}$ in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the $T_{opt}$ needed to slove the optimization problem in \eqref{eq:opt_topt} is proposed in this section.
 
 \subsubsection{Optimal temperature for single core}
-Instead of calculating the optimal temperature of all cores at the same time, we choose to calculate the optimal temperature for single core. The reason is that, if each of the active cores is running at maximum PPW, then the PPW of the whole system is certainly maximized. 
-We only need to calculate the optimal temperature of cores in the unique position of the multi-core system to achieve the optimal temperature vector for the whole system. Also, by calculating the single core's optimal temperature, other cores' thermal impact can be neglected, which can further simplify the calculation.
+Instead of calculating the optimal temperature of all cores at the same time, to simplify the problem, we calculate the optimal temperature each time for a single core.
+The reason that we can calculate the optimal temperature for each core separately is that, if each of the active cores is running at maximum PPW, then the PPW of the whole system is certainly maximized.
+
+To further simplify the problem, we can ignore the thermal impact active cores have on each other, and only consider the thermal impact of the core itself. Note that we only need to calculate the optimal temperature of cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system. For a $16$-core system, its $3$ unique positions are shown in Fig.x. All cores in the system can be catagorized into one of the $3$ positions.
 
 The optimal temperature is calculated in steady state. To calculate the steady state temperature rise of the chip, the differential term $C\frac{dT(t)}{dt}$ is neglected in 
 \eqref{eq:gt}, leading to
@@ -91,7 +93,7 @@ Let $A = B^{T}G^{-1}B \in \mathbb{R}^{m \times m}$ to simplify notation, the sim
 T_{c} = AP.
 \end{equation}
 
-Please note that, the $A$ matrix links the core temperature and the power consumption directly, which can be used to find the optimal temperature. The diagonal elements in $A$ can be seen as the corresponding cores' resistance, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the core's temperature without other cores' impact. For a specific core $i$, its temperature $T_{i}$ can be computed as:
+Please note that, the $A$ matrix links the core temperature and the power consumption with consideration of the thermal impact of all cores and the package, which can be used to find the optimal temperature. The diagonal elements in $A$ can be seen as the corresponding cores' resistance with consideration of package, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the core's temperature without other cores' impact. For a specific core $i$, its temperature $T_{i}$ can be computed as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&=a_{i} \cdot p\\
