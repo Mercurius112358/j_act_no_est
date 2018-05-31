@@ -178,8 +178,6 @@ Finding the optimal solution of such optimization problem requires brute force s
 
 For a $n$-core system with $n_{a}$ active cores, the basic idea of finding such sub-optimal solution is described as follows: we first find the optimal solution for only one active core. Next, we $fix$ the first active core position determined by the first step, and find the optimal solution of two cores, with the second active core position determined. Please note that although we say "optimal" in the second step, such sulotion is only the optimal solution with the first active core fixed at the position determined by the first step, not the true optimal solution for general two active cores. Similarly, in the $(i+1)$-th step, we look for the optimal solution for $i+1$ active cores with the position of $i$ active cores found in all previous steps remain fixed. By proceeding such strategy for $n_{a}$ steps, we can arrive at a sub-optimal solution for $n_{a}$ active cores.
 
- show the general iterative steps which are used to find the distribution of $n_{a}$ active cores. Assume we have already fixed the position of $i$ active cores. The power
-
 
 To demonstrate the greedy based method in details, we begin with finding solution for one active core. The optimization problem for one active core is
 \begin{equation}\label{eq:1_sim_opt_topt}
@@ -194,14 +192,109 @@ AP \preceq T_{th}.\\
 \end{split}
 \end{equation}
 
-%We normalize columns of $A$ to simplify discussions (please note we can reverse such operation on solution $P$ to get the original solution), i.e, for $A = [a_{1},a_{2},...,a_{n}]$, we make $\left \| a_{1} \right \|_{2} = \left \| a_{2} \right \|_{2} =\cdot \cdot \cdot = \left \| a_{n} \right \|_{2} = 1$ without changing their directions.
 
-We have to find a way to determine if one core is superior than the other one, measured by the cost function in \eqref{eq:1_sim_opt_topt}. 
+We have to find a way to determine if one core is superior than the other one, measured by the cost function in \eqref{eq:1_sim_opt_topt}. For the first active core, the way to determine it is simply compare the performance of each core when the $T_{opt}$ is reached, and choose the core with maximum performance.
 
+Then we show the general iterative steps which are used to find the distribution of $n_{a}$ active cores. Assume we have already fixed the position of $i$ active cores. The power
 
-
-One example of comparing two possible active core positions (the $j$-th core and $k$-th core are took as examples) is shown in Fig.x. By turning on $j$-th core only, the corresponding temperature rise of the chip is $a_{j}p_{j}$, where $p_{j}$ is the $j$-th elements in $P$ which should be determined by solving \eqref{eq:1_sim_opt_topt}. Assume $p_{j}$ is correctly computed, then the $T_{j}$ component (temperature rise at position $j$) of $a_{j}p_{j}$ should be the same as the $T_{opt}$, and $T_{k}$ component of $a_{j}p_{j}$ will be lower than $T_{opt}$. Instead, by turning on the $k$-th core only, the corresponding solved power value $p_{k}$ will heat the chip to $a_{k}p_{k}$, with its $T_{j}$ component being lower than $T_{opt}$ and its $T_{k}$ component just being equal to $T_{opt}$. Between the $j$-th core and $k$-th core, we prefer to turn on the $j$-th core, 
+One example of comparing two possible active core positions (the $j$-th core and $k$-th core are took as examples) is shown in Fig.x.
+By turning on $j$-th core only, the corresponding temperature rise of the chip is $a_{j}p_{j}$, where $p_{j}$ is the $j$-th elements in $P$ which should be determined by solving \eqref{eq:1_sim_opt_topt}. Assume $p_{j}$ is correctly computed, then the $T_{j}$ component (temperature rise at position $j$) of $a_{j}p_{j}$ should be the same as the $T_{opt}$, and $T_{k}$ component of $a_{j}p_{j}$ will be lower than $T_{opt}$. Instead, by turning on the $k$-th core only, the corresponding solved power value $p_{k}$ will heat the chip to $a_{k}p_{k}$, with its $T_{j}$ component being lower than $T_{opt}$ and its $T_{k}$ component just being equal to $T_{opt}$. Between the $j$-th core and $k$-th core, we prefer to turn on the $j$-th core, 
 
 
 because its cost $\left \| T_{opt}-a_{j}p_{j} \right \|_{2}$ (length of $a_{j}p_{j}-T_{th}$ in xx) in the optimization problem \eqref{eq:1_sim_opt_topt} is smaller than the cost $\left \| T_{opt}-a_{k}p_{k} \right \|_{2}$ of turning on the $k$-th core, as observed in Fig. x. The physical meaning is: by turning on the $j$-th core, the overall system temperature is closer to $T_{opt}$. With all cores' temperature lower than $T_{opt}$, the overall system temperature of turning on the $j$-the core is higher than that of turning on the $k$-th core.
 
+\subsection{Energy-efficient power budgeting with optimal performance considering transient effects}
+The power budgeting method introduced in Section $4.3$ is for steady state condition and serves mostly for illustration of the basic idea of the dynamic power budgeting method. It may work just fine on the aspect of reliability if the computed steady state power budget is followed strictly during the power management process. However, it is frequent that chip switches between high performance mode and high energy efficiency mode, it is also possible that power management makes false decisions occasionally, the computed steady state power budget is not suitable for such senerios. Thereforce, we develop a power budgeting method by considering current transient thermal/power behaviors as follows.
+
+From the previous illustration, we notice that the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.3$.
+
+We are able to obtain the $closed-form$ expression of $T_{c}(t+h)$ with $P$ and $T_{t}$, by taking advantage of the assumption that $P$ is constant for the future time duration $h$ in power budgeting problem, as presented next.
+
+It is well known that thermal model as a linear system in \eqref{eq:therm_model} has the following solution
+\begin{equation}\label{eq:ode_exp}
+\begin{split}
+T(t+h) &= e^{-hC^{-1}G}T(t)\\
+& \quad +\int_{t}^{t+h} \! e^{-(t+h-\tau)C^{-1}G}C^{-1}BP(\tau) \, \mathrm{d}\tau.
+\end{split}
+\end{equation}
+Because power budget is assumed to be constant for the future time
+duration $h$ (i.e., from time $t$ to $t+h$), we can simplify
+\eqref{eq:ode_exp} into
+\begin{equation}\label{eq:ode_exp_const}
+\begin{split}
+T(t+h) &= e^{-hC^{-1}G}T(t)\\
+& \quad +\int_{0}^{h} \! e^{-(h-\tau)C^{-1}G}C^{-1}B \, \mathrm{d}\tau P.
+\end{split}
+\end{equation}
+Let us denote 
+\begin{equation*}
+M(h)=e^{-hC^{-1}G}, ~~N(h)=\int_{0}^{h} \! e^{-(h-\tau)C^{-1}G}C^{-1}B \, \mathrm{d}\tau,
+\end{equation*}
+then \eqref{eq:ode_exp_const} can be written as
+\begin{equation}\label{eq:ode_exp_h}
+T(t+h) =M(h)T(t)+N(h)P.
+\end{equation}
+Please note that $M(h) \in \mathbb{R}^{m\times m}$ and $N(h) \in
+\mathbb{R}^{m \times n}$ are \emph{constant} matrices which
+can be computed \emph{offline} for a given time step $h$. 
+
+$M(h)T(t)$ and $N(h)P$ are the zero-input response and zero-state response of the
+linear system in \eqref{eq:therm_model}, respectively, and there are many
+easy ways to compute $M(h)$ and $N(h)$ in both frequency domain and
+time domain. Here we only briefly show a time domain method presented
+in~\cite{Han:JLPE'07}. 
+Let us denote $M(h)=[M_1, M_2, \ldots, M_m]$, $N(h)=[N_1, N_2, \ldots, N_n]$,
+$T(0)=[T_1, T_2, \ldots, T_m]^T$, and $P=[p_1, p_2, \ldots, p_n]^T$,
+where $M_i$ and $N_i$ represent the $i$-th columns of $M(h)$ and $N(h)$,
+$T_i$ and $p_i$ represent the $i$-th elements of $T(0)$ and $P$,
+respectively. With linear system theory, we have $M_i=T(h)$, if we let $P=[0,0,\ldots,0]^{T}$, $T_i=1$, and
+$T_j=0$ for all $j\neq i$. As a result, we can get the $i$-th column of
+$M(h)$ by computing $T(h)$ using standard numerical integration of \eqref{eq:therm_model} with only the $i$-th
+element of initial state $T(0)$ set to be one. Similarly, we have
+$N_i=T(h)$, if we let $T(0)=[0,0,\ldots,0]^T$, $p_i=1$, and $p_j=0$ for all $j\neq
+i$. In another word, the $i$-th column of
+$N(h)$ can be obtained by computing $T(h)$ using numerical integration of
+\eqref{eq:therm_model} with only the $i$-th
+element of power $P$ set to be one.
+
+Finally, we are able to express $T_c(t+h)$ using $P$ and $T(t)$ as
+\begin{equation}
+T_c(t+h) = B^{T}T(t+h)= B^{T}M(h)T(t)+B^{T}N(h)P.
+\end{equation}
+The cost function of the steady state power budgeting problem in
+\eqref{eq:opt_topt} will be changed by using the new $T_c(t+h)$ for
+transient case as
+
+\begin{equation}\label{eq:cost_trans}
+\|T_{opt} - B^{T}M(h)T(t) - B^{T}N(h)P \|_2.
+\end{equation}
+In order to simplify notation, we denote a new vector  
+\begin{equation}
+\bar{T}_{opt}=T_{th} - B^{T}M(h)T(t),
+\end{equation}
+where $\bar{T}_{opt}$ has similar meaning of
+$T_{opt}$ in steady state case, and it also accounts for the transient
+thermal effects, i.e., current temperature's impact on power
+budget. Also, we denote a new matrix 
+
+\begin{equation}
+\bar{A} = B^{T}N(h), 
+\end{equation}
+which works similarly as matrix $A$ in steady
+state case, but accounts for transient thermal effect. The power
+budgeting optimization problem for transient case is updated as 
+\begin{equation}\label{eq:temp_ts_opt}
+  \begin{split}
+    &\text{minimize~} \|\bar{T}_{opt}-\bar{A}P\|_2\\
+    &\text{subject to}
+    \begin{cases}
+      \card(P)=n_a,\\
+      \bar{A}P \preceq \bar{T}_{th}.
+    \end{cases}
+  \end{split}
+\end{equation}
+
+Now dynamic GDP can be
+applied by following the steps in steady state GDP presented in
+Section~\ref{sec:greedy_steady}, just with \eqref{eq:temp_ss_opt} replaced
+by \eqref{eq:temp_ts_opt}.
