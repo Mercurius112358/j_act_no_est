@@ -1,4 +1,73 @@
 \section{EXPERIMENTAL RESULTS}
-In this section, we show the experimental results to verify the proposed power budgeting method and analyze its energy efficiency and performance. All data are collected on a PC with Intel I5 2400 CPU and 2 GB memory. Multi-core systems with core number ranging from $9$ to $100$ are used in the experiment, and each core with different dark silicon ratio are tested. The thermal models of these multi-core systems are extracted from HotSpot with default package and chip parameters. The ambient temperature are set to be \SI{20}{\degreeCelsius} for all test cases, and the temperature constraint is \SI{95}{\degreeCelsius}.
+In this section, we show the experimental results to verify the proposed power budgeting method and analyze its energy efficiency and performance. All data are collected on a PC with Intel I5 2400 CPU and 4 GB memory. Multi-core systems with core number ranging from $9$ to $100$ are used in the experiment, and each core with different dark silicon ratio are tested. The thermal models of these multi-core systems are extracted from HotSpot with default package and chip parameters. The ambient temperature are set to be \SI{20}{\degreeCelsius} for all test cases, and the temperature constraint is \SI{95}{\degreeCelsius}.
 
 \subsection{Effectiveness of temperature compensation parameter}
+In order to test the effectiveness of the temperature compensation parameter, for example, we first choose a $9$-core system with $4$ active core, the optimal temperature for a specified core with temperature compensation parameter can be computed in \eqref{eq:full_1_ppw} and \eqref{eq:t_ap}. Then, we randomly generate several $4$ active core distributions of a $9$-core system, and compute the real optimal temperature of each of the distribution. Note that the specified core in the previous step is included in the active cores. By comparing the difference of the optimal temperature, the effective of the temperature compensation parameter can be verified.
+
+In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table.x.
+
+\begin{table}
+  \caption{The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
+  \label{tab:opt_tem}
+  \centering
+  \begin{tabular}{c|c|c|c}
+    \hline
+    Core & Active     &  Avg  &   Max  \\
+    \#       &   \#       &  $^{\circ}$C    & $^{\circ}$C  \\
+     \hline
+\hline
+  % \multirow{3}{*}{9} &      2       &   1.1  &   1.9 \\
+  %            &      4       &    1.3    &   2.7   \\
+  %            &      7       &   1.2     &   2.2   \\
+  %    \hline
+   \multirow{3}{*}{16} &      3        &   0.3 &   0.7    \\   
+             &      8       &    0.5     &  1.2     \\
+             &      13     &     0.4    &   1.2   \\
+     \hline
+  \multirow{3}{*}{25} &      5       &    0.4 & 1.1      \\ 
+              &     12      &    0.5     &    1.4     \\
+              &     20      &    0.4     &    1.1     \\ 
+     \hline
+  \multirow{3}{*}{36}  &     8        &    0.4  &    1.1  \\
+              &     18      &   0.5      &   1.6     \\
+              &     28      &    0.4     &   0.9  \\
+     \hline
+  \multirow{3}{*}{64}  &     12      &   0.4  &   1.2  \\
+              &     32      &    0.5     &     1.6       \\
+              &     52      &     0.4   &     1.0    \\
+ \hline 
+\multirow{3}{*}{100}  & 16 & 	 0.5&	1.1\\
+                      & 52 &	 0.7&	1.7\\
+                      & 76 &	 0.5&	1.8\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Effectiveness and energy efficiency test for steady state cases}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/best_steady.eps}
+\caption{Monte-Carlo of a $16$-core system with $8$ active cores, the random combination number is 1000, the red pentagram stand for the energy efficiency of our computed power budget}
+\end{figure}
+
+\subsection{Energy-efficient power budgeting with optimal performance considering transient effects}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/PPW.eps}
+\caption{PPW}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/tem_own.eps}
+\caption{temperature of own}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/tem_mag.eps}
+\caption{temperature of mag}
+\end{figure}
