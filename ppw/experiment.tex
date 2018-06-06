@@ -6,80 +6,79 @@ In order to test the effectiveness of the temperature compensation parameter, fo
 
 In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table.x.
 
-\begin{table}
-  \caption{The optimal temperature error induce by temperature compensation parameter. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
+\begin{table*}
+  \caption{The optimal temperature error induce with and without temperature compensation parameter. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
   \label{tab:opt_tem}
   \centering
-  \begin{tabular}{c|c|c|c}
+  \begin{tabular}{c|c||p{1cm}<{\centering}|p{1cm}<{\centering}||p{1cm}<{\centering}|p{1cm}<{\centering}}
     \hline
-    Core & Active     &  Avg  &   Max  \\
-    \#       &   \#       &  $^{\circ}$C    & $^{\circ}$C  \\
+    Core & Active     & \multicolumn{2}{c||}{$T_{err}$($^{\circ}$C)  with $\lambda$}  & \multicolumn{2}{c}{$T_{err}$($^{\circ}$C) without $\lambda$}\\
+\cline{3-6}
+    \#       &   \#       &  Avg    & Max &  Avg  &  Max  \\
      \hline
 \hline
-  % \multirow{3}{*}{9} &      2       &   1.1  &   1.9 \\
-  %            &      4       &    1.3    &   2.7   \\
-  %            &      7       &   1.2     &   2.2   \\
-  %    \hline
-   \multirow{3}{*}{16} &      3        &   0.3 &   0.7    \\   
-             &      8       &    0.5     &  1.2     \\
-             &      13     &     0.4    &   1.2   \\
+  \multirow{3}{*}{9} &      2       &   1.1  &   1.9 &2.1&4.0\\
+             &      4       &    1.3    &   2.7  &7.0&11.7 \\
+             &      7       &   1.2     &   2.2   &13.7&16.1\\
      \hline
-  \multirow{3}{*}{25} &      5       &    0.4 & 1.1      \\ 
-              &     12      &    0.5     &    1.4     \\
-              &     20      &    0.4     &    1.1     \\ 
+   \multirow{3}{*}{16} &      3        &   0.3 &   0.7   &1.5 &2.2 \\   
+             &      8       &    0.5     &  1.2  &7.2 &8.3   \\
+             &      13     &     0.4    &   1.2  &12.9 &13.7 \\
      \hline
-  \multirow{3}{*}{36}  &     8        &    0.4  &    1.1  \\
-              &     18      &   0.5      &   1.6     \\
-              &     28      &    0.4     &   0.9  \\
+  \multirow{3}{*}{25} &      5       &    0.4 & 1.1 & 3.2 &  4.2   \\ 
+              &     12      &    0.5     &    1.4   &  8.7 & 9.9 \\
+              &     20      &    0.4     &    1.1   & 13.5 & 14.1 \\ 
      \hline
-  \multirow{3}{*}{64}  &     12      &   0.4  &   1.2  \\
-              &     32      &    0.5     &     1.6       \\
-              &     52      &     0.4   &     1.0    \\
+  \multirow{3}{*}{36}  &     8        &    0.4  &    1.1 & 4.1 & 5.6\\
+              &     18      &   0.5      &   1.6  & 10.0 & 11.4  \\
+              &     28      &    0.4     &   0.9 & 14.4 & 15.2\\
+     \hline
+  \multirow{3}{*}{64}  &     12      &   0.4  &   1.2  & 3.8 &4.9 \\
+              &     32      &    0.5     &     1.6   & 9.6 & 10.6   \\
+              &     52      &     0.4   &     1.0   & 15.9 & 16.5\\
  \hline 
-\multirow{3}{*}{100}  & 16 & 	 0.5&	1.1\\
-                      & 52 &	 0.7&	1.7\\
-                      & 76 &	 0.5&	1.8\\
+\multirow{3}{*}{100}  & 16 & 	 0.5&	1.1& 3.3 &  4.3\\
+                      & 52 &	 0.7&	1.7& 11.4 & 13.0\\
+                      & 76 &	 0.5&	1.8& 16.6 & 17.6\\
 \hline
 \end{tabular}
-\end{table}
+\end{table*}
 
 
 
 \begin{figure}
 \centering
 \includegraphics[width=1\linewidth]{fig/best_steady.eps}
-\caption{Monte-Carlo of a $16$-core system with $8$ active cores, the random combination number is 1000, the red pentagram stand for the energy efficiency of our computed power budget}
+\caption{Monte-Carlo of a $16$-core system with $8$ active cores, the variables are the active core distribution and the DVFS stage of each core, the random combination number is 1000, the red pentagram stand for the energy efficiency of our computed power budget}
 \end{figure}
+
+
 
 \begin{table*}
 %  \color{red}
-  \caption{Dynamic power budgeting and system performance (in MIPS) results comparison. ``Budget'' is short for
-    power budget with the unit watt. Since GDP provides dynamic budget, the
-    averaged value is provided here. For parallel GDP, the 64-core system and 100-core system are divided
-    into four 16-core systems and four 25-core systems, respectively. `` Worst TSP'' denotes TSP performance with the worst case
-active core distribution, and ``Random TSP'' denotes TSP performance averaged from 10 random active core distributions.}
+  \caption{Energy efficiency (in MIPS/Watt) and system performance (in MIPS) results comparison of steady state power budgeting. "New" stands for our new power budgeting method, "Monte Carlo" denotes the optimal result with maximum PPW from $1000$ Monte-Carlo simulation with varables being active core distribution and DVFS stage of each active core, and "Random" denotes the averaged result from $10$ random active core distribution with $T_{opt}$ reached for each active core.}
   \label{tab:trans_budget}
   \centering
   \begin{tabular}{c|c||c|c||c|c||c|c}
     \hline
     Core & Active     & \multicolumn{2}{c||}{New} &
-                                                    \multicolumn{2}{c||}{Monte Carlo} & \multicolumn{2}{c} {Random}\\
+                                                    \multicolumn{2}{c||}{Monte-Carlo} & \multicolumn{2}{c} {Random}\\
 \cline{3-8}  
 \#       &   \#        & PPW & Perf & PPW & Perf  & PPW  & Perf \\
 %\#      &   \#         & (W)        &      &   (W)   &    &  (W)    &    &(W)   &  (W)\\
      \hline
 \hline
-  \multirow{3}{*}{9} &      2     &       2.9    & 137.1     & 3.9    &  91.7    & 3.5 & 118.0\\ 
-             &      4             &      3.5     & 227.4    &  3.6  &  183.3    & 3.5 & 186.6\\
-             &      7             &       3.3    & 290.2     &  3.2   &  291.7   & 3.2 & 262.3\\
+  \multirow{3}{*}{9} &      2     &       2.8    & 137.1     & 3.0    &  91.7    & 2.8 & 118.0\\ 
+             &      4             &      2.6     & 227.4    &  2.6  &  183.3    & 2.6 & 186.6\\
+             &      7             &       2.4    & 290.2     &  2.3   &  291.7   & 2.4 & 262.3\\
      \hline
 \multirow{3}{*}{16}   &      3    &      2.6     & 130.0    &   2.9   &   81.2   &  2.6 & 101.5\\   
-             &      8             &      2.6     & 243.3    &   2.5   &    178.1  & 2.5 & 185.2 \\
+             &      8             &      2.6    & 243.3    &   2.5  &    178.1  & 2.5 & 185.2 \\
              &      13            &      2.3     &  270.6   &   2.1  &    318.8  &  2.3 & 237.9\\
      \hline
- \multirow{3}{*}{25}  &      5    &     3.0   &  131.7   &   3.3    &  93.0   & 3.0 &111.8       \\ 
-                &     12          &     3.0   &   232.3   &   2.8   &   201.0  & 2.9  & 175.3    \\
-                &     20          &     2.8   &   271.2   &   2.6   &  227.3   & 2.8 & 230.5 \\
+ \multirow{3}{*}{25}  &      5    &     2.8   &  131.7   &   3.0    &  93.0   & 2.8 &111.8       \\ 
+                &     12          &     2.8   &   232.3   &   2.7   &   201.0  & 2.8  & 175.3    \\
+                &     20          &     2.7   &   271.2   &   2.5   &  227.3   & 2.7 & 230.5 \\
      \hline
   \multirow{3}{*}{36}  &     8            &      2.8   & 142.0   &  2.9   &  93.8   &  2.8  &111.0    \\
               &     18            &     2.7         & 228.9    &  2.5   &    225.0   &  2.7  & 169.0 \\
