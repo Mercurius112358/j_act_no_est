@@ -110,16 +110,16 @@ The optimization object of maximizing PPW can be equivalently transformed to min
 
 \begin{equation}\label{eq:1_ppw}
 \begin{split}
-\frac{1}{\text{PPW}}=&\frac{p_{d}+p_{s}}{f}\\
-=&\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{p_{d}^{1/3}}.
+\frac{1}{\text{PPW}} = &\frac{p_{d}+p_{s}}{f}\\
+= &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{p_{d}^{1/3}}.
 \end{split}
 \end{equation}
 
 Integrating \eqref{eq:t_ap} into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:full_1_ppw}
 \begin{split}
-\frac{1}{\text{PPW}}=&p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s}(a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v+\\
-&v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})+p_{0})
+\frac{1}{\text{PPW}} = &p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s}(a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
+ &+ v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})+p_{0})
 \end{split}
 \end{equation}
 
@@ -145,9 +145,9 @@ By integrating $\lambda$ into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:c_full_1_ppw}
 \begin{split}
 \frac{1}{\text{PPW}}=&\frac{p_{d}+p_{s}}{f}\\
-=&\frac{p_{d}+v(a_{s} \cdot (1+\lambda)(T_{i}+T_{a})+p_{0})}{p_{d}^{1/3}}\\
-=&p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s} ((a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v+\\
-&v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})(1+\lambda)+T_{a})+p_{0}).
+=&\frac{p_{d}+v(a_{s} \cdot ((1+\lambda)T_{i}+T_{a})+p_{0})}{p_{d}^{1/3}}\\
+=&p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s} ((a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
+&+ v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})(1+\lambda)+T_{a})+p_{0}).
 \end{split}
 \end{equation}
 
@@ -213,8 +213,8 @@ budgeting problem with these $i$ active cores:
 % \end{equation}
 
 In order to find the position of the $(i+1)$-th core, we subtract the
-temperature rise caused by power budget of $i$ active cores from $T_{th}$,
-and obtain $T_{rm}=T_{th}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the performance of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum performance.
+temperature rise caused by power budget of $i$ active cores from $T_{opt}$,
+and obtain $T_{rm}=T_{opt}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the performance of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum performance.
 
 %One example of comparing two possible active core positions (the $j$-th core and $k$-th core are took as examples) is shown in Fig.x.
 %By turning on $j$-th core only, the corresponding temperature rise of the chip is $a_{j}p_{j}$, where $p_{j}$ is the $j$-th elements in $P$ which should be determined by solving \eqref{eq:1_sim_opt_topt}. Assume $p_{j}$ is correctly computed, then the $T_{j}$ component (temperature rise at position $j$) of $a_{j}p_{j}$ should be the same as the $T_{opt}$, and $T_{k}$ component of $a_{j}p_{j}$ will be lower than $T_{opt}$. Instead, by turning on the $k$-th core only, the corresponding solved power value $p_{k}$ will heat the chip to $a_{k}p_{k}$, with its $T_{j}$ component being lower than $T_{opt}$ and its $T_{k}$ component just being equal to $T_{opt}$. Between the $j$-th core and $k$-th core, we prefer to turn on the $j$-th core, 
@@ -229,7 +229,7 @@ From the previous illustration, we notice that the basic problem in dynamic powe
 
 We are able to obtain the $closed-form$ expression of $T_{c}(t+h)$ with $P$ and $T_{t}$, by taking advantage of the assumption that $P$ is constant for the future time duration $h$ in power budgeting problem, as presented next.
 
-It is well known that thermal model as a linear system in \eqref{eq:therm_model} has the following solution
+It is well known that thermal model as a linear system in \eqref{eq:gt} has the following solution
 \begin{equation}\label{eq:ode_exp}
 \begin{split}
 T(t+h) &= e^{-hC^{-1}G}T(t)\\
@@ -258,7 +258,7 @@ Please note that $M(h) \in \mathbb{R}^{m\times m}$ and $N(h) \in
 can be computed \emph{offline} for a given time step $h$. 
 
 $M(h)T(t)$ and $N(h)P$ are the zero-input response and zero-state response of the
-linear system in \eqref{eq:therm_model}, respectively, and there are many
+linear system in \eqref{eq:gt}, respectively, and there are many
 easy ways to compute $M(h)$ and $N(h)$ in both frequency domain and
 time domain. Here we only briefly show a time domain method presented
 in~\cite{Han:JLPE'07}. 
@@ -268,12 +268,12 @@ where $M_i$ and $N_i$ represent the $i$-th columns of $M(h)$ and $N(h)$,
 $T_i$ and $p_i$ represent the $i$-th elements of $T(0)$ and $P$,
 respectively. With linear system theory, we have $M_i=T(h)$, if we let $P=[0,0,\ldots,0]^{T}$, $T_i=1$, and
 $T_j=0$ for all $j\neq i$. As a result, we can get the $i$-th column of
-$M(h)$ by computing $T(h)$ using standard numerical integration of \eqref{eq:therm_model} with only the $i$-th
+$M(h)$ by computing $T(h)$ using standard numerical integration of \eqref{eq:gt} with only the $i$-th
 element of initial state $T(0)$ set to be one. Similarly, we have
 $N_i=T(h)$, if we let $T(0)=[0,0,\ldots,0]^T$, $p_i=1$, and $p_j=0$ for all $j\neq
 i$. In another word, the $i$-th column of
 $N(h)$ can be obtained by computing $T(h)$ using numerical integration of
-\eqref{eq:therm_model} with only the $i$-th
+\eqref{eq:gt} with only the $i$-th
 element of power $P$ set to be one.
 
 Finally, we are able to express $T_c(t+h)$ using $P$ and $T(t)$ as
@@ -289,7 +289,6 @@ transient case as
 \end{equation}
 In order to simplify notation, we denote a new vector  
 \begin{equation}
-\bar{T}_{opt}=T_{th} - B^{T}M(h)T(t),
 \end{equation}
 where $\bar{T}_{opt}$ has similar meaning of
 $T_{opt}$ in steady state case, and it also accounts for the transient
@@ -317,7 +316,7 @@ budgeting optimization problem for transient case is updated as
 \right.
 \end{split}
 \end{equation}
-Now dynamic GDP can be
-applied by following the steps in steady state GDP presented in
+Now dynamic power budgeting can be
+applied by following the steps in steady state power budgeting presented in
 Section $4.3$, just with \eqref{eq:sim_opt_topt} replaced
 by \eqref{eq:temp_ts_opt}.

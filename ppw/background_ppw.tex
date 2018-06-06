@@ -87,9 +87,11 @@ I_{leak}=I_{sub}+I_{gate}
 \end{equation}
 
 Noted that $I_{gate}$ is cause by tunneling between the gate terminal and the other three terminals, does not depend on temperature and can be considered as a technology-dependent constant. Yet $I_{sub}$ is considered to be highly related to temperature, and can be modeled in the commonly accepeted MOSFET transitor model BSIM 4 as:
-\begin{equation}\label{eq:sub_current}
-I_{sub}=Kv_{T}^{2}e^{\frac{V_{GS}-V_{th}} {\eta v_{T}}} (1-e^{\frac {-V_{DS}} {v_{T}} })\approx Kv_{T}^{2}e^{\frac{V_{GS}-V_{th}}{\eta v_{T}}}
+\begin{equation}\label{eq:sub_current}\
+I_{sub}=K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}}
+  (1-e^{\frac{-V_{DS}}{v_T}}) \approx K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}},
 \end{equation}
+
 
 Apparently, the leakage current has a complex relationship with
 temperature. In this work, we use \eqref{eq:sta_power},
