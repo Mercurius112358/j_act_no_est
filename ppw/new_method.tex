@@ -90,13 +90,13 @@ The optimization object of maximizing PPW of a single core can be equivalently t
 \text{max PPW}\Longleftrightarrow \text{min } \frac{1}{\text{PPW}},
 \end{equation}
 
-By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_leakage} and substituting $v$ with $f$ in \eqref{eq:f_v} into \eqref{eq:min_ppw}, we have
+By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_leakage} into \eqref{eq:min_ppw}, we have
 
 \begin{equation}\label{eq:1_ppw}
 \begin{split}
 \frac{1}{\text{PPW}} = &\frac{p_{d}+p_{s}}{f}\\
-= &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{f}\\
-= &\frac{p_{d}+(f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{f}
+= &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{f}.
+%= &\frac{p_{d}+(f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{f}
 \end{split}
 \end{equation}
 
@@ -108,12 +108,15 @@ p_{d} \propto f^{3}.
 Therefore, \eqref{eq:1_ppw} can be expressed as
 \begin{equation}\label{eq:1_ppw_step2}
 \begin{split}
-\frac{1}{\text{PPW}} =  &\frac{p_{d}+(p_{d}^{-1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{p_{d}^{-1/3}}\\
-=&p_{d}^{2/3}+(\frac{V_{max}-V_{th}}{f_{max}}+V_{th}\cdot p_{d}^{-1/3})(a_{s}(T_{i}+T_{a})+p_{0})
+%\frac{1}{\text{PPW}} \approx  &\frac{p_{d}+(c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\
+% =&c^{1/3}\cdot p_{d}^{2/3}+(\frac{V_{max}-V_{th}}{f_{max}}+V_{th}\cdot c^{1/3} \cdot p_{d}^{-1/3})\\
+% & \cdot (a_{s}(T_{i}+T_{a})+p_{0})
+\frac{1}{\text{PPW}} \approx  &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\\
+=&c^{1/3}\cdot p_{d}^{2/3}+c^{1/3} \cdot  (a_{s}(T_{i}+T_{a})+p_{0})
 \end{split}
 \end{equation}
 
-We can see that in \eqref{eq:1_ppw_step2}, aside from $p_{d}$, the core's temperature rise $T_{i}$ is also unknown. However, we can express $T_{i}$ using $p_{d}$, as shown next.
+We can see that in \eqref{eq:1_ppw_step2}, aside from $p_{d}$ and the core's temperature rise $T_{i}$, all other parameters are known. However, to calculate optimal temperature, we need to express $T_{i}$ using $p_{d}$, as shown next.
 
 The optimal temperature is calculated in steady state. To calculate the steady state temperature rise of the chip, the differential term $C\frac{dT(t)}{dt}$ is neglected in 
 \eqref{eq:gt}, leading to
@@ -129,26 +132,26 @@ T_{c} = AP.
 Please note that, the $A$ matrix links the core temperature and the power consumption with consideration of the thermal impact of all cores and the package, which can be used to find the optimal temperature. The diagonal elements in $A$ can be seen as the corresponding cores' resistance with consideration of package, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the core's temperature without other cores' impact. For a specific core $i$, its temperature $T_{i}$ can be computed as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
-T_{i}&=a_{ii} \cdot p_{i}\\
+T_{i}&\approx a_{ii} \cdot p_{i}\\
 &=a_{ii}(p_{d}+p_{s})\\
-&=a_{ii}(p_{d}+v (p_{0}+a_{s}(T_{a}+T_{i})),
+&=a_{ii}(p_{d}+v (p_{0}+a_{s}(T_{a}+T_{i}))),
 \end{split}
 \end{equation}
 where $a_{ii}$ stands for the current core's corresponding diagonal element from $A$, and $T_{a}$ is the ambient temperature. We can see that only variable in \eqref{eq:t_ap} is $p_{d}$, which means once $p_{d}$ is fixed, $T_{i}$ can be computed in \eqref{eq:t_ap}.
 
 
 
-Integrating \eqref{eq:t_ap} into \eqref{eq:1_ppw}, we have
-\begin{equation}\label{eq:full_1_ppw}
+Integrating \eqref{eq:t_ap} into \eqref{eq:1_ppw_step2}, we have
+\begin{equation}\label{eq:1_ppw_step3}
 \begin{split}
 \frac{1}{\text{PPW}} = &p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s}(a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
  &+ v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})+p_{0})
 \end{split}
 \end{equation}
 
-Note that in\eqref{eq:full_1_ppw}, the only variable is $p_{d}$. As the form of \eqref{eq:full_1_ppw} suggested, an inflection point for the minimum $\frac{1}{\text{PPW}}$ exists. By finding the inflection point, the minimum $\frac{1}{\text{PPW}}$ and the corresponding $p_{d}$ can be obtained. With the obtained $p_{d}$, the optimal temperature can be calculated with \eqref{eq:t_ap}.
+Note that in\eqref{eq:1_ppw_step3}, the only variable is $p_{d}$. It can also be , an inflection point for the minimum $\frac{1}{\text{PPW}}$ exists. By finding the inflection point, the minimum $\frac{1}{\text{PPW}}$ and the corresponding $p_{d}$ can be obtained. With the obtained $p_{d}$, the optimal temperature can be calculated with \eqref{eq:t_ap}.
 
-By solving \eqref{eq:full_1_ppw} for each of the uniquely positioned cores, the optimal temperatures vector for all cores can be formed.
+By solving \eqref{eq:1_ppw_step3} for each of the uniquely positioned cores, the optimal temperatures vector for all cores can be formed.
 
 
 \subsubsection{Optimal temperature with temperature compensation}
