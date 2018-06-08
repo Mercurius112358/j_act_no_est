@@ -112,13 +112,13 @@ Therefore, \eqref{eq:1_ppw} can be expressed as
 % =&c^{1/3}\cdot p_{d}^{2/3}+(\frac{V_{max}-V_{th}}{f_{max}}+V_{th}\cdot c^{1/3} \cdot p_{d}^{-1/3})\\
 % & \cdot (a_{s}(T_{i}+T_{a})+p_{0})
 \frac{1}{\text{PPW}} \approx  &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\\
-=&c^{1/3}\cdot p_{d}^{2/3}+c^{1/3} \cdot  (a_{s}(T_{i}+T_{a})+p_{0})
+=&c^{1/3}\cdot p_{d}^{2/3}+c^{1/3} \cdot  p^{-1/3}\cdot v(a_{s}(T_{i}+T_{a})+p_{0})
 \end{split}
 \end{equation}
 
-We can see that in \eqref{eq:1_ppw_step2}, aside from $p_{d}$ and the core's temperature rise $T_{i}$, all other parameters are known. However, to calculate optimal temperature, we need to express $T_{i}$ using $p_{d}$, as shown next.
+We can see that in \eqref{eq:1_ppw_step2}, there are $3$ parameters that are not fixed, $p_{d}$, the core's temperature rise $T_{i}$ and $v$, all other parameters are known. However, to calculate optimal temperature, we need to minimize the number of the variables. Therefore, we will demonstrate how to express $T_{i}$ and $v$ using $p_{d}$ next.
 
-The optimal temperature is calculated in steady state. To calculate the steady state temperature rise of the chip, the differential term $C\frac{dT(t)}{dt}$ is neglected in 
+The optimal temperature is calculated in steady state. To calculate the steady state temperature rise $T_{c}$ of the chip, the differential term $C\frac{dT(t)}{dt}$ is neglected in 
 \eqref{eq:gt}, leading to
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
@@ -139,9 +139,16 @@ T_{i}&\approx a_{ii} \cdot p_{i}\\
 \end{equation}
 where $a_{ii}$ stands for the current core's corresponding diagonal element from $A$, and $T_{a}$ is the ambient temperature. We can see that only variable in \eqref{eq:t_ap} is $p_{d}$, which means once $p_{d}$ is fixed, $T_{i}$ can be computed in \eqref{eq:t_ap}.
 
+Also, $v$ can be expressed with $f$ from \eqref{eq:f_v}, by substituting $f$ with $p_{d}$, the expression of $v$ using $p_{d}$ can be obtained as
 
+\begin{equation}\label{eq:v_pd}
+\begin{split}
+v = &f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th},\\
+=&c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th}.
+\end{split}
+\end{equation}
 
-Integrating \eqref{eq:t_ap} into \eqref{eq:1_ppw_step2}, we have
+Integrating \eqref{eq:t_ap} and \eqref{eq:v_pd} into \eqref{eq:1_ppw_step2}, we have
 \begin{equation}\label{eq:1_ppw_step3}
 \begin{split}
 \frac{1}{\text{PPW}} = &p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s}(a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
