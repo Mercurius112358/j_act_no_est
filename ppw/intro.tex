@@ -5,15 +5,18 @@ Integrated circuit (IC) has been through the most remarkable technology advances
 
 Nowadays, multi-core systems have become the main stream of computing systems. For multi-core systems in dark silicon, a fundamental problem is to control the operation of each of the individual cores to maximize certain objective. Depending on the objective, the voltage and frequency levels (VF levels) of the active cores can be adjusted, and tasks can be scheduled according to the active core number and their VF levels, while the constraints on power consumption and temperature have to be satisfied. Typically when the objective is the performance of the multi-core system in dark silicon, the constraints on power consumption is the maximum allowed power, which should never be exceeded to avoid thermal emergencies. Such maximum allowed power is called power budget, and the process of finding it is called the power budgeting process. 
 
+Many researches have been done on solving the power budget issues of dark silicon systems.
+
+Howerver, the maximum performance and the maximum energy efficiency of a system generally cannot be achived at the same time. Fig.~\ref{fig:ppw_mips} shows the result of simulating the execution of a set of benchmark programs on a single core of a $16$-core system, and tracking the ratio of the throughput to energy as the throughput of the core varies. The ratio is a measure of energy efficiency and is referred to as performance-per-watt (PPW), which is equivalent to the number of instrutions executed per Joule of energy. As the figure shows, the PPW has a unique maximum value when the throughput is $31$ MIPS, which means that the power budget that maximizes the energy-efficiency of the system differs from the ones of maximum performance of worst performance of the system. Hence, a power budgeting method that can provide optimal erengy efficiency is strongly needed.
+
+
+
 \begin{figure}
 \centering
 \includegraphics[width=1\linewidth]{fig/ppw_mips.eps}
 \caption{MIPS/Watt-MIPS curve}
 \label{fig:ppw_mips}
 \end{figure}
-
-Howerver, the maximum performance and the maximum energy efficiency of a system generally cannot be achived at the same time. Fig.~\ref{fig:ppw_mips} shows the result of simulating the execution of a set of benchmark programs on a single core of a $16$-core system, and tracking the ratio of the throughput to energy as the throughput of the core varies. The ratio is a measure of energy efficiency and is referred to as performance-per-watt (PPW), which is equivalent to the number of instrutions executed per Joule of energy. As the figure shows, the PPW has a unique maximum value when the throughput is $31$ MIPS, which means that the power budget that maximizes the energy-efficiency of the system differs from the ones of maximum performance of worst performance of the system. Hence, 
-
 
 In this work, we propose a fast power budgeting method which can maximize the PPW of a homogeneous multi-core system in dark silicon while the power budget remaining as high as possible. This work formulates the power budgeting problem as thermal-constrained combinational optimization problem. To speed up the solution of the problem, we invoke two new ideas: first, we transform the original PPW-optimazation problems to an easier solving temperature-optimazation problem; second, since the power budget varies with the locations of the active cores for dark silicon systems, a greedy based method to find the sub-optimal active core distribution which maximizes power budget, and computes its corresponding power budget at runtime.
 

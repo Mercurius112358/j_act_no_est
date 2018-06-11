@@ -1,11 +1,11 @@
 \section{ENERGY-EFFICIENT POWER BUDGETING FOR MULTI-CORE DARK SILICON SYSTEMS}
 
-Power budgeting, by the name, provides a power budget, which servers as a guidance and constraint for the system. The power budget in dark silicon includes the active cores distribution and their corresponding operating points. Typically, the given power budget should be conservative in order to keep the system in thermally safe state. The energy-efficient power budgeting gives a power budget not only keeps the system thermally safe, but also maximizes the energy efficiency of the system while keeping the power budget as high as possible. 
+Power budgeting, by the name, provides a power budget, which servers as a guidance and constraint for the system. The power budget in dark silicon includes the active cores distribution and their corresponding DVFS stages. Typically, the given power budget should be conservative in order to keep the system in thermally safe state. The energy-efficient power budgeting gives a power budget not only keeps the system thermally safe, but also maximizes the energy efficiency of the system while keeping the power budget as high as possible. 
 
 First, in Section $4.1$, we formulate the energy-efficient power budgeting problem and transforms it into an equivalent problem of minimizing the difference between the chip temperature $T_{c}$ and the target optimal temperature $T_{opt}$. Next, we show how to efficiently calculate the optimal temperature $T_{opt}$ of cores in all positions in Section $4.2$. With the $T_{opt}$, we show how to perform the proposed energy-efficient power budgeting for steady state problem in Section $4.3$, which serves as demonstration for easier understanding of the new method. In Section $4.4$, the full dynamic energy-efficient power budgeting considering transient effects is presented.
 
 \subsection{Power budgeting by minimizing the difference of the chip temperature and the optimal temperature}
-The energy-efficient dynamic power budgeting aims to find the optimal active core distribution and their corresponding DVFS stage, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
+The energy-efficient dynamic power budgeting aims to find the optimal active core distribution and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
 
 PPW is defined as the ratio of the total performance (MIPS) to the total power.
 \begin{equation}\label{eq:ppw}
@@ -31,26 +31,31 @@ where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector conta
 
 \begin{figure}
   \centering
-  \subfigure[MIPS = 279.9, MIPS/Watt = 2.1]{
+  \subfigure[MIPS = 227.4, MIPS/Watt = 2.6]{
     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_1.eps}\label{fig:opt_tem_1}
   }
-  \subfigure[MIPS = 261.2, MIPS/Watt = 2.1]{
+  \subfigure[MIPS = 165.6, MIPS/Watt = 2.6]{
     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_2.eps}\label{fig:opt_tem_2}
   }
-  \subfigure[MIPS = 258.6, MIPS/Watt = 1.7]{
-    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_3.eps}\label{fig:opt_tem_3}
-  }
-  \subfigure[MIPS = 345.5, MIPS/Watt = 1.2]{
-    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_4.eps}\label{fig:opt_tem_4}
-    }
-  \caption{Temperature distributions of a 16-core system with 8 cores active in different power budget.}
+  % \subfigure[MIPS = 258.6, MIPS/Watt = 1.7]{
+  %   \includegraphics[width=0.46\columnwidth]{fig/opt_tem_3.eps}\label{fig:opt_tem_3}
+  % }
+  % \subfigure[MIPS = 345.5, MIPS/Watt = 1.2]{
+  %   \includegraphics[width=0.46\columnwidth]{fig/opt_tem_4.eps}\label{fig:opt_tem_4}
+  %   }
+  \caption{Temperature distributions of a 9-core system with 5 cores active in different power budget.}
   \label{fig:opt_tem}
 \end{figure}
 
 
-The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem. Therefore, we need to transform this problem into a problem with low complexity. We find out that an optimal temperature vector $T_{opt}$ exists. If a core is running at its corresponding optimal temperature, then the PPW of the core is maximized.
+The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem. Therefore, we need to transform this problem into a problem with low complexity. 
 
-In Fig.~\ref{fig:opt_tem}, the temperature distributions of a $9$-core system with $5$ active cores in different power budget are shown. In Fig.~\ref{fig:opt_tem_1}, when the temperature of active cores is around \SI{45}{\degreeCelsius}, the energy efficiency of the system is maximized, due to the optimal active core distribution, the performance of the system is also optimal. In Fig.~\ref{fig:opt_tem_2}, the energy efficiency of the system is also maximized, however, because the active core distribution is not optimal, the performance of the system is less than optimal. In Fig.~\ref{fig:opt_tem_3}, the active core distribution is the same as Fig.~\ref{fig:opt_tem_1}, however, due to the random DVFS stages of active cores, the temperature of active cores is also random, the energy efficiency is not maximized. Fig.~\ref{fig:opt_tem_4} shows the temperature distribution of the system with maximized performance, as can be seen, although the active core distribution is optimal, the difference between the temperature of Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_4} is very large, and the energy efficiency of it is far less than optimal.
+Considering to solve optimization problem in \eqref{eq:opt_ppw}, 
+
+%We find out that an optimal temperature vector $T_{opt}$ exists. If a core is running at its corresponding optimal temperature, then the PPW of the core is maximized.
+
+%In Fig.~\ref{fig:opt_tem}, the temperature distributions of a $9$-core system with $5$ active cores in different power budget are shown. In Fig.~\ref{fig:opt_tem_1}, when the temperature of active cores is around \SI{45}{\degreeCelsius}, the energy efficiency of the system is maximized, due to the optimal active core distribution, the performance of the system is also optimal. In Fig.~\ref{fig:opt_tem_2}, the energy efficiency of the system is also maximized, however, because the active core distribution is not optimal, the performance of the system is less than optimal. In Fig.~\ref{fig:opt_tem_3}, the active core distribution is the same as Fig.~\ref{fig:opt_tem_1}, however, due to the random DVFS stages of active cores, the temperature of active cores is also random, the energy efficiency is not maximized. Fig.~\ref{fig:opt_tem_4} shows the temperature distribution of the system with maximized performance, as can be seen, although the active core distribution is optimal, the difference between the temperature of Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_4} is very large, and the energy efficiency of it is far less than optimal.
+In Fig.~\ref{fig:opt_tem}, the temperature distributions of a $9$-core system with $5$ active cores in different power budget are shown. In Fig.~\ref{fig:opt_tem_1}, the energy efficiency of the system is maximized, the performance of the system is also optimal. In Fig.~\ref{fig:opt_tem_2}, the energy efficiency of the system is also maximized, however, because the active core distribution is not optimal, the performance of the system is less than optimal. 
 
 As can be seen in Fig.~\ref{fig:opt_tem}, the maximized PPW of the system can be obtained if all active cores are running at $T_{opt}$, no matter what active core distribution it is. However, to further maximized the performance of the system while the energy efficiency is optimal, the distribution of active cores needs to be carefully chosen.
 
@@ -173,6 +178,47 @@ Just like optimal temperature $T_{opt}$, for different positioned cores, $\lambd
 
 However, the temperature rise induced by other cores may vary dramatically, for different active core numbers and various active core distributions. If for a single core, only a single $\lambda$ is used to compensate temperature for all senerios, the error could still be large. In our work, for each core, we implement a $\lambda$ for each active core number to eliminate large error. In another word, for each core, we generate a vector, in which elements are the $\lambda$ for each active core number. By integrating all the vectors, a compensation matrix $\Lambda \in \mathbb{R}^{n \times n}$ is created. $\lambda_{ij}$ in $\Lambda$ stands for the compensation parameter for core $i$ when the active core number is $j$.
 
+In order to test the effectiveness of the temperature compensation parameter, for example, we first choose a $9$-core system with $4$ active core, the optimal temperature for a specified core with temperature compensation parameter can be computed in \eqref{eq:full_1_ppw} and \eqref{eq:t_ap}. Then, we randomly generate several $4$ active core distributions of a $9$-core system, and compute the real optimal temperature of each of the distribution. Note that the specified core in the previous step is included in the active cores. By comparing the difference of the optimal temperature, the effective of the temperature compensation parameter can be verified.
+
+In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table~\ref{tab:compensation}.
+
+\begin{table*}
+  \caption{The optimal temperature error induce with and without temperature compensation parameter. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
+  \label{tab:compensation}
+  \centering
+  \begin{tabular}{c|c||p{1cm}<{\centering}|p{1cm}<{\centering}||p{1cm}<{\centering}|p{1cm}<{\centering}}
+    \hline
+    Core & Active     & \multicolumn{2}{c||}{$T_{err}$($^{\circ}$C)  with $\lambda$}  & \multicolumn{2}{c}{$T_{err}$($^{\circ}$C) without $\lambda$}\\
+\cline{3-6}
+    \#       &   \#       &  Avg    & Max &  Avg  &  Max  \\
+     \hline
+\hline
+  \multirow{3}{*}{9} &      2       &   1.1  &   1.9 &2.1&4.0\\
+             &      4       &    1.3    &   2.7  &7.0&11.7 \\
+             &      7       &   1.2     &   2.2   &13.7&16.1\\
+     \hline
+   \multirow{3}{*}{16} &      3        &   0.3 &   0.7   &1.5 &2.2 \\   
+             &      8       &    0.5     &  1.2  &7.2 &8.3   \\
+             &      13     &     0.4    &   1.2  &12.9 &13.7 \\
+     \hline
+  \multirow{3}{*}{25} &      5       &    0.4 & 1.1 & 3.2 &  4.2   \\ 
+              &     12      &    0.5     &    1.4   &  8.7 & 9.9 \\
+              &     20      &    0.4     &    1.1   & 13.5 & 14.1 \\ 
+     \hline
+  \multirow{3}{*}{36}  &     8        &    0.4  &    1.1 & 4.1 & 5.6\\
+              &     18      &   0.5      &   1.6  & 10.0 & 11.4  \\
+              &     28      &    0.4     &   0.9 & 14.4 & 15.2\\
+     \hline
+  \multirow{3}{*}{64}  &     12      &   0.4  &   1.2  & 3.8 &4.9 \\
+              &     32      &    0.5     &     1.6   & 9.6 & 10.6   \\
+              &     52      &     0.4   &     1.0   & 15.9 & 16.5\\
+ \hline 
+\multirow{3}{*}{100}  & 16 & 	 0.5&	1.1& 3.3 &  4.3\\
+                      & 52 &	 0.7&	1.7& 11.4 & 13.0\\
+                      & 76 &	 0.5&	1.8& 16.6 & 17.6\\
+\hline
+\end{tabular}
+\end{table*}
 
 By integrating $\lambda$ into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:c_full_1_ppw}
