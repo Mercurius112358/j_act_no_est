@@ -5,14 +5,17 @@ Power budgeting, by the name, provides a power budget, which servers as a guidan
 First, in Section $4.1$, we formulate the energy-efficient power budgeting problem and transforms it into an equivalent problem of minimizing the difference between the chip temperature $T_{c}$ and the target optimal temperature $T_{opt}$. Next, we show how to efficiently calculate the optimal temperature $T_{opt}$ of cores in all positions in Section $4.2$. With the $T_{opt}$, we show how to perform the proposed energy-efficient power budgeting for steady state problem in Section $4.3$, which serves as demonstration for easier understanding of the new method. In Section $4.4$, the full dynamic energy-efficient power budgeting considering transient effects is presented.
 
 
-\subsection{Overview of energy efficiency in multi-core system}
+\subsection{Overview of energy efficiency}
 Before proceeding to the energy-efficient power budgeting problem, it will be worthwhile to examine the characteristics of energy efficiency of multi-core systems.
 
-We first use Monte Carlo method, by fixing active core number and distribution, only changing the DVFS stages of active cores, we obtain the maximum energy efficiency for several fixed active core distributions, and plot the corresponding temperature distribution in Fig.~\ref{fig:opt_tem}, in which the temperature distributions of a $9$-core system with $5$ active cores are shown. 
+We first use Monte Carlo method, by fixing active core number and distribution, only changing the DVFS stages of active cores, we obtain the optimal DVFS stages of each active cores that leads to maximum energy efficiency for several fixed active core distributions. The Monte Carlo simulation number for each fixed active core distribution is $1000$. The corresponding temperature distribution is plotted in Fig.~\ref{fig:opt_tem}, in which the temperature distributions of a $9$-core system with $5$ active cores are shown. 
 
 As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_2} are relatively the same, although the active core distribution is not the same for them, which means that the active core distribution that corresponds to optimal energy efficiency is not unique. However, for different active core distributions, the throughput while in optimal energy efficiency are not the same, and our goal is to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency.
 
-Therefore, the energy-efficient dynamic power budgeting can be divided into two steps, first is to maximize the energy efficiency of the system, the next is to optimize the throughput of the system while in maximum energy efficiency.
+
+%Therefore, the energy-efficient dynamic power budgeting can be divided into two steps, first is to maximize the energy efficiency of the system, the next is to optimize the throughput of the system while in maximum energy efficiency.
+Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency of a single core processor. As Fig.~\ref{fig:f_ppw} shows, as the frequency of the core increases from minimum to maximum, the PPW metric will first increase along to a maximum value, then decreases to a minimum value. It means that there is a optimal frequency which leads to maximum energy frequency, and the closer the current frequency is to the optimal frequency, the higher the energy efficiency.
+
 
 \begin{figure}
   \centering
@@ -32,6 +35,15 @@ Therefore, the energy-efficient dynamic power budgeting can be divided into two 
   \label{fig:opt_tem}
 \end{figure}
 
+
+
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/f_ppw.eps}
+\caption{Core frequency/PPW curve}
+\label{fig:f_ppw}
+\end{figure}
 
 \subsection{Maximizing the energy efficiency of multi-core system}
 The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
@@ -59,16 +71,8 @@ where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector conta
 
 The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem. Therefore, we need to transform this problem into a problem with low complexity.
 
-Instead of calculating the optimal $P$ corresponding to the maximum PPW, we can calculate the optimal temperature $T_{opt}$, which can be uniquely calculated with the optimal $P$ in \eqref{eq:gt}. The maximized PPW of the system can be obtained if all cores are running at $T_{opt}$. Therefore, by minimizing the difference of the core temperature rise $T_{c}$ and the optimal temperature $T_{opt}$, the PPW of the multi-core system can be maximize. In another word, we prefer the power budget induced temperatures of all active cores to be the optimal temperature $T_{opt}$, without violating the thermal constraint.
+If the frequency $f$ that corresponds to the maximum PPW can be obtained, we can set it to be $f_{opt}$, then the target of the optimization problem can be transformed into $\text{minimize }   \left \| f_{opt} - f \right \|_{2}$. Which means, the closer the chip's frequency $f$ is to the optimal throughput $f_{opt}$, the higher the energy efficiency of the system. Considering $f_{opt}$ is hard to obtain, also, $T_{c}$ can be uniquely calculated for a specific $f$ with \eqref{eq:gt}. The maximum PPW can be obtained if all cores are running at $T_{opt}$, which is the temperature when the frequency of all cores are $f_{opt}$. Therefore, the closer the chip's temperature $T_{c}$ is to the optimal temperature $T_{opt}$, the higher the energy efficiency of the system. So instead of directly maximizing PPW, the optimization problem can be transformed to minimizing the difference between $T_{c}$ and $T_{opt}$:
 
-%We find out that an optimal temperature vector $T_{opt}$ exists. If a core is running at its corresponding optimal temperature, then the PPW of the core is maximized.
-
-%In Fig.~\ref{fig:opt_tem}, the temperature distributions of a $9$-core system with $5$ active cores in different power budget are shown. In Fig.~\ref{fig:opt_tem_1}, when the temperature of active cores is around \SI{45}{\degreeCelsius}, the energy efficiency of the system is maximized, due to the optimal active core distribution, the performance of the system is also optimal. In Fig.~\ref{fig:opt_tem_2}, the energy efficiency of the system is also maximized, however, because the active core distribution is not optimal, the performance of the system is less than optimal. In Fig.~\ref{fig:opt_tem_3}, the active core distribution is the same as Fig.~\ref{fig:opt_tem_1}, however, due to the random DVFS stages of active cores, the temperature of active cores is also random, the energy efficiency is not maximized. Fig.~\ref{fig:opt_tem_4} shows the temperature distribution of the system with maximized performance, as can be seen, although the active core distribution is optimal, the difference between the temperature of Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_4} is very large, and the energy efficiency of it is far less than optimal.
-
-
-%For the $9$-core system, we can see that there are $3$ unique core positions. We set the active core number to $1$, then we plot the PPW versus the core temperature for each of the $3$ cores in Fig. x. We can see that, as the core temperature rises, the PPW will decrease after reaching a peak value, which means a optimal temperature $T_{opt}$ exists. Also, the $T_{opt}$ for the $3$ cores in different positions varies.
-
-We have shown that the closer the chip's temperature $T_{c}$ is to the optimal temperature $T_{opt}$, the higher the energy efficiency of the system. So instead of directly maximizing PPW, the optimization problem can be transformed to minimizing the difference between $T_{c}$ and $T_{opt}$:
 \begin{equation}\label{eq:opt_topt}
 \begin{split}
 \text{minimize } &  \left \| T_{opt} - T_{c} \right \|_{2}\\
@@ -81,17 +85,17 @@ T_{c} \preceq T_{th}.\\
 \end{split}
 \end{equation}
 
-
-
 The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{eq:opt_topt} is dependent on many variables, which makes it impossible to efficiently calculate the $T_{opt}$ for all possible combinations, when the core number is high. Fortunately, such problem can be solved efficiently, as shown next.
 
 \subsection{Optimal temperature calculation}
-The optimal temperature $T_{opt}$ is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible temperatures for all of the possible combinations, in order to find the corresponding $T_{opt}$ in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the $T_{opt}$ needed to slove the optimization problem in \eqref{eq:opt_topt} is proposed in this section.
+Due to the thermal impact active cores have on each other, the optimal temperature $T_{opt}$ is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible temperatures for all of the possible combinations, in order to find the corresponding $T_{opt}$ in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the $T_{opt}$ needed to slove the optimization problem in \eqref{eq:opt_topt} is proposed in this section.
 
+Instead of calculating the $T_{opt}$ for each senerio, the basic idea of the method is to obtain a general optimal temperature vector $\bar{T}_{opt}$ for each of the active core number, no matter what active core distribution it is, as long as the $T_{c}$ is followed, the energy efficiency is maximized.
 
-Due to the thermal impact active cores have on each other, the optimal temperature vector $T_{opt}$ is actually not a fixed-value vector, it is related to the active core number, and the active core distribution. Also, the optimal temperatures for cores in different positions of the system varies. The reason is that, for cores in position of better heat dissipation capability (such as the center of the chip), the optimal temperature which leads to maximized PPW is higher.
 \subsubsection{Optimal temperature for single core}
-Instead of calculating the optimal temperature of all cores at the same time, to simplify the problem, we calculate the optimal temperature each time for a single core.
+Calculating the optimal temperature vector $T_{opt}$ for all cores at the same time requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. 
+
+Instead of calculating the optimal temperature vector $T_{opt}$ of all cores at the same time, to simplify the problem, we calculate the optimal temperature each time for a single core.
 The reason that we can calculate the optimal temperature for each core separately is that, if each of the active cores is running at maximum PPW, then the PPW of the whole system is certainly maximized.
 
 To further simplify the problem, we can ignore the thermal impact active cores have on each other, and only consider the thermal impact of the core itself. Note that we only need to calculate the optimal temperature of cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system. For a $16$-core system, its $3$ unique positions are shown in Fig.x. All cores in the system can be catagorized into one of the $3$ positions.
@@ -174,6 +178,7 @@ By solving \eqref{eq:1_ppw_step3} for each of the uniquely positioned cores, the
 
 
 \subsubsection{Optimal temperature with temperature compensation}
+
 The above mentioned method calculated the optimal temperature without consideration of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could be higher than the temperature rise caused by the core itself. Therefore, a compensation method to modify the temperature is proposed in this section.
 
 The basic idea of this compensation method is to add a temperature compensation parameter $\lambda$, by multiplying the core's temperature $T_{i}$ with $\lambda$, the core's temperature with other active cores' thermal impact can be obtained with approximation.
