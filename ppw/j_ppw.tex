@@ -58,13 +58,26 @@
 
 \maketitle
 %\IEEEpeerreviewmaketitle
+\begin{abstract}
+
+Energy efficiency is one of the most important metrics in all kinds of computing systems, such as portable devices, embedded systems and data centers. With the advent of multi-core era, to optimize the energy efficiency of a multi-core system requires to dynamically control the operation of all cores. Especially for system in dark silicon, the system's metrics are more related to the active core number and active core distribution. It means that to maximize the energy efficiency, we have to dynamically control the voltage and frequency levels of each core, the active core number and active core distribution. In this work, we propose a energy-efficient dynamic power budgeting method for multi-core systems in dark silicon. Unlike traditional methods, we formulate the energy efficiency problem with accurate power model, thermal model with package, with consideration of the leakage power's dependance on voltage and temperature. We find the optimization problem can be efficiently solved if it is transformed to a temperature oriented optimization problem along with greedy based algorithm to find a sub-optimal active core distribution, which can be used for real-time implementation. Our numerical results show that the power budget obtained by our method can provide high energy efficiency with low overhead. It outperforms the state-of-art energy-efficient schemes.
+
+\end{abstract}
+% Note that keywords are not normally used for peerreview papers.
+\begin{IEEEkeywords}
+Energy efficiency, PPW, multi-core, power budget, dynamic voltage and frequency scaling, dark silicon, leakage power
+\end{IEEEkeywords}
+
 \input intro.tex
 \input related_work.tex
 \input background.tex
 \input new_method.tex
 \input experiment.tex
 
+\section{Conclusion}\label{sec:conclusion}
 
+In this article, we have proposed a new energy-efficient dynamic power budgeting method for multi-core systems in dark silicon. By solving a optimization problem, whose formulation includes accurate power model, thermal model with package, consideration of the leakage power's dependance on voltage and temperature, the power budget for optimal energy efficiency can be obtained. The optimization problem can be efficiently solved by transforming into a temperature oriented optimization problem along with greedy based algorithm to find a sub-optimal active core distribution, which can be used for real-time implementation. The new method has been tested with SPEC benchmarks and synthetic workload. The results show that our method
+outperforms MAGMA, which is the the state-of-the-art energy efficient power budgeting technology for dark silicon multi-core systems.
 
 % references section
 \bibliographystyle{IEEEtran}
