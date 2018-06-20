@@ -30,11 +30,11 @@ I_{sub}=K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}}
   (1-e^{\frac{-V_{DS}}{v_T}}) \approx K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}},
 \end{equation}
 
-In xx, a local linearization of subthreshold current is implemented to eliminate the non-linear dependency of subthreshold current on temperature. The result is
+In xx, a local linearization of subthreshold current is implemented to eliminate the non-linear dependency of subthreshold current on temperature. The scalar result is
 \begin{equation}\label{eq:lin_leakage}
 p_{s} = V_{dd} \times (p_{0}+a_{s} \cdot T).
 \end{equation}
-$p_{0}$ is a constant terms that are not associated with $T$, $a_{s}$ is the coefficient associated with $T$.
+$p_{0}$ is a constant terms that are not associated with $T$, $a_{s}$ is the coefficient associated with $T$. $P_{0}$ and $A_{s}$ are the constants corresponding for $p_{0}$ and $a_{s}$ in vector/matrix form.
 
 
 %Apparently, the leakage current has a complex relationship with temperature. In this work, we use \eqref{eq:sta_power}, \eqref{eq:leakage}, and \eqref{eq:sub_current} to model the static power considering such relationship. The parameters of leakage current can be obtained by curve fitting using HSPICE simulation data. In order to see the accuracy of the model used, Fig.~\ref{fig:leakage} shows an HSPICE simulation result of leakage using TSMC \SI{65}{nm} process model and its curve fitting result using approximate leakage model. From the figure, we can see that the static power model has high accuracy for all common temperatures of IC chips.

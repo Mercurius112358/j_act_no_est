@@ -145,7 +145,13 @@ Let $A = B^{T}G^{-1}B \in \mathbb{R}^{m \times m}$ to simplify notation, the sim
 T_{c} = AP.
 \end{equation}
 
-Please note that, the $A$ matrix links the core temperature and the power consumption with consideration of the thermal impact of all cores and the package, which can be used to find the optimal temperature. The diagonal elements in $A$ can be seen as the corresponding cores' resistance with consideration of package, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the core's temperature without other cores' impact. For a specific core $i$, its temperature $T_{i}$ can be computed as:
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/ap.eps}\label{fig:apt}
+\end{figure}
+
+
+Please note that, as Fig.~\ref{fig:apt} shows, the $A$ matrix links the core temperature and the power consumption with consideration of the thermal impact of all cores and the package, which can be used to find the optimal temperature. The diagonal elements in $A$ can be seen as the corresponding cores' resistance with consideration of package, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the core's temperature without other cores' impact. For a specific core $i$, its temperature $T_{i}$ can be computed as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
@@ -314,89 +320,46 @@ and obtain $T_{rm}=T_{opt}-A_iP_i$. Next, in order to find which core can comple
 %because its cost $\left \| T_{opt}-a_{j}p_{j} \right \|_{2}$ (length of $a_{j}p_{j}-T_{th}$ in xx) in the optimization problem \eqref{eq:1_sim_opt_topt} is smaller than the cost $\left \| T_{opt}-a_{k}p_{k} \right \|_{2}$ of turning on the $k$-th core, as observed in Fig. x. The physical meaning is: by turning on the $j$-th core, the overall system temperature is closer to $T_{opt}$. With all cores' temperature lower than $T_{opt}$, the overall system temperature of turning on the $j$-the core is higher than that of turning on the $k$-th core.
 
 \subsection{Energy-efficient power budgeting with optimal performance considering transient effects}
+
+
+
 The power budgeting method introduced in Section $4.3$ is for steady state condition and serves mostly for illustration of the basic idea of the dynamic power budgeting method. It may work just fine on the aspect of reliability if the computed steady state power budget is followed strictly during the power management process. However, it is frequent that chip switches between high performance mode and high energy efficiency mode, it is also possible that power management makes false decisions occasionally, the computed steady state power budget is not suitable for such senerios. Thereforce, we develop a power budgeting method by considering current transient thermal/power behaviors as follows.
 
 From the previous illustration, we notice that the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.3$.
 
-We are able to obtain the $closed-form$ expression of $T_{c}(t+h)$ with $P$ and $T_{t}$, by taking advantage of the assumption that $P$ is constant for the future time duration $h$ in power budgeting problem, as presented next.
+For \eqref{eq:gt}, we can discrete this model using backward Euler's method, and get
+\begin{equation}\label{eq:discrete_gt}
+(\frac{C}{h}+G)\cdot T(t+h)=\frac{C}{h}T(t)+BP,
+\end{equation}
+and we are able to express $T_{c}(t+h)$ using $P$ and $T(t)$ as
+\begin{equation}\label{eq:discrete_gt}
+  \begin{split}
+T_{c}(t+h)&=B^{T}T(t+h)\\
+&=B^{T}(\frac{C}{h}+G)^{-1}T(h)+B^{T}(\frac{C}{h}+G)^{-1}BP.
+  \end{split}
+\end{equation}
+%\emph{constant}
 
-It is well known that thermal model as a linear system in \eqref{eq:gt} has the following solution
-\begin{equation}\label{eq:ode_exp}
-\begin{split}
-T(t+h) &= e^{-hC^{-1}G}T(t)\\
-& \quad +\int_{t}^{t+h} \! e^{-(t+h-\tau)C^{-1}G}C^{-1}BP(\tau) \, \mathrm{d}\tau.
-\end{split}
-\end{equation}
-Because power budget is assumed to be constant for the future time
-duration $h$ (i.e., from time $t$ to $t+h$), we can simplify
-\eqref{eq:ode_exp} into
-\begin{equation}\label{eq:ode_exp_const}
-\begin{split}
-T(t+h) &= e^{-hC^{-1}G}T(t)\\
-& \quad +\int_{0}^{h} \! e^{-(h-\tau)C^{-1}G}C^{-1}B \, \mathrm{d}\tau P.
-\end{split}
-\end{equation}
-Let us denote 
-\begin{equation*}
-M(h)=e^{-hC^{-1}G}, ~~N(h)=\int_{0}^{h} \! e^{-(h-\tau)C^{-1}G}C^{-1}B \, \mathrm{d}\tau,
-\end{equation*}
-then \eqref{eq:ode_exp_const} can be written as
-\begin{equation}\label{eq:ode_exp_h}
-T(t+h) =M(h)T(t)+N(h)P.
-\end{equation}
-Please note that $M(h) \in \mathbb{R}^{m\times m}$ and $N(h) \in
-\mathbb{R}^{m \times n}$ are \emph{constant} matrices which
-can be computed \emph{offline} for a given time step $h$. 
-
-$M(h)T(t)$ and $N(h)P$ are the zero-input response and zero-state response of the
-linear system in \eqref{eq:gt}, respectively, and there are many
-easy ways to compute $M(h)$ and $N(h)$ in both frequency domain and
-time domain. Here we only briefly show a time domain method presented
-in~\cite{Han:JLPE'07}. 
-Let us denote $M(h)=[M_1, M_2, \ldots, M_m]$, $N(h)=[N_1, N_2, \ldots, N_n]$,
-$T(0)=[T_1, T_2, \ldots, T_m]^T$, and $P=[p_1, p_2, \ldots, p_n]^T$,
-where $M_i$ and $N_i$ represent the $i$-th columns of $M(h)$ and $N(h)$,
-$T_i$ and $p_i$ represent the $i$-th elements of $T(0)$ and $P$,
-respectively. With linear system theory, we have $M_i=T(h)$, if we let $P=[0,0,\ldots,0]^{T}$, $T_i=1$, and
-$T_j=0$ for all $j\neq i$. As a result, we can get the $i$-th column of
-$M(h)$ by computing $T(h)$ using standard numerical integration of \eqref{eq:gt} with only the $i$-th
-element of initial state $T(0)$ set to be one. Similarly, we have
-$N_i=T(h)$, if we let $T(0)=[0,0,\ldots,0]^T$, $p_i=1$, and $p_j=0$ for all $j\neq
-i$. In another word, the $i$-th column of
-$N(h)$ can be obtained by computing $T(h)$ using numerical integration of
-\eqref{eq:gt} with only the $i$-th
-element of power $P$ set to be one.
-
-Finally, we are able to express $T_c(t+h)$ using $P$ and $T(t)$ as
-\begin{equation}
-T_c(t+h) = B^{T}T(t+h)= B^{T}M(h)T(t)+B^{T}N(h)P.
-\end{equation}
 The cost function of the steady state power budgeting problem in
 \eqref{eq:opt_topt} will be changed by using the new $T_c(t+h)$ for
 transient case as
-
 \begin{equation}\label{eq:cost_trans}
-\|T_{opt} - B^{T}M(h)T(t) - B^{T}N(h)P \|_2.
+\|T_{opt} -  B^{T}(\frac{C}{h}+G)^{-1}T(h)+B^{T}(\frac{C}{h}+G)^{-1}BP\|_2.
 \end{equation}
 In order to simplify notation, we denote a new vector  
 \begin{equation}
-\bar{T}_{opt}=T_{opt} - B^{T}M(h)T(t),
+\bar{T}_{opt}=T_{opt} - B^{T}(\frac{C}{h}+G)^{-1}T(h),
 \end{equation}
 where $\bar{T}_{opt}$ has similar meaning of
 $T_{opt}$ in steady state case, and it also accounts for the transient
 thermal effects, i.e., current temperature's impact on power
 budget. Also, we denote a new matrix 
-
 \begin{equation}
-\bar{A} = B^{T}N(h), 
+\bar{A} = B^{T}(\frac{C}{h}+G)^{-1}B, 
 \end{equation}
 which works similarly as matrix $A$ in steady
 state case, but accounts for transient thermal effect. The power
 budgeting optimization problem for transient case is updated as 
-
-
-
-
 \begin{equation}\label{eq:temp_ts_opt}
 \begin{split}
 \text{minimize } &  \left \| \bar{T}_{opt}-\bar{A}P \right \|_{2}\\

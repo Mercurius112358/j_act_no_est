@@ -35,16 +35,16 @@ Fig.~\ref{fig:order_of_cores_3} and Fig.~\ref{fig:order_of_cores_4},
 \begin{figure}
   \centering
   \subfigure[The first step with position and power budget of the first active core determined.]{
-    \includegraphics[width=0.46\columnwidth]{fig/order_of_cores_1.eps}\label{fig:order_of_cores_1}
+    \includegraphics[width=0.47\columnwidth]{fig/order_of_cores_1.eps}\label{fig:order_of_cores_1}
   }
   \subfigure[The second step with positions and power budgets of 2 active cores determined.]{
-    \includegraphics[width=0.46\columnwidth]{fig/order_of_cores_2.eps}\label{fig:order_of_cores_2}
+    \includegraphics[width=0.47\columnwidth]{fig/order_of_cores_2.eps}\label{fig:order_of_cores_2}
   }
   \subfigure[The third step with positions and power budgets of 3 active cores determined.]{
-    \includegraphics[width=0.46\columnwidth]{fig/order_of_cores_3.eps}\label{fig:order_of_cores_3}
+    \includegraphics[width=0.47\columnwidth]{fig/order_of_cores_3.eps}\label{fig:order_of_cores_3}
   }
   \subfigure[The fourth step with positions and power budgets of 4 active cores determined.]{
-    \includegraphics[width=0.46\columnwidth]{fig/order_of_cores_4.eps}\label{fig:order_of_cores_4}
+    \includegraphics[width=0.47\columnwidth]{fig/order_of_cores_4.eps}\label{fig:order_of_cores_4}
     }
   \caption{Temperature distributions of the 9-core system with the power budget given by our method's first four greedy steps.}
   \label{fig:order_of_cores}
@@ -160,37 +160,80 @@ In addition to the case shown above, we also tested many other systems with diff
 Next, we test the power budget quality provided by our method. The results are collected in Table~\ref{tab:PPW_perf_steady}. For comparison, we randomly generate $10$ active core distribution for each case, and compute the averaged energy efficiency and averaged performance with the $T_{opt}$ reached for each active core. As the Table~\ref{tab:PPW_perf_steady} shows, our method provides the optimal performance while the energy efficiency is maximized.
 
 
+\begin{figure*}[htb]
+  \centering
+  \subfigure[Transient temperatures of the system with power budget provided by our method. The cores are activated according to the sub-optimal distribution given by our method.]{
+    \includegraphics[width=0.8\columnwidth]{fig/tem_own.eps}\label{fig:tem_own}
+  }
+  \subfigure[Transient temperatures of the system with power budget provided by MAGMA. The cores with higher benefit are activated.]{
+    \includegraphics[width=0.8\columnwidth]{fig/tem_mag.eps}\label{fig:tem_mag}
+  }
+  \subfigure[Transient temperatures of the system in free run. The cores are activated randomly.]{
+    \includegraphics[width=0.8\columnwidth]{fig/tem_free.eps}\label{fig:tem_free}
+  }
+  \subfigure[The PPW curves.]{
+    \includegraphics[width=0.8\columnwidth]{fig/PPW.eps}\label{fig:PPW}
+    }
+  \caption{Transient temperatures of the $9$-core system with simple task scheduling and DVFS following power budgets provided by our method, MAGMA and in free run. Each line represents temperature of one core of the system.}
+  \label{fig:transient_ppw_temperature}
+\end{figure*}
+
+
+% \begin{figure*}[htbp]
+% \centering
+% \begin{minipage}[c]{0.5\textwidth}
+% \centering
+%   \includegraphics[width=6.5cm]{fig/tem_own.eps}
+% \end{minipage}%
+% \begin{minipage}[c]{0.5\textwidth}
+% \centering
+%   \includegraphics[width=6.5cm]{fig/tem_mag.eps}
+% \end{minipage}
+% \begin{minipage}[c]{0.5\textwidth}
+% \centering
+%   \includegraphics[width=6.5cm]{fig/tem_free.eps}
+% \end{minipage}%
+% \begin{minipage}[c]{0.5\textwidth}
+% \centering
+%   \includegraphics[width=6.5cm]{fig/PPW.eps}
+% \end{minipage}
+% \caption{fft}\label{fig:fft}
+% \end{figure*}
+
+
+
 \subsection{Energy-efficient power budgeting with optimal performance considering transient effects}
 
-\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{fig/PPW.eps}
-\caption{PPW}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=1\linewidth]{fig/PPW.eps}
+% \caption{PPW}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=1\linewidth]{fig/tem_own.eps}
+% \caption{temperature of own}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=1\linewidth]{fig/tem_mag.eps}
+% \caption{temperature of mag}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=1\linewidth]{fig/tem_free.eps}
+% \caption{temperature of free}
+% \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth]{fig/tem_own.eps}
-\caption{temperature of own}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{fig/tem_mag.eps}
-\caption{temperature of mag}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{fig/tem_free.eps}
-\caption{temperature of free}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{fig/transient_ppw.eps}
-\caption{ppw improvement comparison}
+\includegraphics[width=1\linewidth]{fig/transient_ppw.eps}\label{fig:transient_ppw_spec}
+\caption{PPW improvement comparison of new method and MAGMA.}
 \end{figure}
 
 
-Lack one table of dynamic power budgeting's energy efficiency comparison.
+
+
