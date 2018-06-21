@@ -325,13 +325,28 @@ and obtain $T_{rm}=T_{opt}-A_iP_i$. Next, in order to find which core can comple
 
 The power budgeting method introduced in Section $4.3$ is for steady state condition and serves mostly for illustration of the basic idea of the dynamic power budgeting method. It may work just fine on the aspect of reliability if the computed steady state power budget is followed strictly during the power management process. However, it is frequent that chip switches between high performance mode and high energy efficiency mode, it is also possible that power management makes false decisions occasionally, the computed steady state power budget is not suitable for such senerios. Thereforce, we develop a power budgeting method by considering current transient thermal/power behaviors as follows.
 
-Before we demonstrate any details, it's necessary to verify the effectiveness of $T_{opt}$ in transient state. There are basicly $3$ cases in transient state, the current temperature is below $T_{opt}$, or above $T_{opt}$, or just $T_{opt}$. In the last case, the power budget is the same as in steady state, therefore, we focus on the former $2$ cases.
+Before we demonstrate any details, it's necessary to verify the effectiveness of $T_{opt}$ in transient state. There are generally $3$ cases in transient state, the current temperature is below $T_{opt}$, or above $T_{opt}$, or just $T_{opt}$. In the last case, the power budget is the same as in steady state, therefore, we focus on the former $2$ cases.
 
-For the case where current temperature is below $T_{opt}$, in order to improve the PPW of the system, it's necessary to improve the temperature, the matter is how much to improve. We assume the DVFS stage in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. There are also $3$ ways to improve the temperature of the system, as Fig.~\ref{fig:} shows, the difference is the temperature by the end of the control interval. For the first way with a higher $f$, $T(t+h)$ will be higher than $T_{opt}$. Note that the PPW will temporarily exceed the optimal value in steady state in the beginning of the interval. The reason can be obtained from the definition of PPW as
+For the case where current temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the matter is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. 
+For $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$, we set the operating frequency of the core to each of them separately.
+
+As Fig.~\ref{fig:} shows, for different frequency, the difference is the temperature by the end of the control interval. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$.
+
+
+
+Note that the PPW will temporarily increase dramaticly in the beginning of the interval. The reason can be obtained from the definition of PPW as
 \begin{equation}\label{eq:ppw_detail}
 \text{PPW} = \frac{\left \| s \right \|_{1}}{\left \| P_{d}+P_{s}(T) \right \|_{1}},
 \end{equation}
-in which $s$ and $P_{d}$ will instantly change as $f$ increases, however, $P_{s}$ is only relative to $T$, as the change of $T$ takes time, $P_{s}$ will be lower than its value in steady state for $f$. Therefore, PPW will temporarily exceed the optimal PPW in steady state, and as $P_{s}$ increases, PPW will decrease to its steady value. For in the first case, $T(t+h)$ is higher than $T_{opt}$, PPW in $t+h$ will be lower than optimal PPW. 
+in which $s$ and $P_{d}$ will instantly change as $f$ increases, however, $P_{s}$ is only relative to $T$, as the change of $T$ takes time, $P_{s}$ will be lower than its value in steady state for corresponding $f$. Therefore, for $f$ equals to or above $f_{2}$, PPW will temporarily exceed the optimal PPW of steady state, for $f$ less than $f_{2}$, that's not for sure, still, PPW will increase dramaticly. And as $P_{s}$ increases, PPW will decrease to its steady value.
+
+% For in the first case, $T(t+h)$ is higher than $T_{opt}$, PPW will gradually decrease, until $t+h$, it will be lower than optimal PPW. 
+We can see in Fig.xx, the PPW of the second case is lower than the first in the beginning of the control interval, but the decreasement is slower than the first case, which leads to higher PPW in the end.
+
+For the third case, because in the beginning $f$ is lowest among all three cases, the PPW is also lowest, and in the end, $T(t+h)$ is lower than $T_{opt}$, the PPW still is lower than the PPW of the second case.
+
+
+In the case where current temperature is above $T_{opt}$, decreasement in temperature is required to improve PPW. As Fig.xx shows, there are basicly $3$ ways to decrease temperature, the difference is also the temperature by the end of the control interval.
 
 
 
