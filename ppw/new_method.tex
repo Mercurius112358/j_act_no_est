@@ -14,7 +14,7 @@ As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} a
 
 
 %Therefore, the energy-efficient dynamic power budgeting can be divided into two steps, first is to maximize the energy efficiency of the system, the next is to optimize the throughput of the system while in maximum energy efficiency.
-Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency of a single core processor. As Fig.~\ref{fig:f_ppw} shows, as the frequency of the core increases from minimum to maximum, the PPW metric will first increase along to a maximum value, then decreases to a minimum value. It means that there is a optimal frequency which leads to maximum energy frequency, and the closer the current frequency is to the optimal frequency, the higher the energy efficiency.
+Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency of a single core processor. As Fig.~\ref{fig:f_ppw} shows, as the frequency of the core increases from minimum to maximum, the PPW metric will first increase along to a maximum value, then decreases to a minimum value. It means that there is an optimal frequency which leads to maximum energy frequency, and the closer the current frequency is to the optimal frequency, the higher the energy efficiency.
 
 
 \begin{figure}
@@ -40,7 +40,7 @@ Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency
 
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth]{fig/f_ppw.eps}
+\includegraphics[width=0.8\linewidth]{fig/f_ppw.eps}
 \caption{Core frequency/PPW curve}
 \label{fig:f_ppw}
 \end{figure}
@@ -90,15 +90,25 @@ The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{
 \subsection{Optimal temperature calculation}
 Due to the thermal impact active cores have on each other, the optimal temperature $T_{opt}$ is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible temperatures for all of the possible combinations, in order to find the corresponding $T_{opt}$ in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the $T_{opt}$ needed to slove the optimization problem in \eqref{eq:opt_topt} is proposed in this section.
 
-Instead of calculating the $T_{opt}$ for each senerio, the basic idea of the method is to obtain a general optimal temperature vector $\bar{T}_{opt}$ for each of the active core number, no matter what active core distribution it is, as long as the $T_{c}$ is followed, the energy efficiency is maximized.
+Instead of calculating the $T_{opt}$ for each senerio, the basic idea of the method is to obtain a general optimal temperature vector $\bar{T}_{opt}$ for each of the active core number, no matter what active core distribution it is, as long as the $\bar{T}_{opt}$ is followed for each active core, the energy efficiency is maximized.
 
-\subsubsection{Optimal temperature for single core}
-Calculating the optimal temperature vector $T_{opt}$ for all cores at the same time requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. 
+\subsubsection{Optimal temperature for isolated core}
 
-Instead of calculating the optimal temperature vector $T_{opt}$ of all cores at the same time, to simplify the problem, we calculate the optimal temperature each time for a single core.
-The reason that we can calculate the optimal temperature for each core separately is that, if each of the active cores is running at maximum PPW, then the PPW of the whole system is certainly maximized.
+\begin{figure}
+\centering
+\includegraphics[width=0.46\linewidth]{fig/unique_position.eps}
+\caption{$3$ unique positions for a $16$-core system.}
+\label{fig:unique_position}
+\end{figure}
 
-To further simplify the problem, we can ignore the thermal impact active cores have on each other, and only consider the thermal impact of the core itself. Note that we only need to calculate the optimal temperature of cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system. For a $16$-core system, its $3$ unique positions are shown in Fig.x. All cores in the system can be catagorized into one of the $3$ positions.
+Calculating the optimal temperature for the whole system requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. 
+If we isolate the cores, the problem can be simplified. Note that, for a $16$-core system, there are only $3$ unique positions which are shown in Fig.~\ref{fig:unique_position}. All cores in the system can be catagorized into one of the $3$ positions, we only need to calculate the optimal temperature of cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system, which can also reduce the computation time.
+
+Therefore, we first consider calculating $\bar{T}_{opt}$ for isolated cores, which serves as an simple example for optimal temperature calculation.
+
+%The reason is that, if each of the active cores is running at maximum PPW, then the PPW of the whole system is certainly maximized.
+
+%To further simplify the problem, we can ignore the thermal impact active cores have on each other, and only consider the thermal impact of the core itself. Note that we only need to calculate the optimal temperature of cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system. 
 
 
 The optimization object of maximizing PPW of a single core can be equivalently transformed to minimizing $\frac{1}{\text{PPW}}$ of it:
@@ -111,28 +121,28 @@ By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_le
 \begin{equation}\label{eq:1_ppw}
 \begin{split}
 \frac{1}{\text{PPW}} = &\frac{p_{d}+p_{s}}{f}\\
-= &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{f}.
+= &\frac{p_{d}+V_{dd}(a_{s}T+p_{0})}{f}.
 %= &\frac{p_{d}+(f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{f}
 \end{split}
 \end{equation}
 
-Also from \eqref{eq:dyn_power} and \eqref{eq:f_v}, we can see that
-\begin{equation}\label{eq:pd_prop_f}
-p_{d} \propto f^{3}.
-\end{equation}
+% Also from \eqref{eq:dyn_power} and \eqref{eq:f_v}, we can see that
+% \begin{equation}\label{eq:pd_prop_f}
+% p_{d} \propto f^{3}.
+% \end{equation}
 
-Therefore, \eqref{eq:1_ppw} can be expressed as
-\begin{equation}\label{eq:1_ppw_step2}
-\begin{split}
-%\frac{1}{\text{PPW}} \approx  &\frac{p_{d}+(c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\
-% =&c^{1/3}\cdot p_{d}^{2/3}+(\frac{V_{max}-V_{th}}{f_{max}}+V_{th}\cdot c^{1/3} \cdot p_{d}^{-1/3})\\
-% & \cdot (a_{s}(T_{i}+T_{a})+p_{0})
-\frac{1}{\text{PPW}} \approx  &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\\
-=&c^{1/3}\cdot p_{d}^{2/3}+c^{1/3} \cdot  p^{-1/3}\cdot v(a_{s}(T_{i}+T_{a})+p_{0})
-\end{split}
-\end{equation}
+% Therefore, \eqref{eq:1_ppw} can be expressed as
+% \begin{equation}\label{eq:1_ppw_step2}
+% \begin{split}
+% %\frac{1}{\text{PPW}} \approx  &\frac{p_{d}+(c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\
+% % =&c^{1/3}\cdot p_{d}^{2/3}+(\frac{V_{max}-V_{th}}{f_{max}}+V_{th}\cdot c^{1/3} \cdot p_{d}^{-1/3})\\
+% % & \cdot (a_{s}(T_{i}+T_{a})+p_{0})
+% \frac{1}{\text{PPW}} \approx  &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\\
+% =&c^{1/3}\cdot p_{d}^{2/3}+c^{1/3} \cdot  p^{-1/3}\cdot v(a_{s}(T_{i}+T_{a})+p_{0})
+% \end{split}
+% \end{equation}
 
-We can see that in \eqref{eq:1_ppw_step2}, there are $3$ parameters that are not fixed, $p_{d}$, the core's temperature rise $T_{i}$ and $v$, all other parameters are known. However, to calculate optimal temperature, we need to minimize the number of the variables. Therefore, we will demonstrate how to express $T_{i}$ and $v$ using $p_{d}$ next.
+%We can see that in \eqref{eq:1_ppw_step2}, there are $3$ parameters that are not fixed, $p_{d}$, the core's temperature rise $T_{i}$ and $v$, all other parameters are known. However, to calculate optimal temperature, we need to minimize the number of the variables. Therefore, we will demonstrate how to express $T_{i}$ and $v$ using $p_{d}$ next.
 
 The optimal temperature is calculated in steady state. To calculate the steady state temperature rise $T_{c}$ of the chip, the differential term $C\frac{dT(t)}{dt}$ is neglected in 
 \eqref{eq:gt}, leading to
@@ -147,7 +157,9 @@ T_{c} = AP.
 
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth]{fig/ap.eps}\label{fig:apt}
+\includegraphics[width=0.7\linewidth]{fig/ap.eps}
+\caption{The diagram of computing $T_{c}$.}
+\label{fig:apt}
 \end{figure}
 
 
@@ -161,22 +173,24 @@ T_{i}&\approx a_{ii} \cdot p_{i}\\
 \end{equation}
 where $a_{ii}$ stands for the current core's corresponding diagonal element from $A$, and $T_{a}$ is the ambient temperature. We can see that only variable in \eqref{eq:t_ap} is $p_{d}$, which means once $p_{d}$ is fixed, $T_{i}$ can be computed in \eqref{eq:t_ap}.
 
-Also, $v$ can be expressed with $f$ from \eqref{eq:f_v}, by substituting $f$ with $p_{d}$, the expression of $v$ using $p_{d}$ can be obtained as
+Also, $f$ and $v$ can be expressed with $p_{d}$ from \eqref{eq:dyn_power} and \eqref{eq:f_v}, then \eqref{eq:1_ppw} with the only variable $p_{d}$ can be expressed as:
 
-\begin{equation}\label{eq:v_pd}
-\begin{split}
-v = &f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th},\\
-=&c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th}.
-\end{split}
-\end{equation}
+% \begin{equation}\label{eq:v_pd}
+% \begin{split}
+% v = &f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th},\\
+% =&c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th}.
+% \end{split}
+% \end{equation}
 
-Integrating \eqref{eq:t_ap} and \eqref{eq:v_pd} into \eqref{eq:1_ppw_step2}, we have
-\begin{equation}\label{eq:1_ppw_step3}
+% Integrating \eqref{eq:t_ap} and \eqref{eq:v_pd} into \eqref{eq:1_ppw_step2}, we have
+\begin{equation}\label{eq:1_ppw_detail}
 \begin{split}
 \frac{1}{\text{PPW}} = &p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s}(a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
  &+ v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})+p_{0})
 \end{split}
 \end{equation}
+
+We can prove that an inflection point for the minimum $\frac{1}{\text{PPW}}$ exists.
 
 Note that in\eqref{eq:1_ppw_step3}, the only variable is $p_{d}$. It can also be , an inflection point for the minimum $\frac{1}{\text{PPW}}$ exists. By finding the inflection point, the minimum $\frac{1}{\text{PPW}}$ and the corresponding $p_{d}$ can be obtained. With the obtained $p_{d}$, the optimal temperature can be calculated with \eqref{eq:t_ap}.
 
@@ -329,30 +343,27 @@ Before we demonstrate any details, it's necessary to verify the effectiveness of
 
 \begin{figure}
   \centering
-  \subfigure[The first step with position and power budget of the first active core determined.]{
+  \subfigure[$3$ ways to improve the temperature to $T_{opt}$.]{
     \includegraphics[width=0.47\columnwidth]{fig/ppw_1_1.eps}\label{fig:ppw_1_1}
   }
-  \subfigure[The second step with positions and power budgets of 2 active cores determined.]{
+  \subfigure[The corresponding PPW curves of improving temperatures.]{
     \includegraphics[width=0.47\columnwidth]{fig/ppw_1_3.eps}\label{fig:ppw_1_3}
   }
-  \subfigure[The third step with positions and power budgets of 3 active cores determined.]{
+  \subfigure[$3$ ways to decrease the temperature to $T_{opt}$.]{
     \includegraphics[width=0.47\columnwidth]{fig/ppw_2_1.eps}\label{fig:ppw_2_1}
   }
-  \subfigure[The fourth step with positions and power budgets of 4 active cores determined.]{
+  \subfigure[The corresponding PPW curves of decreasing temperatures.]{
     \includegraphics[width=0.47\columnwidth]{fig/ppw_2_3.eps}\label{fig:ppw_2_3}
     }
-  \caption{Temperature distributions of the 9-core system with the power budget given by our method's first four greedy steps.}
+  \caption{Demonstration of changing temperature to $T_{opt}$ and the corresponding PPW. $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$.}
   \label{fig:ppw_transient}
 \end{figure}
 
 
-
-For $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$, we set the operating frequency of the core to each of them separately. For the case where current temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the matter is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. 
-
-
-As Fig.~\ref{fig:ppw_1_1} shows, for different frequency, the difference is the temperature by the end of the control interval. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$.
+We begin with the case where current temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the matter is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. 
 
 
+As Fig.~\ref{fig:ppw_1_1} shows, for different frequency, the temperature by the end of the control interval will be different. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$.
 
 Note that the PPW will temporarily increase dramaticly in the beginning of the interval. The reason can be obtained from the definition of PPW as
 \begin{equation}\label{eq:ppw_detail}
@@ -363,16 +374,13 @@ in which $s$ and $P_{d}$ will instantly change as $f$ increases, however, $P_{s}
 % For in the first case, $T(t+h)$ is higher than $T_{opt}$, PPW will gradually decrease, until $t+h$, it will be lower than optimal PPW. 
 We can see in Fig.~\ref{fig:ppw_1_3}, compared to $f_{2}$, the PPW of $f_{1}$ is higher in the beginning of the control interval, which is because $f_{1}$ is larger than $f_{2}$, and it takes time for $P_{s}$ to change. Because $T_{t+h}$ of $f_{1}$ is higher than $T_{opt}$, the PPW of $f_{1}$ will decrease faster than the PPW of $f_{2}$, which leads to lower PPW in the second half of the interval. For $f_{3}$, because $f_{3}$ is the lowest among all three cases, the PPW is also the lowest in the beginning. And $T(t+h)$ of $f_{3}$ is lower than $T_{opt}$, the PPW in the second half is still lower than the PPW of the second case. 
 
-Therefore, for $f$ higher than $f_{2}$, PPW in the control interval is approximately the same as the PPW of $f_{2}$, yet it requires further temperature decreasement in the next control interval, which will lead to major loss in PPW. And for $f$ lower than $f_{2}$, PPW in the control interval is always below the PPW of $f_{2}$. Therefore, our 
+Then we focus on the case where current temperature is above $T_{opt}$, as Fig.~\ref{fig:ppw_2_1} shows, by applying three different operating frequencies, $T(t+h)$ and PPW will change accordingly. In the beginning, $f$ and $P_{d}$ change instantly, and the change of $T$ takes time, therefore, $P_{s}$ still remains high, which causes PPW to drop greatly as Fig.\ref{fig:ppw_2_3} shows. 
 
-In the case where current temperature is above $T_{opt}$, decreasement in temperature is required to improve PPW. As Fig.xx shows, there are basicly $3$ ways to decrease temperature, the difference is also the temperature by the end of the control interval.
+In the meantime, because the decreasement of $f_{1}$ is less than $f_{2}$, the corresponding PPW drop of $f_{1}$ is also less. Yet the deviation from $T_{opt}$ in $t+h$ causes the PPW of $f_{1}$ in $t+h$ less than optimal PPW. For $f_{3}$, the largest drop in frequency causes the PPW to drop most dramaticly, and the lower temperature in $t+h$ than $T_{opt}$ leads to PPW lower than optimal in then end of the interval.  
 
+We can see for frequency lower than $f_{2}$, no matter the current temperature is higher or lower than $T_{opt}$, the PPW in the interval will always be lower than the PPW of $f_{2}$. For frequency higher than $f_{2}$, no matter the current temperature is higher or lower than $T_{opt}$, compared to the PPW of $f_{2}$, the PPW in the first half of the interval will be higher, and lower in the second half, and overall approximately the same. However, because the $T(t+h)$ is higher than $T_{opt}$, a further adjustment in the next control interval is required, which will will lead to major loss in PPW. Therefore, $T_{opt}$ is still effective in transient state.
 
-
-From the previous illustration, we notice that the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.3$.
-
-
-
+With $T_{opt}$ being effective, the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.3$.
 
 For \eqref{eq:gt}, we can discrete this model using backward Euler's method, and get
 \begin{equation}\label{eq:discrete_gt}
