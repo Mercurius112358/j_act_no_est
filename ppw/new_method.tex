@@ -327,10 +327,30 @@ The power budgeting method introduced in Section $4.3$ is for steady state condi
 
 Before we demonstrate any details, it's necessary to verify the effectiveness of $T_{opt}$ in transient state. There are generally $3$ cases in transient state, the current temperature is below $T_{opt}$, or above $T_{opt}$, or just $T_{opt}$. In the last case, the power budget is the same as in steady state, therefore, we focus on the former $2$ cases.
 
-For the case where current temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the matter is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. 
-For $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$, we set the operating frequency of the core to each of them separately.
+\begin{figure}
+  \centering
+  \subfigure[The first step with position and power budget of the first active core determined.]{
+    \includegraphics[width=0.47\columnwidth]{fig/ppw_1_1.eps}\label{fig:ppw_1_1}
+  }
+  \subfigure[The second step with positions and power budgets of 2 active cores determined.]{
+    \includegraphics[width=0.47\columnwidth]{fig/ppw_1_3.eps}\label{fig:ppw_1_3}
+  }
+  \subfigure[The third step with positions and power budgets of 3 active cores determined.]{
+    \includegraphics[width=0.47\columnwidth]{fig/ppw_2_1.eps}\label{fig:ppw_2_1}
+  }
+  \subfigure[The fourth step with positions and power budgets of 4 active cores determined.]{
+    \includegraphics[width=0.47\columnwidth]{fig/ppw_2_3.eps}\label{fig:ppw_2_3}
+    }
+  \caption{Temperature distributions of the 9-core system with the power budget given by our method's first four greedy steps.}
+  \label{fig:ppw_transient}
+\end{figure}
 
-As Fig.~\ref{fig:} shows, for different frequency, the difference is the temperature by the end of the control interval. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$.
+
+
+For $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$, we set the operating frequency of the core to each of them separately. For the case where current temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the matter is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. 
+
+
+As Fig.~\ref{fig:ppw_1_1} shows, for different frequency, the difference is the temperature by the end of the control interval. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$.
 
 
 
@@ -338,13 +358,12 @@ Note that the PPW will temporarily increase dramaticly in the beginning of the i
 \begin{equation}\label{eq:ppw_detail}
 \text{PPW} = \frac{\left \| s \right \|_{1}}{\left \| P_{d}+P_{s}(T) \right \|_{1}},
 \end{equation}
-in which $s$ and $P_{d}$ will instantly change as $f$ increases, however, $P_{s}$ is only relative to $T$, as the change of $T$ takes time, $P_{s}$ will be lower than its value in steady state for corresponding $f$. Therefore, for $f$ equals to or above $f_{2}$, PPW will temporarily exceed the optimal PPW of steady state, for $f$ less than $f_{2}$, that's not for sure, still, PPW will increase dramaticly. And as $P_{s}$ increases, PPW will decrease to its steady value.
+in which $s$ and $P_{d}$ will instantly change as $f$ increases, however, $P_{s}$ is only relative to $T$, as the change of $T$ takes time, $P_{s}$ will be lower than its value in steady state for corresponding $f$ in the control interval. Therefore, for the case where we increase temperature to $T_{opt}$, PPW will increase dramaticly, especially for $f$ equals to or above $f_{2}$, PPW will temporarily exceed the optimal PPW of steady state. And as $P_{s}$ increases, PPW will decrease to its steady value.
 
 % For in the first case, $T(t+h)$ is higher than $T_{opt}$, PPW will gradually decrease, until $t+h$, it will be lower than optimal PPW. 
-We can see in Fig.xx, the PPW of the second case is lower than the first in the beginning of the control interval, but the decreasement is slower than the first case, which leads to higher PPW in the end.
+We can see in Fig.~\ref{fig:ppw_1_3}, compared to $f_{2}$, the PPW of $f_{1}$ is higher in the beginning of the control interval, which is because $f_{1}$ is larger than $f_{2}$, and it takes time for $P_{s}$ to change. Because $T_{t+h}$ of $f_{1}$ is higher than $T_{opt}$, the PPW of $f_{1}$ will decrease faster than the PPW of $f_{2}$, which leads to lower PPW in the second half of the interval. For $f_{3}$, because $f_{3}$ is the lowest among all three cases, the PPW is also the lowest in the beginning. And $T(t+h)$ of $f_{3}$ is lower than $T_{opt}$, the PPW in the second half is still lower than the PPW of the second case. 
 
-For the third case, because in the beginning $f$ is lowest among all three cases, the PPW is also lowest, and in the end, $T(t+h)$ is lower than $T_{opt}$, the PPW still is lower than the PPW of the second case.
-
+Therefore, for $f$ higher than $f_{2}$, PPW in the control interval is approximately the same as the PPW of $f_{2}$, yet it requires further temperature decreasement in the next control interval, which will lead to major loss in PPW. And for $f$ lower than $f_{2}$, PPW in the control interval is always below the PPW of $f_{2}$. Therefore, our 
 
 In the case where current temperature is above $T_{opt}$, decreasement in temperature is required to improve PPW. As Fig.xx shows, there are basicly $3$ ways to decrease temperature, the difference is also the temperature by the end of the control interval.
 
