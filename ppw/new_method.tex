@@ -333,52 +333,76 @@ and obtain $T_{rm}=T_{opt}-A_iP_i$. Next, in order to find which core can comple
 
 %because its cost $\left \| T_{opt}-a_{j}p_{j} \right \|_{2}$ (length of $a_{j}p_{j}-T_{th}$ in xx) in the optimization problem \eqref{eq:1_sim_opt_topt} is smaller than the cost $\left \| T_{opt}-a_{k}p_{k} \right \|_{2}$ of turning on the $k$-th core, as observed in Fig. x. The physical meaning is: by turning on the $j$-th core, the overall system temperature is closer to $T_{opt}$. With all cores' temperature lower than $T_{opt}$, the overall system temperature of turning on the $j$-the core is higher than that of turning on the $k$-th core.
 
+
+\begin{figure*}[htb]
+\centering
+\subfigure[Previous temperature is below $T_{opt}$.]{
+\begin{minipage}{.3\linewidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ppw_boost_1.eps}\label{fig:ppw_boost_1}
+\end{minipage}
+}
+\subfigure[Previous temperature is above $T_{opt}$.]{
+\begin{minipage}{.3\linewidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ppw_boost_2.eps}\label{fig:ppw_boost_2}
+\end{minipage}
+}
+\subfigure[Previous temperature is $T_{opt}$.]{
+\begin{minipage}{.3\linewidth}
+\centering
+\includegraphics[width=\textwidth]{fig/ppw_boost_3.eps}\label{fig:ppw_boost_3}
+\end{minipage}
+}
+\caption{Demonstration of changing temperature and the corresponding PPW. $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$.}
+\label{fig:ppw_boost}
+\end{figure*}
+
 \subsection{Energy-efficient power budgeting with optimal performance considering transient effects}
-
-
-
 The power budgeting method introduced in Section $4.3$ is for steady state condition and serves mostly for illustration of the basic idea of the dynamic power budgeting method. It may work just fine on the aspect of reliability if the computed steady state power budget is followed strictly during the power management process. However, it is frequent that chip switches between high performance mode and high energy efficiency mode, it is also possible that power management makes false decisions occasionally, the computed steady state power budget is not suitable for such senerios. Thereforce, we develop a power budgeting method by considering current transient thermal/power behaviors as follows.
 
-Before we demonstrate any details, it's necessary to verify the effectiveness of $T_{opt}$ in transient state. There are generally $3$ cases in transient state, the current temperature is below $T_{opt}$, or above $T_{opt}$, or just $T_{opt}$. In the last case, the power budget is the same as in steady state, therefore, we focus on the former $2$ cases.
+Before we demonstrate any details, it's necessary to examine the PPW metric in transient state.
+There are generally $3$ cases in transient state, the current temperature is below $T_{opt}$, or above $T_{opt}$, or just $T_{opt}$. We will talk each of the cases in details next.
 
-\begin{figure}
-  \centering
-  \subfigure[$3$ ways to improve the temperature to $T_{opt}$.]{
-    \includegraphics[width=0.47\columnwidth]{fig/ppw_1_1.eps}\label{fig:ppw_1_1}
-  }
-  \subfigure[The corresponding PPW curves of improving temperatures.]{
-    \includegraphics[width=0.47\columnwidth]{fig/ppw_1_3.eps}\label{fig:ppw_1_3}
-  }
-  \subfigure[$3$ ways to decrease the temperature to $T_{opt}$.]{
-    \includegraphics[width=0.47\columnwidth]{fig/ppw_2_1.eps}\label{fig:ppw_2_1}
-  }
-  \subfigure[The corresponding PPW curves of decreasing temperatures.]{
-    \includegraphics[width=0.47\columnwidth]{fig/ppw_2_3.eps}\label{fig:ppw_2_3}
-    }
-  \caption{Demonstration of changing temperature to $T_{opt}$ and the corresponding PPW. $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $T_{opt}$ in $T(t+h)$.}
-  \label{fig:ppw_transient}
-\end{figure}
+We begin with the case where previous temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the difference is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and maintain the temperature of $T_{t+h}$ till $t+2h$. $h$ is the length of control cycle.
 
 
-We begin with the case where current temperature is below $T_{opt}$, in order to improve the PPW of the core, it's necessary to improve the temperature, the matter is how much to improve. We assume the operating frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and $h$ is the control length. 
+As Fig.~\ref{fig:ppw_boost_1} shows, for different frequencies, the temperature by the end of the control cycle will be different. Therefore, the $3$ senerios with different frequencies can also be classified by the target temperature by $T(t+h)$. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$. And in the $2^{nd}$ control cycle, the temperature of all $3$ cases will remain constant, meaning they are in steady state from $t+h$ to $t+2h$.
 
+Note that although $f_{1}>f_{2}>f_{3}$ is correct for both the control cycles, there is a sudden drop of frequency in $t+h$ for all cases, which comes from the fact that the power budget provided by our method for increasing temperature case is higher than that in steady state. This means our method can provides "performance boost" when previous temperature is lower than $T_{opt}$.
 
-As Fig.~\ref{fig:ppw_1_1} shows, for different frequency, the temperature by the end of the control interval will be different. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt}$, $f_{2}$ will lead to $T_{opt}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt}$.
-
-Note that the PPW will temporarily increase dramaticly in the beginning of the interval. The reason can be obtained from the definition of PPW as
+Also as shown in Fig.~\ref{fig:ppw_boost_1}, PPW will temporarily increase dramaticly in the beginning of the first control cycle. The reason can be obtained from the definition of PPW as
 \begin{equation}\label{eq:ppw_detail}
-\text{PPW} = \frac{\left \| s \right \|_{1}}{\left \| P_{d}+P_{s}(T) \right \|_{1}},
+\text{PPW} = \frac{\left \| f \right \|_{1}}{\left \| P_{d}+P_{s}(T) \right \|_{1}},
 \end{equation}
-in which $s$ and $P_{d}$ will instantly change as $f$ increases, however, $P_{s}$ is only relative to $T$, as the change of $T$ takes time, $P_{s}$ will be lower than its value in steady state for corresponding $f$ in the control interval. Therefore, for the case where we increase temperature to $T_{opt}$, PPW will increase dramaticly, especially for $f$ equals to or above $f_{2}$, PPW will temporarily exceed the optimal PPW of steady state. And as $P_{s}$ increases, PPW will decrease to its steady value.
+in which $f$ and $P_{d}$ will instantly change as shown in Fig.~\ref{fig:ppw_boost_1}, however, $P_{s}$ is only relative to $T$, as the change of $T$ takes time, $P_{s}$ will be lower than its value in steady state for corresponding $f$ in the first control cycle. Therefore, for the case where we increase temperature to $T_{opt}$, PPW will increase dramatically, especially for $f$ equals to or above $f_{2}$, PPW will temporarily exceed the optimal PPW of steady state. 
+And as $P_{s}$ increases, PPW will decrease. Due to performance boost, by the end of the $1^{st}$ control cycle, PPW for all cases will still be higher than that of steady state. This means, when previous temperature is lower than $T_{opt}$, besides "performance boost", our method can also provides "PPW boost", and "PPW boost" is further increased with "performance boost".
 
 % For in the first case, $T(t+h)$ is higher than $T_{opt}$, PPW will gradually decrease, until $t+h$, it will be lower than optimal PPW. 
-We can see in Fig.~\ref{fig:ppw_1_3}, compared to $f_{2}$, the PPW of $f_{1}$ is higher in the beginning of the control interval, which is because $f_{1}$ is larger than $f_{2}$, and it takes time for $P_{s}$ to change. Because $T_{t+h}$ of $f_{1}$ is higher than $T_{opt}$, the PPW of $f_{1}$ will decrease faster than the PPW of $f_{2}$, which leads to lower PPW in the second half of the interval. For $f_{3}$, because $f_{3}$ is the lowest among all three cases, the PPW is also the lowest in the beginning. And $T(t+h)$ of $f_{3}$ is lower than $T_{opt}$, the PPW in the second half is still lower than the PPW of the second case. 
 
-Then we focus on the case where current temperature is above $T_{opt}$, as Fig.~\ref{fig:ppw_2_1} shows, by applying three different operating frequencies, $T(t+h)$ and PPW will change accordingly. In the beginning, $f$ and $P_{d}$ change instantly, and the change of $T$ takes time, therefore, $P_{s}$ still remains high, which causes PPW to drop greatly as Fig.\ref{fig:ppw_2_3} shows. 
+Then we focus on the case where previous temperature is above $T_{opt}$, as Fig.~\ref{fig:ppw_boost_2} shows, for all $3$ kinds of frequencies/target temperatures, contrary to the first case, to correct the previous over high temperature, we have to suffer from "performance deterioration" and "PPW deterioration". The "performance deterioration" comes from the fact that in order to reach target temperature by the end of the first cycle, the power budget given by our method is lower than that of steady state. The reason of "PPW deterioration" is relatively the same as "PPW boost", in that contrary to $f$ and $P_{d}$, the change of $P_{s}$ takes time, therefore $P_{s}$ will be larger than that of steady state in the $1^{st}$ control cycle, resulting in a PPW less than optimal PPW in steady state. Note that the "performance deterioration" further deteriorate PPW, as there is a boost in PPW at the beginning of $2^{nd}$ control cycle.
+
+
+In the last case, the power budget is the same as in steady state, therefore, we focus on the former $2$ cases.
+
+
+ and verify the effectiveness of $T_{opt}$ in transient state. 
+We next focus on verifying the effectiveness of $T_{opt}$ in transient state, which equals to proving the overall PPW during a control cycle of $f_{2}$ is the highest among $f_{1}$, $f_{2}$ and $f_{3}$. In the case where previous temperature is $T_{opt}$, As shown in Fig.~\ref{fig:ppw_boost}, 
+
+We can see in Fig.~\ref{fig:ppw_1_3}, compared to $f_{2}$, the PPW of $f_{1}$ is higher in the beginning of the control cycle, which is because $f_{1}$ is higher than $f_{2}$, and it takes time for $P_{s}$ to change. Because $T_{t+h}$ of $f_{1}$ is higher than $T_{opt}$, the PPW of $f_{1}$ will decrease faster than the PPW of $f_{2}$, which leads to lower PPW in the second half of the control cycle. For $f_{3}$, because $f_{3}$ is the lowest among all three cases, the PPW is also the lowest in the beginning. And $T(t+h)$ of $f_{3}$ is lower than $T_{opt}$, the PPW in the second half is still lower than the PPW of the second case. 
+
+
+
+
+by applying three different operating frequencies, $T(t+h)$ and PPW will change accordingly. 
+
+In the beginning, $f$ and $P_{d}$ change instantly, and the change of $T$ takes time, therefore, $P_{s}$ still remains high, which causes PPW to drop instantly at the beginning of $1^{st}$ control cycle. 
+
+
 
 In the meantime, because the decreasement of $f_{1}$ is less than $f_{2}$, the corresponding PPW drop of $f_{1}$ is also less. Yet the deviation from $T_{opt}$ in $t+h$ causes the PPW of $f_{1}$ in $t+h$ less than optimal PPW. For $f_{3}$, the largest drop in frequency causes the PPW to drop most dramaticly, and the lower temperature in $t+h$ than $T_{opt}$ leads to PPW lower than optimal in then end of the interval.  
 
-We can see for frequency lower than $f_{2}$, no matter the current temperature is higher or lower than $T_{opt}$, the PPW in the interval will always be lower than the PPW of $f_{2}$. For frequency higher than $f_{2}$, no matter the current temperature is higher or lower than $T_{opt}$, compared to the PPW of $f_{2}$, the PPW in the first half of the interval will be higher, and lower in the second half, and overall approximately the same. However, because the $T(t+h)$ is higher than $T_{opt}$, a further adjustment in the next control interval is required, which will will lead to major loss in PPW. Therefore, $T_{opt}$ is still effective in transient state.
+We can see for frequency lower than $f_{2}$, no matter the previous temperature is higher or lower than $T_{opt}$, the PPW in the interval will always be lower than the PPW of $f_{2}$. For frequency higher than $f_{2}$, no matter the previous temperature is higher or lower than $T_{opt}$, compared to the PPW of $f_{2}$, the PPW in the first half of the interval will be higher, and lower in the second half, and overall approximately the same. However, because the $T(t+h)$ is higher than $T_{opt}$, a further adjustment in the next control interval is required, which will will lead to major loss in PPW. Therefore, $T_{opt}$ is still effective in transient state.
 
 With $T_{opt}$ being effective, the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.3$.
 
@@ -430,3 +454,5 @@ Now dynamic power budgeting can be
 applied by following the steps in steady state power budgeting presented in
 Section $4.3$, just with \eqref{eq:sim_opt_topt} replaced
 by \eqref{eq:temp_ts_opt}.
+
+

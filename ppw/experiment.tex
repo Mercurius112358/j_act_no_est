@@ -69,7 +69,7 @@ Fig.~\ref{fig:order_of_cores_3} and Fig.~\ref{fig:order_of_cores_4},
              &      7             &       2.4     &  2.3  \\
      \hline
 \multirow{3}{*}{16}   &      3    &      2.6     &   2.9 \\   
-             &      8             &      2.6    &   2.5  \\
+             &      8             &      2.6    &   2.6  \\
              &      13            &      2.3     &   2.1\\
      \hline
  \multirow{3}{*}{25}  &      5    &     2.8    &   3.0     \\ 
@@ -77,7 +77,7 @@ Fig.~\ref{fig:order_of_cores_3} and Fig.~\ref{fig:order_of_cores_4},
                 &     20          &     2.7    &   2.5    \\
      \hline
   \multirow{3}{*}{36}  &     8            &      2.8    &  2.9     \\
-              &     18            &     2.7          &  2.5   \\
+              &     18            &     2.7          &  2.6   \\
               &     28          &        2.6         &  2.4  \\
      \hline
  \multirow{3}{*}{64}   &     12           &     2.7  &   2.8    \\
@@ -99,8 +99,8 @@ Due to the high computational complexity of the problem, the optimal active core
 % we find that the energy efficiency of our computed power budget is close to the optimal one.
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth]{fig/best_steady.eps}
-\caption{Monte-Carlo of a $16$-core system with $8$ active cores, the variables are the active core distribution and the DVFS stage of each core, the random combination number is 1000, the red pentagram stand for the energy efficiency of our computed power budget}
+\includegraphics[width=0.8\linewidth]{fig/best_steady.eps}
+\caption{Monte-Carlo of a $16$-core system with $8$ active cores, the variables are the active core distribution and the DVFS stage of each core, the random combination number is 10000, the red pentagram stand for the energy efficiency of our computed power budget}
 \end{figure}
 
 
@@ -160,23 +160,7 @@ In addition to the case shown above, we also tested many other systems with diff
 Next, we test the power budget quality provided by our method. The results are collected in Table~\ref{tab:PPW_perf_steady}. For comparison, we randomly generate $10$ active core distribution for each case, and compute the averaged energy efficiency and averaged performance with the $T_{opt}$ reached for each active core. As the Table~\ref{tab:PPW_perf_steady} shows, our method provides the optimal performance while the energy efficiency is maximized.
 
 
-\begin{figure*}[htb]
-  \centering
-  \subfigure[Transient temperatures of the system with power budget provided by our method. The cores are activated according to the sub-optimal distribution given by our method.]{
-    \includegraphics[width=0.8\columnwidth]{fig/tem_own.eps}\label{fig:tem_own}
-  }
-  \subfigure[Transient temperatures of the system with power budget provided by MAGMA. The cores with higher benefit are activated.]{
-    \includegraphics[width=0.8\columnwidth]{fig/tem_mag.eps}\label{fig:tem_mag}
-  }
-  \subfigure[Transient temperatures of the system in free run. The cores are activated randomly.]{
-    \includegraphics[width=0.8\columnwidth]{fig/tem_free.eps}\label{fig:tem_free}
-  }
-  \subfigure[The PPW curves.]{
-    \includegraphics[width=0.8\columnwidth]{fig/PPW.eps}\label{fig:PPW}
-    }
-  \caption{Transient temperatures of the $9$-core system with simple task scheduling and DVFS following power budgets provided by our method, MAGMA and in free run. Each line represents temperature of one core of the system.}
-  \label{fig:transient_ppw_temperature}
-\end{figure*}
+
 
 
 % \begin{figure*}[htbp]
@@ -201,8 +185,31 @@ Next, we test the power budget quality provided by our method. The results are c
 % \end{figure*}
 
 
+\begin{figure*}[htb]
+  \centering
+  \subfigure[Transient temperatures of the system with power budget provided by our method. The cores are activated according to the sub-optimal distribution given by our method.]{
+    \includegraphics[width=0.8\columnwidth]{fig/tem_own.eps}\label{fig:tem_own}
+  }
+  \subfigure[Transient temperatures of the system with power budget provided by MAGMA. The cores with higher benefit are activated.]{
+    \includegraphics[width=0.8\columnwidth]{fig/tem_mag.eps}\label{fig:tem_mag}
+  }
+  \subfigure[Transient temperatures of the system in free run. The cores are activated randomly.]{
+    \includegraphics[width=0.8\columnwidth]{fig/tem_free.eps}\label{fig:tem_free}
+  }
+  \subfigure[The PPW curves.]{
+    \includegraphics[width=0.8\columnwidth]{fig/PPW.eps}\label{fig:PPW}
+    }
+  \caption{Transient temperatures of the $9$-core system with simple task scheduling and DVFS following power budgets provided by our method, MAGMA and in free run. Each line represents temperature of one core of the system.}
+  \label{fig:transient_ppw_temperature}
+\end{figure*}
 
 \subsection{Energy-efficient power budgeting with optimal performance considering transient effects}
+Our method is a dynamic based method, which means that it can provide power budget adapting to transient running state of the multi-core dark silicon system.
+
+Our method focus on dynamically computing an energy-efficient power budget for multi-core dark silicon system. By integrating the power budget and active core distribution suggestion provided by our method, many different thermal management methods can be designed and optimized, which is not the main focus of our work. In order to verify the effectiveness of our method for transient cases, the same simple task scheduling and DVFS strategy is applied for all methods: a power matching determines task scheduling and DVFS is performed when the task on a core consumes more power than the provided power budget.
+
+In the experiment, our method (called "new" for short) is set to compute power budget dynamically for each future second ($h=1$). State-of-art energy-efficient dynamic thermal management~\cite{Hanumaiah:TCOMP'14} (called "existing" for short)is used for comparison. The active cooling in~\cite{Hanumaiah:TCOMP'14} is neglected, and the each core power gating is introduced by choosing the cores with higher \emph{benefit} for ease of comparison without affecting the method. A case without any thermal management (called "free" for short) is also conducted for comparison. One application from SPEC benchmark is running on each active core, and the applications are randomly assigned to the active cores at the start. There are $15$ V/F levels (from $0.32$V@$200$MHz to $0.8$V@$2$GHz) for DVFS in our experiment, with DVFS action overhead set to be \SI{10}{\us} by following the settings in~\cite{Lu:MICRO'05}. The task migration overhead is set as \SI{10}{\ms}according to~\cite{Cuesta:ISVLSI'10}.
+
 
 % \begin{figure}
 % \centering
