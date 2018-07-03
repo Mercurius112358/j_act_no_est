@@ -1,5 +1,6 @@
 \section{SYSTEM MODELS}
-In order to determine the energy-efficient power budget of a multi-core dark silicon system, we present static power modeling and thermal modeling techniques in this section, which are important basic knowledges for our new work.
+% In order to determine the energy-efficient power budget of a multi-core dark silicon system, the 
+% we present power modeling and thermal modeling techniques in this section, which are important basic knowledges for our new work.
 
 \subsection{Power modeling}
 
@@ -10,8 +11,9 @@ p_{d} = c \cdot V_{dd}^{2} \cdot f.
 
 It is assumed the clock frequency $f$ changes with $V_{dd}$ to the lowest allowable point:
 \begin{equation}\label{eq:f_v}
-f -f_{th}= (V_{dd}-V_{th}) \cdot (\frac{f_{max}-f_{th}}{V_{max}-V_{th}}).
+f = (V_{dd}-V_{th}) \cdot (\frac{f_{max}-f_{min}}{V_{max}-V_{th}})+f_{min}.
 \end{equation}
+where $f_{min}$ stands for the minimum clock frequency, and $V_{th}$ stands for the threshold voltage.
 
 Yet the static power $p_{s}$ of the chip is caused by leakage current $I_{leak}$ as:
 \begin{equation}\label{eq:sta_power}
@@ -24,13 +26,13 @@ $I_{leak}$ is composed of many components, including subthreshold current, gate 
 I_{leak}=I_{sub}+I_{gate}.
 \end{equation}
 
-Noted that $I_{gate}$ is cause by tunneling between the gate terminal and the other three terminals, does not depend on temperature and can be considered as a technology-dependent constant. Yet $I_{sub}$ is considered to be highly related to temperature, and can be modeled in the commonly accepeted MOSFET transitor model BSIM 4 as:
+Noted that $I_{gate}$ is cause by tunneling between the gate terminal and the other three terminals, does not depend on temperature and can be considered as a technology-dependent constant. Yet $I_{sub}$ is considered to be highly related to temperature, and can be modeled in the commonly accepted MOSFET transistor model BSIM 4 as:
 \begin{equation}\label{eq:sub_current}\
 I_{sub}=K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}}
   (1-e^{\frac{-V_{DS}}{v_T}}) \approx K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}},
 \end{equation}
 
-In xx, a local linearization of subthreshold current is implemented to eliminate the non-linear dependency of subthreshold current on temperature. The scalar result is
+In~\cite{WangWan:TOC'18}, a local linearization of subthreshold current is implemented to eliminate the non-linear dependency of subthreshold current on temperature. The scalar result is
 \begin{equation}\label{eq:lin_leakage}
 p_{s} = V_{dd} \times (p_{0}+a_{s} \cdot T).
 \end{equation}
@@ -47,18 +49,26 @@ $p_{0}$ is a constant terms that are not associated with $T$, $a_{s}$ is the coe
 %   \label{fig:leakage}
 % \end{figure}
 
-
+\begin{figure}
+  \centering
+  \subfigure[Side view of the chip package structure]{
+  \includegraphics[width=0.7\columnwidth]{fig/chip_model.eps}
+  \label{fig:chip_struct}}
+  \subfigure[Floorplan example of a 16-core dark silicon chip.]{
+  \includegraphics[width=0.6\columnwidth]{fig/16-core.eps}
+  \label{fig:core_flp}}
+\caption{Typical structure of a
+    packaged multi-core dark silicon system.}
+\end{figure}
 \subsection{Thermal modeling}
-In this work, the multi-core dark silicon system is packaged in a common structure in Fig. x. 
+In this work, the multi-core dark silicon system is packaged in a common structure in Fig.~\ref{fig:chip_struct}. 
 Heat (power) generated from the chip is conducted through thermal interface material (TIM), heat spreader, heat sink, and finally dissipated to the air through convection. The secondary heat path is ignored hear, since much fewer heat is dissipated through that path.
 
-To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes, with partition granularity determined by the accuracy requirements. For the dark silicon multi-core system (a 16-core chip's floorplan example is shown in Fig. x), we treat each core as a thermal node with a current source, because each core has very small area and highly correlated internal power distribution. The other thermal nodes from the package are divided according to the chip thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes are determinded, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig. x are fullly compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal mdoel for a chip with $n$ total thermal nodes can be generated:
+To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes, with partition granularity determined by the accuracy requirements. For the dark silicon multi-core system (a 16-core chip's floorplan example is shown in Fig.~\ref{fig:core_flp}), we treat each core as a thermal node with a current source, because each core has very small area and highly correlated internal power distribution. The other thermal nodes from the package are divided according to the chip thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes are determined, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig. x are fully compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal model for a chip with $n$ total thermal nodes can be generated:
 \begin{equation}\label{eq:gt}
 \begin{split}
 GT(t) + C\frac{dT(t)}{dt} &= BP(t)\\
 T_{c}(t) &= B^{T}T(t)
 \end{split}
 \end{equation}
-where $T(t) \in \mathbb{R}^m$ is the temperature rise vector , representing temperature rise (from the ambient temperature) at $m$ places of the chip and package; $G \in \mathbb{R}^{m\times m}$ and  $C \in \mathbb{R}^{m \times m}$ contain equivalent thermal resistance and capacitance information respectively; $B \in \mathbb{R}^{m \times n}$ stores the information of how powers are injected into the thermal nodes; $P(T, t) \in \mathbb{R}^{n}$ is the power vector, which contains power consumptions of $l$ components on chip, including both dynamic power vector $P_d$ and static power vector $P_s$, i.e., $P(T, t)=P_s(T, t)+P_d(t)$. $T_{c}(t) \in \mathbb{R}^n$ is the output temperature vector, containing only temperatures of cores only. For detailed structure of $G$, $C$, and $B$ matrices, please refer to the thermal modeling works such as xx.
-
-With the model in \eqref{eq:gt}, the task of power budgeting is to determine the appropriate $P$, with a given temperature, to maximize the energy efficiency of the multi-core system, which is described next.
+where $T(t) \in \mathbb{R}^m$ is the temperature rise vector , representing temperature rise (from the ambient temperature) at $m$ places of the chip and package; $G \in \mathbb{R}^{m\times m}$ and  $C \in \mathbb{R}^{m \times m}$ contain equivalent thermal resistance and capacitance information respectively; $B \in \mathbb{R}^{m \times n}$ stores the information of how powers are injected into the thermal nodes; $P(T, t) \in \mathbb{R}^{n}$ is the power vector, which contains power consumptions of $l$ components on chip, including both dynamic power vector $P_d$ and static power vector $P_s$, i.e., $P(T, t)=P_s(T, t)+P_d(t)$. $T_{c}(t) \in \mathbb{R}^n$ is the output temperature vector, containing only temperatures of cores only. For detailed structure of $G$, $C$, and $B$ matrices, please refer to the thermal modeling works such as~\cite{Huang:TVLSI'06,Huang:TC'08,WangTan:TODAES'13,Hanumaiah:TCAD'11}.
