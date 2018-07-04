@@ -2,7 +2,6 @@
 
 Power budgeting, by the name, provides a power budget, which servers as a guidance and constraint for the system. The power budget in dark silicon includes the active core distribution and the corresponding DVFS stages of active cores. Typically, the given power budget should be conservative in order to keep the system in thermally safe state. The energy-efficient power budgeting gives a power budget not only keeps the system thermally safe, but also maximizes the energy efficiency of the system while keeping the power budget as high as possible.
 
-%First, in Section $4.1$, we formulate the energy-efficient power budgeting problem and transforms it into an equivalent problem of minimizing the difference between the chip temperature $T_{c}$ and the target optimal temperature $T_{opt}$. Next, we show how to efficiently calculate the optimal temperature $T_{opt}$ of cores in all positions in Section $4.2$. With the $T_{opt}$, we show how to perform the proposed energy-efficient power budgeting for steady state problem in Section $4.3$, which serves as demonstration for easier understanding of the new method. In Section $4.4$, the full dynamic energy-efficient power budgeting considering transient effects is presented.
 
 The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
 
@@ -11,9 +10,7 @@ PPW is defined as the ratio of the total performance (MIPS) to the total power.
 \text{PPW} = \frac{\left \| s \right \|_{1}}{\left \| P \right \|_{1}}
 \end{equation}
 
-$s$ stands for the performance of the system in MIPS, which can be converted to the operating frequency $f$ of the active cores.
-
-For simplicity consideration, the steady state case is presented first, and the energy-efficient power budgeting problem can be formulated as the following optimization problem
+$s$ stands for the performance of the system in MIPS, which can be converted to the operating frequency $f$ of the active cores. Then the energy-efficient power budgeting problem can be formulated as the following optimization problem
 \begin{equation}\label{eq:opt_ppw}
 \begin{split}
 \text{maximize } & \text{PPW} = \frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}\\
@@ -32,7 +29,7 @@ The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of
 \begin{figure}
 \centering
 \includegraphics[width=0.46\linewidth]{fig/unique_position.eps}
-\caption{$3$ unique positions for a $16$-core system.}
+\caption{$3$ kinds of cores based on their positions in the system for a $16$-core system.}
 \label{fig:unique_position}
 \end{figure}
 
@@ -61,59 +58,21 @@ For the last observation, we also provide experimental evidence in addition. We 
 
 As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_2} are relatively the same, although the active core distribution is not the same for them, which means that the active core distribution that corresponds to optimal energy efficiency is not unique. However, for different active core distributions, the throughput while in optimal energy efficiency are not the same.
 
-Based on this observation, this section, we first talk about isolating cores and calculating optimal power budget for isolated cores in Section $4.1$, then the method to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency for steady state is presented in Section $4.2$. Finally, in Section $4.3$, the energy-efficient power budgeting with optimal throughput considering transient effects is introduced.
+Based on this observation, we first talk about isolating cores and calculating optimal power budget for isolated cores in Section $4.1$, then the method to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency for steady state is presented in Section $4.2$. Finally, in Section $4.3$, the energy-efficient power budgeting with optimal throughput considering transient effects is introduced.
 
-
-% Before proceeding to the energy-efficient power budgeting problem, it will be worthwhile to examine the characteristics of energy efficiency of multi-core systems.
-%Therefore, the energy-efficient dynamic power budgeting can be divided into two steps, first is to maximize the energy efficiency of the system, the next is to optimize the throughput of the system while in maximum energy efficiency.
-% Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency of a single core processor. As Fig.~\ref{fig:f_ppw} shows, as the frequency of the core increases from minimum to maximum, the PPW metric will first increase along to a maximum value, then decreases to a minimum value. It means that there is an optimal frequency which leads to maximum energy frequency, and the closer the current frequency is to the optimal frequency, the higher the energy efficiency.
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=0.8\linewidth]{fig/f_ppw.eps}
-% \caption{Core frequency/PPW curve}
-% \label{fig:f_ppw}
-% \end{figure}
-
-%\subsection{Maximizing the energy efficiency of multi-core system}
-
-% If the frequency $f$ that corresponds to the maximum PPW can be obtained, we can set it to be $f_{opt}$, then the target of the optimization problem can be transformed into $\text{minimize }   \left \| f_{opt} - f \right \|_{2}$. Which means, the closer the chip's frequency $f$ is to the optimal throughput $f_{opt}$, the higher the energy efficiency of the system. Considering $f_{opt}$ is hard to obtain, also, $T_{c}$ can be uniquely calculated for a specific $f$ with \eqref{eq:gt}. The maximum PPW can be obtained if all cores are running at $T_{opt}$, which is the temperature when the frequency of all cores are $f_{opt}$. Therefore, the closer the chip's temperature $T_{c}$ is to the optimal temperature $T_{opt}$, the higher the energy efficiency of the system. So instead of directly maximizing PPW, the optimization problem can be transformed to minimizing the difference between $T_{c}$ and $T_{opt}$:
-
-% \begin{equation}\label{eq:opt_topt}
-% \begin{split}
-% \text{minimize } &  \left \| T_{opt} - T_{c} \right \|_{2}\\
-% \text{subject to} &\left\{
-% \begin{array}{lr}
-% \text{card}(P) = n_{a},\\
-% T_{c} \preceq T_{th}.\\
-% \end{array}
-% \right.
-% \end{split}
-% \end{equation}
-
-% The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{eq:opt_topt} is dependent on many variables, which makes it impossible to efficiently calculate the $T_{opt}$ for all possible combinations, when the core number is high. Fortunately, such problem can be solved efficiently, as shown next.
 
 \subsection{Optimal power budget for isolated core}
-Due to the thermal impact active cores have on each other, the optimal power budget is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the corresponding optimal one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the optimal power budget is proposed in this section.
+For simplicity consideration, the steady state case is presented first. Due to the thermal impact active cores have on each other, the power budget $P_{opt}$, that leads to optimal PPW in steady state is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the corresponding optimal one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the optimal power budget is proposed in this section.
 
-Instead of calculating the power budget for each scenario, the basic idea of the method is to obtain a general optimal power budget vector $\bar{T}_{opt}$ for each of the active core number, no matter what active core distribution it is, as long as the $\bar{T}_{opt}$ is followed for each active core, the energy efficiency is maximized.
+Instead of calculating the power budget using brute force method, the basic idea of the new method is to isolate the cores, and calculate the $P_{opt}$ for each kind of cores, therefore accelerating the power budgeting process, as shown in Section $4.1.1$. And the error induced by isolating cores can be diminished with a active-core-number related compensation parameter as shown in Section $4.1.2$.
 
-\subsubsection{Optimal temperature for isolated core}
-Calculating the optimal temperature for the whole system requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. 
-If we isolate the cores, the problem can be simplified. Note that, for a $16$-core system, there are only $3$ unique positions which are shown in Fig.~\ref{fig:unique_position}. All cores in the system can be categorized into one of the $3$ positions, we only need to calculate the optimal temperature of one of the cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system, which can also reduce the computation time.
 
-Therefore, we first consider calculating $\bar{T}_{opt}$ for isolated cores, which serves as an simple example for optimal temperature calculation.
+\subsubsection{Calculating $P_{opt}$ for isolated core}
+Calculating the $P_{opt}$ for the all active cores at the same time requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. If the cores are isolated, then the problem can be simplified.
 
-%The reason is that, if each of the active cores is running at maximum PPW, then the PPW of the whole system is certainly maximized.
-
-%To further simplify the problem, we can ignore the thermal impact active cores have on each other, and only consider the thermal impact of the core itself. Note that we only need to calculate the optimal temperature of cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system. 
 
 
 The optimization object of maximizing PPW of a single core can be expressed as:
-%equivalently transformed to minimizing $\frac{1}{\text{PPW}}$ of it:
-% \begin{equation}\label{eq:min_ppw}
-% \text{max PPW}\Longleftrightarrow \text{min } \frac{1}{\text{PPW}},
-% \end{equation}
 \begin{equation}\label{eq:min_ppw}
 \text{PPW}=\frac{f}{p_{d}+p_{s}},
 \end{equation}
@@ -124,7 +83,6 @@ By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_le
 \begin{equation}\label{eq:1_ppw}
 \text{PPW} = \frac{f}{p_{d}+V_{dd}(a_{s}T+p_{0})}.
 \end{equation}
-
 % \begin{equation}\label{eq:1_ppw}
 % \begin{split}
 % \frac{1}{\text{PPW}} = &\frac{p_{d}+p_{s}}{f}\\
@@ -150,26 +108,48 @@ By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_le
 
 %We can see that in \eqref{eq:1_ppw_step2}, there are $3$ parameters that are not fixed, $p_{d}$, the core's temperature rise $T_{i}$ and $v$, all other parameters are known. However, to calculate optimal temperature, we need to minimize the number of the variables. Therefore, we will demonstrate how to express $T_{i}$ and $v$ using $p_{d}$ next.
 
-Note that, for a specific core $i$, $T$ in \eqref{eq:1_ppw} is composed of the core's temperature rise $T_{i}$ and the ambient temperature $T_{a}$. To calculate $T_{i}$ for the isolated core $i$, we need to extract relevant information from the $G$ matrix. Because the optimal temperature is calculated in steady state, to calculate the steady state temperature rise $T_{c}$ of the chip, the differential term $C\frac{dT(t)}{dt}$ is neglected in 
-\eqref{eq:gt}, leading to
+Note that, for a specific core $i$, $T$ in \eqref{eq:1_ppw} is composed of the core's temperature rise $T_{i}$ and the ambient temperature $T_{a}$. Until this point, the core are still not isolated, because $T_{i}$ can be impacted by other active cores. 
+
+% we need to extract relevant information from the $G$ matrix. Because the optimal temperature is calculated in steady state, 
+
+In order to calculate $T_{i}$ for the isolated core $i$, let's begin with calculate the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state , the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
 \end{equation}
-Let $A = B^{T}G^{-1}B \in \mathbb{R}^{m \times m}$ to simplify notation, the simplified 
+Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$ to simplify notation, the simplified 
 \eqref{eq:tc} can be expressed as
 \begin{equation}\label{sim_tc}
-T_{c} = AP.
+\begin{split}
+T_{c} &= AP,\\
+&=
+{\left[
+\begin{matrix}
+ a_{11} & a_{12} & \cdots & a_{1n} \\
+ a_{21} & a_{22} & \cdots & a_{2n} \\
+ \vdots & \vdots & \ddots & \vdots \\
+ a_{n1} & a_{n2} & \cdots & a_{nn} \\
+\end{matrix}
+\right]}
+{\left[
+\begin{matrix}
+ p_{1}   \\
+ p_{2}   \\
+ \vdots  \\
+ p_{n}   \\
+\end{matrix}
+\right]}.\\
+\end{split}
 \end{equation}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.7\linewidth]{fig/ap.eps}
-\caption{The diagram of computing $T_{c}$.}
-\label{fig:apt}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.7\linewidth]{fig/ap.eps}
+% \caption{The diagram of computing $T_{c}$.}
+% \label{fig:apt}
+% \end{figure}
+% the $A$ matrix links the core temperature rise and the power with consideration of the thermal impact of all cores and the package.
 
-
-Please note that, as Fig.~\ref{fig:apt} shows, the $A$ matrix links the core temperature and the power consumption with consideration of the thermal impact of all cores and the package, which can be used to find the optimal temperature. The diagonal elements in $A$ can be seen as the corresponding cores' resistance with consideration of package, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the isolated core's temperature. For a specific core $i$, its temperature rise $T_{i}$ can be computed as:
+Please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. As \eqref{sim_tc} shows, the diagonal elements in $A$ can be seen as the corresponding cores' resistance, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the isolated core's temperature. For a specific core $i$, its temperature rise $T_{i}$ can be computed as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
