@@ -1,52 +1,9 @@
 \section{ENERGY-EFFICIENT POWER BUDGETING FOR MULTI-CORE DARK SILICON SYSTEMS}
 
-Power budgeting, by the name, provides a power budget, which servers as a guidance and constraint for the system. The power budget in dark silicon includes the active cores distribution and their corresponding DVFS stages. Typically, the given power budget should be conservative in order to keep the system in thermally safe state. The energy-efficient power budgeting gives a power budget not only keeps the system thermally safe, but also maximizes the energy efficiency of the system while keeping the power budget as high as possible.
+Power budgeting, by the name, provides a power budget, which servers as a guidance and constraint for the system. The power budget in dark silicon includes the active core distribution and the corresponding DVFS stages of active cores. Typically, the given power budget should be conservative in order to keep the system in thermally safe state. The energy-efficient power budgeting gives a power budget not only keeps the system thermally safe, but also maximizes the energy efficiency of the system while keeping the power budget as high as possible.
 
 %First, in Section $4.1$, we formulate the energy-efficient power budgeting problem and transforms it into an equivalent problem of minimizing the difference between the chip temperature $T_{c}$ and the target optimal temperature $T_{opt}$. Next, we show how to efficiently calculate the optimal temperature $T_{opt}$ of cores in all positions in Section $4.2$. With the $T_{opt}$, we show how to perform the proposed energy-efficient power budgeting for steady state problem in Section $4.3$, which serves as demonstration for easier understanding of the new method. In Section $4.4$, the full dynamic energy-efficient power budgeting considering transient effects is presented.
 
-
-
-\subsection{Overview of energy efficiency}
-Before proceeding to the energy-efficient power budgeting problem, it will be worthwhile to examine the characteristics of energy efficiency of multi-core systems.
-
-We first use Monte Carlo method, by fixing active core number and distribution, only changing the DVFS stages of active cores, we obtain the optimal DVFS stages of each active cores that leads to maximum energy efficiency for several fixed active core distributions. The Monte Carlo simulation number for each fixed active core distribution is $10000$. The corresponding temperature distribution is plotted in Fig.~\ref{fig:opt_tem}, in which the temperature distributions of a $9$-core system with $5$ active cores are shown. 
-
-As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_2} are relatively the same, although the active core distribution is not the same for them, which means that the active core distribution that corresponds to optimal energy efficiency is not unique. However, for different active core distributions, the throughput while in optimal energy efficiency are not the same, and our goal is to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency.
-
-
-%Therefore, the energy-efficient dynamic power budgeting can be divided into two steps, first is to maximize the energy efficiency of the system, the next is to optimize the throughput of the system while in maximum energy efficiency.
-Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency of a single core processor. As Fig.~\ref{fig:f_ppw} shows, as the frequency of the core increases from minimum to maximum, the PPW metric will first increase along to a maximum value, then decreases to a minimum value. It means that there is an optimal frequency which leads to maximum energy frequency, and the closer the current frequency is to the optimal frequency, the higher the energy efficiency.
-
-
-\begin{figure}
-  \centering
-  \subfigure[MIPS = 246.3, MIPS/Watt = 2.6]{
-    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_1.eps}\label{fig:opt_tem_1}
-  }
-  \subfigure[MIPS = 215.6, MIPS/Watt = 2.6]{
-    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_2.eps}\label{fig:opt_tem_2}
-  }
-  % \subfigure[MIPS = 258.6, MIPS/Watt = 1.7]{
-  %   \includegraphics[width=0.46\columnwidth]{fig/opt_tem_3.eps}\label{fig:opt_tem_3}
-  % }
-  % \subfigure[MIPS = 345.5, MIPS/Watt = 1.2]{
-  %   \includegraphics[width=0.46\columnwidth]{fig/opt_tem_4.eps}\label{fig:opt_tem_4}
-  %   }
-  \caption{Temperature distributions of a 9-core system with 5 cores active in maximum energy efficiency.}
-  \label{fig:opt_tem}
-\end{figure}
-
-
-
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=0.8\linewidth]{fig/f_ppw.eps}
-% \caption{Core frequency/PPW curve}
-% \label{fig:f_ppw}
-% \end{figure}
-
-\subsection{Maximizing the energy efficiency of multi-core system}
 The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
 
 PPW is defined as the ratio of the total performance (MIPS) to the total power.
@@ -72,29 +29,6 @@ where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector conta
 
 The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem. Therefore, we need to transform this problem into a problem with low complexity.
 
-If the frequency $f$ that corresponds to the maximum PPW can be obtained, we can set it to be $f_{opt}$, then the target of the optimization problem can be transformed into $\text{minimize }   \left \| f_{opt} - f \right \|_{2}$. Which means, the closer the chip's frequency $f$ is to the optimal throughput $f_{opt}$, the higher the energy efficiency of the system. Considering $f_{opt}$ is hard to obtain, also, $T_{c}$ can be uniquely calculated for a specific $f$ with \eqref{eq:gt}. The maximum PPW can be obtained if all cores are running at $T_{opt}$, which is the temperature when the frequency of all cores are $f_{opt}$. Therefore, the closer the chip's temperature $T_{c}$ is to the optimal temperature $T_{opt}$, the higher the energy efficiency of the system. So instead of directly maximizing PPW, the optimization problem can be transformed to minimizing the difference between $T_{c}$ and $T_{opt}$:
-
-\begin{equation}\label{eq:opt_topt}
-\begin{split}
-\text{minimize } &  \left \| T_{opt} - T_{c} \right \|_{2}\\
-\text{subject to} &\left\{
-\begin{array}{lr}
-\text{card}(P) = n_{a},\\
-T_{c} \preceq T_{th}.\\
-\end{array}
-\right.
-\end{split}
-\end{equation}
-
-The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{eq:opt_topt} is dependent on many variables, which makes it impossible to efficiently calculate the $T_{opt}$ for all possible combinations, when the core number is high. Fortunately, such problem can be solved efficiently, as shown next.
-
-\subsection{Optimal temperature calculation}
-Due to the thermal impact active cores have on each other, the optimal temperature $T_{opt}$ is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible temperatures for all of the possible combinations, in order to find the corresponding $T_{opt}$ in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the $T_{opt}$ needed to solve the optimization problem in \eqref{eq:opt_topt} is proposed in this section.
-
-Instead of calculating the $T_{opt}$ for each scenario, the basic idea of the method is to obtain a general optimal temperature vector $\bar{T}_{opt}$ for each of the active core number, no matter what active core distribution it is, as long as the $\bar{T}_{opt}$ is followed for each active core, the energy efficiency is maximized.
-
-\subsubsection{Optimal temperature for isolated core}
-
 \begin{figure}
 \centering
 \includegraphics[width=0.46\linewidth]{fig/unique_position.eps}
@@ -102,6 +36,69 @@ Instead of calculating the $T_{opt}$ for each scenario, the basic idea of the me
 \label{fig:unique_position}
 \end{figure}
 
+The high computational complexity of the problem in \eqref{eq:opt_ppw} comes from the fact that the cores have thermal impact on each other, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain optimal solution. However, if we can isolate each of the core, we can make the following observations:
+\begin{itemize}
+\item The optimal power budget of each isolated core that leads to maximum PPW can be obtained independently, therefore the problem can be greatly simplified.
+\item All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. Calculating the optimal power budget for each kind instead of all cores can also greatly reduce the computation time.
+\item Optimal PPW can be obtained if the calculated optimal power budget is applied to each of the active cores, no matter what active core distribution it is. 
+\end{itemize}
+%\subsection{Overview of energy efficiency}
+
+\begin{figure}
+  \centering
+  \subfigure[MIPS = 246.3, MIPS/Watt = 2.6]{
+    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_1.eps}\label{fig:opt_tem_1}
+  }
+  \hspace{1ex}
+  \subfigure[MIPS = 215.6, MIPS/Watt = 2.6]{
+    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_2.eps}\label{fig:opt_tem_2}
+  }
+  \caption{Temperature distributions of a 9-core system with 5 cores active in maximum energy efficiency.}
+  \label{fig:opt_tem}
+\end{figure}
+
+For the last observation, we also provide experimental evidence in addition. We use Monte Carlo method, by fixing active core number and distribution, only changing the DVFS stages of active cores, we obtain the optimal DVFS stages of each active cores that leads to maximum energy efficiency for several fixed active core distributions. The Monte Carlo simulation number for each fixed active core distribution is $10000$. The corresponding temperature distribution is plotted in Fig.~\ref{fig:opt_tem}, in which the temperature distributions of a $9$-core system with $5$ active cores are shown. 
+
+As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_2} are relatively the same, although the active core distribution is not the same for them, which means that the active core distribution that corresponds to optimal energy efficiency is not unique. However, for different active core distributions, the throughput while in optimal energy efficiency are not the same.
+
+Based on this observation, this section, we first talk about isolating cores and calculating optimal power budget for isolated cores in Section $4.1$, then the method to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency for steady state is presented in Section $4.2$. Finally, in Section $4.3$, the energy-efficient power budgeting with optimal throughput considering transient effects is introduced.
+
+
+% Before proceeding to the energy-efficient power budgeting problem, it will be worthwhile to examine the characteristics of energy efficiency of multi-core systems.
+%Therefore, the energy-efficient dynamic power budgeting can be divided into two steps, first is to maximize the energy efficiency of the system, the next is to optimize the throughput of the system while in maximum energy efficiency.
+% Fig.~\ref{fig:f_ppw} shows the simulation plot of PPW against the core frequency of a single core processor. As Fig.~\ref{fig:f_ppw} shows, as the frequency of the core increases from minimum to maximum, the PPW metric will first increase along to a maximum value, then decreases to a minimum value. It means that there is an optimal frequency which leads to maximum energy frequency, and the closer the current frequency is to the optimal frequency, the higher the energy efficiency.
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.8\linewidth]{fig/f_ppw.eps}
+% \caption{Core frequency/PPW curve}
+% \label{fig:f_ppw}
+% \end{figure}
+
+%\subsection{Maximizing the energy efficiency of multi-core system}
+
+% If the frequency $f$ that corresponds to the maximum PPW can be obtained, we can set it to be $f_{opt}$, then the target of the optimization problem can be transformed into $\text{minimize }   \left \| f_{opt} - f \right \|_{2}$. Which means, the closer the chip's frequency $f$ is to the optimal throughput $f_{opt}$, the higher the energy efficiency of the system. Considering $f_{opt}$ is hard to obtain, also, $T_{c}$ can be uniquely calculated for a specific $f$ with \eqref{eq:gt}. The maximum PPW can be obtained if all cores are running at $T_{opt}$, which is the temperature when the frequency of all cores are $f_{opt}$. Therefore, the closer the chip's temperature $T_{c}$ is to the optimal temperature $T_{opt}$, the higher the energy efficiency of the system. So instead of directly maximizing PPW, the optimization problem can be transformed to minimizing the difference between $T_{c}$ and $T_{opt}$:
+
+% \begin{equation}\label{eq:opt_topt}
+% \begin{split}
+% \text{minimize } &  \left \| T_{opt} - T_{c} \right \|_{2}\\
+% \text{subject to} &\left\{
+% \begin{array}{lr}
+% \text{card}(P) = n_{a},\\
+% T_{c} \preceq T_{th}.\\
+% \end{array}
+% \right.
+% \end{split}
+% \end{equation}
+
+% The optimal temperature $T_{opt}$ needed for the optimization problem in \eqref{eq:opt_topt} is dependent on many variables, which makes it impossible to efficiently calculate the $T_{opt}$ for all possible combinations, when the core number is high. Fortunately, such problem can be solved efficiently, as shown next.
+
+\subsection{Optimal power budget for isolated core}
+Due to the thermal impact active cores have on each other, the optimal power budget is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the corresponding optimal one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the optimal power budget is proposed in this section.
+
+Instead of calculating the power budget for each scenario, the basic idea of the method is to obtain a general optimal power budget vector $\bar{T}_{opt}$ for each of the active core number, no matter what active core distribution it is, as long as the $\bar{T}_{opt}$ is followed for each active core, the energy efficiency is maximized.
+
+\subsubsection{Optimal temperature for isolated core}
 Calculating the optimal temperature for the whole system requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. 
 If we isolate the cores, the problem can be simplified. Note that, for a $16$-core system, there are only $3$ unique positions which are shown in Fig.~\ref{fig:unique_position}. All cores in the system can be categorized into one of the $3$ positions, we only need to calculate the optimal temperature of one of the cores in the unique positions of the multi-core system to obtain the optimal temperature vector for the whole system, which can also reduce the computation time.
 
