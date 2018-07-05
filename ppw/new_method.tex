@@ -62,15 +62,13 @@ Based on this observation, we first talk about isolating cores and calculating o
 
 
 \subsection{Optimal power budget for isolated core}
-For simplicity consideration, the steady state case is presented first. Due to the thermal impact active cores have on each other, the power budget $P_{opt}$, that leads to optimal PPW in steady state is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the corresponding optimal one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the optimal power budget is proposed in this section.
+Due to the thermal impact active cores have on each other, the power budget $P_{opt}$, that leads to optimal PPW is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the corresponding optimal one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the optimal power budget is proposed in this section.
 
-Instead of calculating the power budget using brute force method, the basic idea of the new method is to isolate the cores, and calculate the $P_{opt}$ for each kind of cores, therefore accelerating the power budgeting process, as shown in Section $4.1.1$. And the error induced by isolating cores can be diminished with a active-core-number related compensation parameter as shown in Section $4.1.2$.
+For simplicity consideration, the steady state case is presented first. Instead of calculating the power budget using brute force method, the basic idea of the new method is to isolate the cores, and calculate the $P_{opt}$ for each kind of cores, therefore accelerating the power budgeting process, as shown in Section $4.1.1$. And the error induced by isolating cores can be diminished with a active-core-number related compensation parameter as shown in Section $4.1.2$.
 
 
 \subsubsection{Calculating $P_{opt}$ for isolated core}
 Calculating the $P_{opt}$ for the all active cores at the same time requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. If the cores are isolated, then the problem can be simplified.
-
-
 
 The optimization object of maximizing PPW of a single core can be expressed as:
 \begin{equation}\label{eq:min_ppw}
@@ -83,40 +81,14 @@ By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_le
 \begin{equation}\label{eq:1_ppw}
 \text{PPW} = \frac{f}{p_{d}+V_{dd}(a_{s}T+p_{0})}.
 \end{equation}
-% \begin{equation}\label{eq:1_ppw}
-% \begin{split}
-% \frac{1}{\text{PPW}} = &\frac{p_{d}+p_{s}}{f}\\
-% = &\frac{p_{d}+V_{dd}(a_{s}T+p_{0})}{f}.
-% \end{equation}
 
+Note that, for a specific core $i$, $T$ in \eqref{eq:1_ppw} is composed of the core's temperature rise $T_{i}$ and the ambient temperature $T_{a}$. Until this point, the core are still not isolated, because $T_{i}$ can be impacted by other active cores. In order to isolate core $i$, we have to express $T_{i}$ with only the power of core $i$ itself.
 
-% Also from \eqref{eq:dyn_power} and \eqref{eq:f_v}, we can see that
-% \begin{equation}\label{eq:pd_prop_f}
-% p_{d} \propto f^{3}.
-% \end{equation}
-
-% Therefore, \eqref{eq:1_ppw} can be expressed as
-% \begin{equation}\label{eq:1_ppw_step2}
-% \begin{split}
-% %\frac{1}{\text{PPW}} \approx  &\frac{p_{d}+(c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th})(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\
-% % =&c^{1/3}\cdot p_{d}^{2/3}+(\frac{V_{max}-V_{th}}{f_{max}}+V_{th}\cdot c^{1/3} \cdot p_{d}^{-1/3})\\
-% % & \cdot (a_{s}(T_{i}+T_{a})+p_{0})
-% \frac{1}{\text{PPW}} \approx  &\frac{p_{d}+v(a_{s}(T_{i}+T_{a})+p_{0})}{c^{-1/3} \cdot p_{d}^{1/3}}\\\
-% =&c^{1/3}\cdot p_{d}^{2/3}+c^{1/3} \cdot  p^{-1/3}\cdot v(a_{s}(T_{i}+T_{a})+p_{0})
-% \end{split}
-% \end{equation}
-
-%We can see that in \eqref{eq:1_ppw_step2}, there are $3$ parameters that are not fixed, $p_{d}$, the core's temperature rise $T_{i}$ and $v$, all other parameters are known. However, to calculate optimal temperature, we need to minimize the number of the variables. Therefore, we will demonstrate how to express $T_{i}$ and $v$ using $p_{d}$ next.
-
-Note that, for a specific core $i$, $T$ in \eqref{eq:1_ppw} is composed of the core's temperature rise $T_{i}$ and the ambient temperature $T_{a}$. Until this point, the core are still not isolated, because $T_{i}$ can be impacted by other active cores. 
-
-% we need to extract relevant information from the $G$ matrix. Because the optimal temperature is calculated in steady state, 
-
-In order to calculate $T_{i}$ for the isolated core $i$, let's begin with calculate the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state , the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
+Let's begin with calculating the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state , the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
 \end{equation}
-Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$ to simplify notation, the simplified 
+Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$ to simplify notation, please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
 \eqref{eq:tc} can be expressed as
 \begin{equation}\label{sim_tc}
 \begin{split}
@@ -141,46 +113,29 @@ T_{c} &= AP,\\
 \end{split}
 \end{equation}
 
-% \begin{figure}
-% \centering
-% \includegraphics[width=0.7\linewidth]{fig/ap.eps}
-% \caption{The diagram of computing $T_{c}$.}
-% \label{fig:apt}
-% \end{figure}
-% the $A$ matrix links the core temperature rise and the power with consideration of the thermal impact of all cores and the package.
+As \eqref{sim_tc} shows, the temperature rise $T_{i}$ can be expressed as
+\begin{equation}\label{eq:ti}
+T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}. 
+\end{equation}
 
-Please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. As \eqref{sim_tc} shows, the diagonal elements in $A$ can be seen as the corresponding cores' resistance, and the non-diagonal elements in the same row in $A$ serves as the other cores' impact on current core's temperature. Therefore, the diagonal elements can be extracted from $A$ to calculate the isolated core's temperature. For a specific core $i$, its temperature rise $T_{i}$ can be computed as:
+Therefore, the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. The diagonal element $a_{ii}$ can be extracted from $A$ to calculate the temperature rise of isolated core $i$ as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
 &=a_{ii}(p_{d}+p_{s})\\
-&=a_{ii}(p_{d}+V_{dd} (p_{0}+a_{s}T)),
+&=a_{ii}(p_{d}+V_{dd} (p_{0}+a_{s}T)).
 \end{split}
 \end{equation}
-where $a_{ii}$ stands for the current core's corresponding diagonal element from $A$.
 
-We can see that variables in \eqref{eq:1_ppw} and \eqref{eq:t_ap} are $p_{d}$, $f$ and $v$. Also, $f$ and $v$ can be expressed with $p_{d}$ from \eqref{eq:dyn_power} and \eqref{eq:f_v}, then \eqref{eq:1_ppw} with the only variable $p_{d}$ can be expressed as:
+We can see that variables in \eqref{eq:1_ppw} and \eqref{eq:t_ap} are $p_{d}$, $f$ and $V_{dd}$. Also, $f$ and $V_{dd}$ can be expressed with $p_{d}$ from \eqref{eq:dyn_power} and \eqref{eq:f_v}, then \eqref{eq:1_ppw} with the only variable $p_{d}$ can be expressed as:
 
-% \begin{equation}\label{eq:v_pd}
-% \begin{split}
-% v = &f\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th},\\
-% =&c^{-1/3} \cdot p_{d}^{1/3}\cdot \frac{V_{max}-V_{th}}{f_{max}}+V_{th}.
-% \end{split}
-% \end{equation}
-
-% Integrating \eqref{eq:t_ap} and \eqref{eq:v_pd} into \eqref{eq:1_ppw_step2}, we have
-% \begin{equation}\label{eq:1_ppw_detail}
-% \begin{split}
-% \frac{1}{\text{PPW}} = &p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s}(a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
-%  &+ v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})+p_{0})
-% \end{split}
-% \end{equation}
 \begin{equation}\label{eq:1_ppw_2}
-\text{PPW} = \frac{\epsilon_{1}-\epsilon_{2}p_{d}^{1/3}}{\epsilon_{3}+p_{d}^{2/3}},
+\text{PPW} = \frac{\epsilon_{1}pd^{1/3}-\epsilon_{2}pd^{2/3}}{\epsilon_{3}+\epsilon_{4}pd^{1/3}+pd},
 \end{equation}
-where $\epsilon_{1}$, $\epsilon_{2}$ and $\epsilon_{1}$ stand for different positive constant. We can prove that an inflection point for the maximum $\text{PPW}$ exists with a corresponding positive $p_{d}$. With the obtained $p_{d}$, the optimal temperature can be calculated with \eqref{eq:t_ap}.
+where $\epsilon_{1}$, $\epsilon_{2}$, $\epsilon_{3}$ and $\epsilon_{4}$ stand for different positive constants. We can prove that an inflection point for the maximum $\text{PPW}$ exists with a corresponding positive $p_{d}$. 
+With the obtained $p_{d}$, the optimal temperature can be calculated with \eqref{eq:t_ap}.
 
-By solving \eqref{eq:1_ppw_2} for each of the uniquely positioned cores, the optimal temperatures vector for all cores can be formed.
+By solving \eqref{eq:1_ppw_2} for each of the uniquely positioned cores, the $P_{opt}$ for all cores can be obtained.
 
 \begin{table*}
   \caption{The optimal temperature error induce with and without temperature compensation parameter. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
@@ -222,9 +177,11 @@ By solving \eqref{eq:1_ppw_2} for each of the uniquely positioned cores, the opt
 
 
 \subsubsection{Optimal temperature with temperature compensation}
-The above mentioned method calculated the optimal temperature without consideration of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
+The above mentioned method calculated the $P_{opt}$ without consideration of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
 
-The basic idea of this compensation method is to add a temperature compensation parameter $\lambda$, by multiplying the core's temperature $T_{i}$ with $\lambda$, the core's temperature with other active cores' thermal impact can be obtained with approximation without complicating the problem.
+The basic idea of this compensation method is add a temperature compensation parameter $\lambda$ to stand for the temperature rise ratio 
+
+to add a temperature compensation parameter $\lambda$ related to active core number, by multiplying the core's temperature $T_{i}$ with $\lambda$, the core's temperature with other active cores' thermal impact can be obtained with approximation without complicating the problem.
 
 Just like optimal temperature $T_{opt}$, for different positioned cores, $\lambda$ is not the same. For core $i$, to obtain its $\lambda$, first we calculate the temperature rise $T_{i}$ from itself with \eqref{eq:t_ap}. Then we generate several random active cores distributions, note that core $i$ is included in active cores. By comparing the averaged temperature rise $T_{avg}$ of core $i$ in the random distributions with $T_{i}$, $\lambda$ can be obtained:
 \begin{equation}\label{eq:lambda}
