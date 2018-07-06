@@ -136,13 +136,46 @@ We can see that variables in \eqref{eq:1_ppw} and \eqref{eq:t_ap} are $p_{d}$, $
 \end{equation}
 where $\epsilon_{1}$, $\epsilon_{2}$, $\epsilon_{3}$ and $\epsilon_{4}$ stand for different positive constants. We can prove that as $pd$ increases from $0$, PPW will rise monotonically before decrease monotonically, which means we can obtain the energy-efficient power budget that maximizes PPW from \eqref{eq:1_ppw_2}. By solving \eqref{eq:1_ppw_2} for each kind of cores, the $P_{opt}$ for all cores can be obtained.
 
-\begin{table*}
-  \caption{The optimal temperature error induce with and without temperature compensation parameter. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{fig/tavg.eps}
+\caption{The process of obtaining $\lambda$ for each active core number.}
+\label{fig:tavg}
+\end{figure}
+
+\subsubsection{Calculating $P_{opt}$ for isolated core with temperature compensation}
+The $P_{opt}$ calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
+
+\begin{equation}\label{eq:c_full_1_ppw}
+\text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
+\end{equation}
+
+The basic idea of this method is to compensate for the temperature rise caused by other active cores in \eqref{eq:1_ppw} with a parameter $\lambda$, which stands for the temperature rise ratio induced by other active cores, as shown in \eqref{eq:c_full_1_ppw}. The approximation accuracy of this method depends on how often is $\lambda$ updated. If for each active core distribution we generate a $\lambda_{i}$ to stand for the temperature rise ratio caused by other active cores of core $i$, there calculation would be perfectly accurate. However, the computational complexity will be too high. If we generate a single $\lambda$ to stand for the temperature rise ratio for all cores in all cases, the error would be too large, because the temperature rise induced by other cores may vary dramatically in dark silicon. We find out if we generate a $\lambda$ for each active core number for each kind of core, the accuracy and overhead can both be satisfactory. 
+
+
+As shown in Fig.~\ref{fig:tavg}, for core $i$, to obtain its $\lambda$ for $4$ active cores, first we calculate the temperature rise $T_{0}$ with core $i$ being the only active core. Then we generate several random active cores distributions with $4$ active cores, note that core $i$ is always included in active cores. Note that the power of all active cores are set to be the same. By comparing the averaged temperature rise $T_{avg}$ of core $i$ in the random distributions with $T_{0}$, $\lambda$ for core $i$ with $4$ active cores can be obtained:
+\begin{equation}\label{eq:lambda}
+\lambda = \frac{T_{avg}-T_{0}}{T_{0}}.
+\end{equation}
+
+% However, the temperature rise induced by other cores may vary dramatically, for different active core numbers and various active core distributions. If for a single core, only a single $\lambda$ is used to compensate temperature for all scenarios, the error could still be large. In our work, for each core, we implement a $\lambda$ for each active core number to eliminate large error. In another word, for each core, 
+By repeating the process, we can generate a matrix $\Lambda$, in which $\lambda_{ij}$ stands for the compensation parameter for core $i$ when the active core number is $j$. By solving \eqref{eq:c_full_1_ppw} for every $\lambda$, the energy-efficient power budget matrix can be obtained, in which $P_{ij}$ stands for the power budget for core $i$ when the active core number is $j$.
+
+In order to test the effectiveness of $\lambda$, for example, we first choose a $9$-core system with $4$ active cores, several active core distributions can be generated with core $i$ always turned on. We can obtain the $\lambda_{i}$ for core $i$ for each active core distribution, which is accurate, therefore the energy-efficient power budget calculated in this case can be considered "golden". We also obtain the energy-efficient power budgets calculated with $\lambda_{i4}$ and without $\lambda$ both. By comparing the power budget induced temperature of the latter $2$ cases with "golden", the effective of $\lambda$ can be verified.
+
+% the optimal temperature for a specified core with temperature compensation parameter can be computed in \eqref{eq:c_full_1_ppw} and \eqref{eq:t_ap}. Then, we randomly generate several $4$ active core distributions of a $9$-core system, and compute the real optimal temperature of each of the distribution. Note that the specified core in the previous step is included in the active cores. By comparing the difference of the optimal temperature, the effective of the temperature compensation parameter can be verified.
+
+In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table~\ref{tab:compensation}.
+
+\begin{table}
+  \caption{The energy-efficient power budget induced temperature error for cases with and without $\lambda$. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
   \label{tab:compensation}
   \centering
   \begin{tabular}{c|c||p{1cm}<{\centering}|p{1cm}<{\centering}||p{1cm}<{\centering}|p{1cm}<{\centering}}
     \hline
-    Core & Active     & \multicolumn{2}{c||}{$T_{err}$($^{\circ}$C)  with $\lambda$}  & \multicolumn{2}{c}{$T_{err}$($^{\circ}$C) without $\lambda$}\\
+    Core & Active     & \multicolumn{2}{c||}{With $\lambda$ ($^{\circ}$C)}  & \multicolumn{2}{c}{Without $\lambda$ ($^{\circ}$C)}\\
 \cline{3-6}
     \#       &   \#       &  Avg    & Max &  Avg  &  Max  \\
      \hline
@@ -172,48 +205,14 @@ where $\epsilon_{1}$, $\epsilon_{2}$, $\epsilon_{3}$ and $\epsilon_{4}$ stand fo
                       & 76 &	 0.5&	1.8& 16.6 & 17.6\\
 \hline
 \end{tabular}
-\end{table*}
+\end{table}
 
 
-\subsubsection{Calculating $P_{opt}$ for isolated core with temperature compensation}
-The $P_{opt}$ calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
-
-The basic idea of this method is to compensate for the temperature rise caused by other active cores in \eqref{eq:1_ppw}. 
-The approximation accuracy of this method depends on. 
-If for each active core distribution we generate a $\lambda_{i}$ to stand for the temperature rise caused by other active cores of core $i$, there will be no error. However, the computational complexity is too high. We find out if $\lambda$ is related to active core number, 
-
-to add a temperature compensation parameter $\lambda$ related to active core number, by multiplying the core's temperature $T_{i}$ with $\lambda$, the core's temperature with other active cores' thermal impact can be obtained with approximation without complicating the problem.
-
-Just like optimal temperature $T_{opt}$, for different positioned cores, $\lambda$ is not the same. For core $i$, to obtain its $\lambda$, first we calculate the temperature rise $T_{i}$ from itself with \eqref{eq:t_ap}. Then we generate several random active cores distributions, note that core $i$ is included in active cores. By comparing the averaged temperature rise $T_{avg}$ of core $i$ in the random distributions with $T_{i}$, $\lambda$ can be obtained:
-\begin{equation}\label{eq:lambda}
-\lambda = \frac{T_{avg}-T_{i}}{T_{i}}.
-\end{equation}
-
-However, the temperature rise induced by other cores may vary dramatically, for different active core numbers and various active core distributions. If for a single core, only a single $\lambda$ is used to compensate temperature for all scenarios, the error could still be large. In our work, for each core, we implement a $\lambda$ for each active core number to eliminate large error. In another word, for each core, we generate a vector, in which elements are the $\lambda$ for each active core number. By integrating all the vectors, a compensation matrix $\Lambda \in \mathbb{R}^{n \times n}$ is created. $\lambda_{ij}$ in $\Lambda$ stands for the compensation parameter for core $i$ when the active core number is $j$.
-
-By integrating $\lambda$ into \eqref{eq:1_ppw}, we have
-
-\begin{equation}\label{eq:c_full_1_ppw}
-\text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})},
-\end{equation}
-
-which can be transformed into an expression with the only variable being $p_{d}$ like \eqref{eq:1_ppw_2}. By solving \eqref{eq:c_full_1_ppw} for every $\lambda$, the optimal temperature matrix can be obtained, in which $T_{ij}$ stands for the optimal temperature for core $i$ when the active core number is $j$.
-
-In order to test the effectiveness of the temperature compensation parameter, for example, we first choose a $9$-core system with $4$ active core, the optimal temperature for a specified core with temperature compensation parameter can be computed in \eqref{eq:c_full_1_ppw} and \eqref{eq:t_ap}. Then, we randomly generate several $4$ active core distributions of a $9$-core system, and compute the real optimal temperature of each of the distribution. Note that the specified core in the previous step is included in the active cores. By comparing the difference of the optimal temperature, the effective of the temperature compensation parameter can be verified.
-
-In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table~\ref{tab:compensation}.
-
-% \begin{equation}\label{eq:c_full_1_ppw}
-% \begin{split}
-% \frac{1}{\text{PPW}}=&\frac{p_{d}+p_{s}}{f}\\
-% =&\frac{p_{d}+v(a_{s} \cdot ((1+\lambda)T_{i}+T_{a})+p_{0})}{p_{d}^{1/3}}\\
-% =&p_{d}^{2/3}+p_{d}^{-1/3}\cdot v(a_{s} ((a_{i} \cdot p_{d}+a_{i} \cdot p_{0} \cdot v\\
-% &+ v \cdot a_{i} \cdot a_{s} \cdot T_{a})/(1-v \cdot a_{i} \cdot a_{s})(1+\lambda)+T_{a})+p_{0}).
-% \end{split}
-% \end{equation}
 
 \subsection{Energy-efficient power budgeting with optimal performance in steady state}
-Now that the optimal temperature for all cores in each active core number is obtained, as long as the active cores' temperature is as close to the corresponding $T_{opt}$ as possible, the energy efficiency of the system is maximized, no matter what active core distribution it may be. However, it's not only energy efficiency we are seeking, the throughput of the system is also an important metric, which are affected by the active core distribution greatly in dark silicon system. Therefore, the goal of our energy-efficient power budgeting is to maximize the throughput while the energy efficiency is maximized.
+Now that the energy-efficient power budget for all cores in each active core number is obtained, as long as the active cores' power is as close to the corresponding $P_{opt}$ as possible, the energy efficiency of the system is maximized, no matter what active core distribution it may be. However, it's not only energy efficiency we are seeking, the throughput of the system is also an important metric, which are affected by the active core distribution greatly in dark silicon system. Therefore, the next goal of our energy-efficient power budgeting is to maximize the throughput while the energy efficiency is maximized.
+
+Considering it's a combinational problem to find the optimal active core distribution that leads to maximum throughput, 
 
 In \eqref{eq:opt_topt}, we have shown that we can allocate energy-efficient power budget by making the temperature of each core as close to the optimal temperature $T_{opt}$ of itself. However, \eqref{eq:opt_topt} is still a combinational problem, which is very hard to solve. In this section, a steady state example is given to show how to efficiently find a sub-optimal solution using a greedy based method. Please note that, we present our method in steady state mainly for the purpose of clarity.
 
