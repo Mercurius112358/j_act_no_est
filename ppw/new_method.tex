@@ -24,9 +24,14 @@ T_{c} \preceq T_{th}.\\
 \end{equation}
 where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector containing the maximum allowed temperature rises from the ambient temperature; card$(P)$ means the cardinality or size of the vector $P$, which is defined as the number of the nonzero components in $P$. In our case, card$(P) = n_{a}$ means there are $n_{a}$ active cores.
 
+Before we solve this optimization problem, first we prove this s/p is a quasi concave function. Therefore, the optimization problem has a unique solution of core speeds.
+
 The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem, which comes from the fact that the cores have thermal impact on each other, changing the DVFS stage of one core not only would change the PPW of the core itself, but would also change the temperature rise of other cores, therefore changing the PPW of them, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain the optimal solution. Therefore, we need to transform this problem into a problem with low complexity.
 
-The optimization problem can be greatly simplified if the thermal impact among cores can be eliminated. In order to isolate each of the core, we first express the PPW of a single core $i$ in steady state as:
+We shall prove 
+
+
+The optimization problem can be greatly simplified if the thermal impact among cores can be eliminated, which can be achieved by isolating the cores. In order to isolate each of the core, we first express the PPW of a single core $i$ in steady state as:
 \begin{equation}\label{eq:min_ppw}
 \text{PPW}=\frac{f}{p_{d}+p_{s}},
 \end{equation}
@@ -83,18 +88,34 @@ T_{i}&\approx a_{ii} \cdot p_{i}\\
 \end{equation}
 
 
-\begin{figure}
-\centering
-\includegraphics[width=1\linewidth]{fig/ppw_t.eps}
-\caption{A optimal temperature rise that leads to maximum PPW exists for isolated cores.}
-\label{fig:ppw_t}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.8\linewidth]{fig/ppw_t.eps}
+% \caption{An optimal temperature rise that leads to maximum PPW exists for isolated cores.}
+% \label{fig:ppw_t}
+% \end{figure}
 
-By substituting, PPW of a single isolated core can be expressed as:
-\begin{equation}\label{eq:ppw_ti}
-\text{PPW}=\frac{(T_{i}/a_{ii}-V_{dd}(p_{0}+a_{s}(T_{i}+T_{a})))^{1/3}}{T_{i}/a_{ii}},
+% By substituting, PPW of a single isolated core can be expressed as:
+% \begin{equation}\label{eq:ppw_ti}
+% \text{PPW}=\frac{(T_{i}/a_{ii}-V_{dd}(p_{0}+a_{s}(T_{i}+T_{a})))^{1/3}}{T_{i}/a_{ii}},
+% \end{equation}
+% with which we can plot the figure of PPW against $T_{i}$ in Fig.~\ref{fig:ppw_t}. We can see that as $T_{i}$ increases, PPW will rise monotonically before reaching a peak value, then it will decrease monotonically, 
+
+which means for the isolated core, an optimal temperature $T_{opt}$ exists, at which the PPW of the core is maximized. 
+The closer the core's temperature is to $T_{opt}$, the higher the PPW of the core. Then for the isolated core, the optimization problem can be transformed into:
+\begin{equation}\label{eq:ppw_t_opt}
+\begin{split}
+\text{minimize } &  \left \| {T}_{opt}-T_{c} \right \|_{2}\\
+\text{subject to} &\left\{
+\begin{array}{lr}
+\text{card}(P) = n_{a},\\
+{A}P \preceq {T}_{th}.\\
+\end{array}
+\right.
+\end{split}
 \end{equation}
-with which we can plot the figure of PPW agains $T_{i}$ in Fig.~\ref{fig:ppw_t}. We can see that as $T_{i}$ increases, PPW will rise monotonically before decrease monotonically, which means an optimal temperarure $T_{opt}$ that maximizes PPW exists.
+
+
 
 \begin{figure}
 \centering
@@ -103,7 +124,9 @@ with which we can plot the figure of PPW agains $T_{i}$ in Fig.~\ref{fig:ppw_t}.
 \label{fig:unique_position}
 \end{figure}
 
-However, if the core can be isolated, we can make the following observations:
+However, the $T_{opt}$ obtained from \eqref{eq:ppw_ti} ignores the thermal impact of other active cores, which is only accurate when there is only $1$ active core. For cases with active cores more than $1$, the temperature rise caused by other active cores will make $T_{opt}$ deviate from the one we obtained from \eqref{eq:ppw_ti}. And for different active core distributions, the thermal impact active cores have on each other will be different, the $T_{opt}$ is also different. Therefore, to solve the optimization problem in \eqref{eq:ppw_t_opt} with good accuracy, we have to obtain all the different $T_{opt}$ for each active core number, active core distribution for each core, which is too computationally expensive, and we need a 
+
+ we can make the following observations:
 \begin{itemize}
 \item The power budget of each isolated core that leads to maximum PPW can be obtained independently, therefore the problem can be greatly simplified.
 \item All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. Calculating the energy-efficient power budget for each kind instead of all cores can also greatly reduce the computation time.
