@@ -24,69 +24,23 @@ T_{c} \preceq T_{th}.\\
 \end{equation}
 where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector containing the maximum allowed temperature rises from the ambient temperature; card$(P)$ means the cardinality or size of the vector $P$, which is defined as the number of the nonzero components in $P$. In our case, card$(P) = n_{a}$ means there are $n_{a}$ active cores.
 
-The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem. Therefore, we need to transform this problem into a problem with low complexity.
+The optimization problem in \eqref{eq:opt_ppw} is very hard to solve, because of the high computational complexity of the problem, which comes from the fact that the cores have thermal impact on each other, changing the DVFS stage of one core not only would change the PPW of the core itself, but would also change the temperature rise of other cores, therefore changing the PPW of them, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain the optimal solution. Therefore, we need to transform this problem into a problem with low complexity.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.46\linewidth]{fig/unique_position.eps}
-\caption{$3$ kinds of cores based on their positions in the system for a $16$-core system.}
-\label{fig:unique_position}
-\end{figure}
-
-The high computational complexity of the problem in \eqref{eq:opt_ppw} comes from the fact that the cores have thermal impact on each other, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain optimal solution. However, if we can isolate each of the core, we can make the following observations:
-\begin{itemize}
-\item The power budget of each isolated core that leads to maximum PPW can be obtained independently, therefore the problem can be greatly simplified.
-\item All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. Calculating the energy-efficient power budget for each kind instead of all cores can also greatly reduce the computation time.
-\item Maximum PPW can be obtained if the calculated energy-efficient power budget is applied to each of the active cores, no matter what active core distribution it is. 
-\end{itemize}
-%\subsection{Overview of energy efficiency}
-
-
-
-\begin{figure}
-  \centering
-  \subfigure[MIPS = 246.3, MIPS/Watt = 2.6]{
-    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_1.eps}\label{fig:opt_tem_1}
-  }
-  \hspace{1ex}
-  \subfigure[MIPS = 215.6, MIPS/Watt = 2.6]{
-    \includegraphics[width=0.46\columnwidth]{fig/opt_tem_2.eps}\label{fig:opt_tem_2}
-  }
-  \caption{Temperature distributions of a 9-core system with 5 cores active in maximum energy efficiency.}
-  \label{fig:opt_tem}
-\end{figure}
-
-For the last observation, we also provide experimental evidence in addition. We use Monte Carlo method, by fixing active core number and distribution, only changing the DVFS stages of active cores, we obtain the optimal DVFS stages of each active cores that leads to maximum energy efficiency for several fixed active core distributions. The Monte Carlo simulation number for each fixed active core distribution is $10000$. The corresponding temperature distribution is plotted in Fig.~\ref{fig:opt_tem}, in which the temperature distributions of a $9$-core system with $5$ active cores are shown. 
-
-As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_2} are relatively the same, although the active core distribution is not the same for them, which means that the active core distribution that corresponds to optimal energy efficiency is not unique. However, for different active core distributions, the throughput while in optimal energy efficiency are not the same.
-
-Based on this observation, we first talk about isolating cores and calculating energy-efficient power budget for isolated cores in Section $4.1$, then the method to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency for steady state is presented in Section $4.2$. Finally, in Section $4.3$, the energy-efficient power budgeting with optimal throughput considering transient effects is introduced.
-
-
-\subsection{Energy-efficient power budget for isolated core}
-Due to the thermal impact active cores have on each other, the power budget $P_{opt}$, that leads to maximum PPW is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the energy-efficient power budget is proposed in this section.
-
-For simplicity consideration, the steady state case is presented first. Instead of calculating the power budget using brute force method, the basic idea of the new method is to isolate the cores, and calculate the $P_{opt}$ for each kind of cores, therefore accelerating the power budgeting process, as shown in Section $4.1.1$. And the error induced by isolating cores can be diminished with a active-core-number related compensation parameter as shown in Section $4.1.2$.
-
-
-\subsubsection{Calculating $P_{opt}$ for isolated core}
-Calculating the $P_{opt}$ for the all active cores at the same time requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. If the cores are isolated, then the problem can be simplified.
-
-The optimization object of maximizing PPW of a single core can be expressed as:
+The optimization problem can be greatly simplified if the thermal impact among cores can be eliminated. In order to isolate each of the core, we first express the PPW of a single core $i$ in steady state as:
 \begin{equation}\label{eq:min_ppw}
 \text{PPW}=\frac{f}{p_{d}+p_{s}},
 \end{equation}
 
-
 By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_leakage} into \eqref{eq:min_ppw}, we have
 
 \begin{equation}\label{eq:1_ppw}
-\text{PPW} = \frac{f}{p_{d}+V_{dd}(a_{s}T+p_{0})}.
+\text{PPW} = \frac{f}{p_{d}+V_{dd}(a_{s}(T_{i}+T_{a})+p_{0})}.
 \end{equation}
 
-Note that, for a specific core $i$, $T$ in \eqref{eq:1_ppw} is composed of the core's temperature rise $T_{i}$ and the ambient temperature $T_{a}$. Until this point, the core are still not isolated, because $T_{i}$ can be impacted by other active cores. In order to isolate core $i$, we have to express $T_{i}$ with only the power of core $i$ itself.
+Note that, the temperature rise $T_{i}$ of the single core in \eqref{eq:1_ppw} is composed of the temperature rise caused by the core itself $T_{self}$, the temperature rise caused by other active cores $T_{other}$, $T_{a}$ is the ambient temperature. 
+In order to isolate core $i$, we have to express the temperature rise of core $i$ with only the power of core $i$ itself.
 
-Let's begin with calculating the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state , the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
+Let's begin with calculating the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state, the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
 \end{equation}
@@ -124,10 +78,126 @@ Therefore, the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resi
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
-&=a_{ii}(p_{d}+p_{s})\\
-&=a_{ii}(p_{d}+V_{dd} (p_{0}+a_{s}T)).
+&=a_{ii}(p_{d}+p_{s})
 \end{split}
 \end{equation}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=1\linewidth]{fig/ppw_t.eps}
+\caption{A optimal temperature rise that leads to maximum PPW exists for isolated cores.}
+\label{fig:ppw_t}
+\end{figure}
+
+By substituting, PPW of a single isolated core can be expressed as:
+\begin{equation}\label{eq:ppw_ti}
+\text{PPW}=\frac{(T_{i}/a_{ii}-V_{dd}(p_{0}+a_{s}(T_{i}+T_{a})))^{1/3}}{T_{i}/a_{ii}},
+\end{equation}
+with which we can plot the figure of PPW agains $T_{i}$ in Fig.~\ref{fig:ppw_t}. We can see that as $T_{i}$ increases, PPW will rise monotonically before decrease monotonically, which means an optimal temperarure $T_{opt}$ that maximizes PPW exists.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.46\linewidth]{fig/unique_position.eps}
+\caption{$3$ kinds of cores based on their positions in the system for a $16$-core system.}
+\label{fig:unique_position}
+\end{figure}
+
+However, if the core can be isolated, we can make the following observations:
+\begin{itemize}
+\item The power budget of each isolated core that leads to maximum PPW can be obtained independently, therefore the problem can be greatly simplified.
+\item All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. Calculating the energy-efficient power budget for each kind instead of all cores can also greatly reduce the computation time.
+\item Maximum PPW can be obtained if the calculated energy-efficient power budget is applied to each of the active cores, no matter what active core distribution it is. 
+\end{itemize}
+%\subsection{Overview of energy efficiency}
+
+
+
+% \begin{figure}
+%   \centering
+%   \subfigure[MIPS = 246.3, MIPS/Watt = 2.6]{
+%     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_1.eps}\label{fig:opt_tem_1}
+%   }
+%   \hspace{1ex}
+%   \subfigure[MIPS = 215.6, MIPS/Watt = 2.6]{
+%     \includegraphics[width=0.46\columnwidth]{fig/opt_tem_2.eps}\label{fig:opt_tem_2}
+%   }
+%   \caption{Temperature distributions of a 9-core system with 5 cores active in maximum energy efficiency.}
+%   \label{fig:opt_tem}
+% \end{figure}
+
+For the last observation, we also provide experimental evidence in addition. We use Monte Carlo method, by fixing active core number and distribution, only changing the DVFS stages of active cores, we obtain the optimal DVFS stages of each active cores that leads to maximum energy efficiency for several fixed active core distributions. The Monte Carlo simulation number for each fixed active core distribution is $10000$. The corresponding temperature distribution is plotted in Fig.~\ref{fig:opt_tem}, in which the temperature distributions of a $9$-core system with $5$ active cores are shown. 
+
+As can be seen, the optimal energy efficiency of both Fig.~\ref{fig:opt_tem_1} and Fig.~\ref{fig:opt_tem_2} are relatively the same, although the active core distribution is not the same for them, which means that the active core distribution that corresponds to optimal energy efficiency is not unique. However, for different active core distributions, the throughput while in optimal energy efficiency are not the same.
+
+Based on this observation, we first talk about isolating cores and calculating energy-efficient power budget for isolated cores in Section $4.1$, then the method to choose the active core distribution that can provide the maximum throughput while in optimal energy efficiency for steady state is presented in Section $4.2$. Finally, in Section $4.3$, the energy-efficient power budgeting with optimal throughput considering transient effects is introduced.
+
+
+\subsection{Energy-efficient power budget for isolated core}
+Due to the thermal impact active cores have on each other, the power budget $P_{opt}$, that leads to maximum PPW is relative to many variables, such as active core number, active core distribution and the core's position in the multi-core system. A brute force method to test all possible power budget for all of the possible combinations, in order to find the one in which the PPW is maximized is too computationally expensive. Therefore, an efficient method to calculate the energy-efficient power budget is proposed in this section.
+
+For simplicity consideration, the steady state case is presented first. Instead of calculating the power budget using brute force method, the basic idea of the new method is to isolate the cores, and calculate the $P_{opt}$ for each kind of cores, therefore accelerating the power budgeting process, as shown in Section $4.1.1$. And the error induced by isolating cores can be diminished with a active-core-number related compensation parameter as shown in Section $4.1.2$.
+
+
+\subsubsection{Calculating $P_{opt}$ for isolated core}
+Calculating the $P_{opt}$ for the all active cores at the same time requires consideration of the thermal impact that cores have on each other, which greatly complicates the problem when the core number and active core number is large. If the cores are isolated, then the problem can be simplified.
+
+% The optimization object of maximizing PPW of a single core can be expressed as:
+% \begin{equation}\label{eq:min_ppw}
+% \text{PPW}=\frac{f}{p_{d}+p_{s}},
+% \end{equation}
+
+
+% By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_leakage} into \eqref{eq:min_ppw}, we have
+
+% \begin{equation}\label{eq:1_ppw}
+% \text{PPW} = \frac{f}{p_{d}+V_{dd}(a_{s}T+p_{0})}.
+% \end{equation}
+
+% Note that, for a specific core $i$, $T$ in \eqref{eq:1_ppw} is composed of the core's temperature rise $T_{i}$ and the ambient temperature $T_{a}$. Until this point, the core are still not isolated, because $T_{i}$ can be impacted by other active cores. In order to isolate core $i$, we have to express $T_{i}$ with only the power of core $i$ itself.
+
+% Let's begin with calculating the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state , the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
+% \begin{equation}\label{eq:tc}
+% T_{c} = B^{T}G^{-1}BP.
+% \end{equation}
+% Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$ to simplify notation, please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
+% \eqref{eq:tc} can be expressed as
+% \begin{equation}\label{sim_tc}
+% \begin{split}
+% T_{c} &= AP,\\
+% &=
+% {\left[
+% \begin{matrix}
+%  a_{11} & a_{12} & \cdots & a_{1n} \\
+%  a_{21} & a_{22} & \cdots & a_{2n} \\
+%  \vdots & \vdots & \ddots & \vdots \\
+%  a_{n1} & a_{n2} & \cdots & a_{nn} \\
+% \end{matrix}
+% \right]}
+% {\left[
+% \begin{matrix}
+%  p_{1}   \\
+%  p_{2}   \\
+%  \vdots  \\
+%  p_{n}   \\
+% \end{matrix}
+% \right]}.\\
+% \end{split}
+% \end{equation}
+
+% As \eqref{sim_tc} shows, the temperature rise $T_{i}$ can be expressed as
+% \begin{equation}\label{eq:ti}
+% T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}. 
+% \end{equation}
+
+% Therefore, the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. The diagonal element $a_{ii}$ can be extracted from $A$ to calculate the temperature rise of isolated core $i$ as:
+% \begin{equation}\label{eq:t_ap}
+% \begin{split}
+% T_{i}&\approx a_{ii} \cdot p_{i}\\
+% &=a_{ii}(p_{d}+p_{s})\\
+% &=a_{ii}(p_{d}+V_{dd} (p_{0}+a_{s}T)).
+% \end{split}
+% \end{equation}
 
 We can see that variables in \eqref{eq:1_ppw} and \eqref{eq:t_ap} are $p_{d}$, $f$ and $V_{dd}$. Also, $f$ and $V_{dd}$ can be expressed with $p_{d}$ from \eqref{eq:dyn_power} and \eqref{eq:f_v}, then \eqref{eq:1_ppw} with the only variable $p_{d}$ can be expressed as:
 
