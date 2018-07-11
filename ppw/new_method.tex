@@ -120,7 +120,7 @@ which eliminates the thermal impact of other active cores. As proved in Appendix
 \label{fig:unique_position}
 \end{figure}
 
-Note that we do not need to repeat the calculating process for all cores to obtain all the optimal temperature. All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.\ref{fig:unique_position}. Calculating the optimal temperature for each kind of core instead of all cores can greatly reduce the computation time.
+Note that we do not need to repeat the calculating process for all cores to obtain all the optimal temperature. All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.\ref{fig:unique_position}. The cores of the same kind share the same diagonal elements in $A$ matrix. Therefore, calculating the optimal temperature for each kind of core instead of all cores can greatly reduce the computation time.
 
 However, the optimal temperature obtained for isolated cores ignores the thermal impact of other active cores, which is only accurate when there is only $1$ active core. For cases with active cores more than $1$, the temperature rise caused by other active cores will make the optimal temperature deviate from the one we obtained from \eqref{eq:1_ppw_2}. Also, for different active core distributions, the thermal impact active cores have on each other will be different, the $T_{opt}$ is different. Therefore, a compensation method is need to correct the error induced by different active core number and active core distribution.
 
@@ -157,25 +157,29 @@ The optimal temperature calculated in previous section does not consider of othe
 \begin{equation}\label{eq:t_compensation}
 \begin{split}
 T_{i} &=a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n},\\
-&=(1+\lambda)a_{ii}p_{i}.
+&\approx(1+\lambda)a_{ii}p_{i}.
 \end{split}
 \end{equation}
 
-The basic idea of this method is to compensate for the temperature rise caused by other active cores in \eqref{eq:1_ppw} with a parameter $\lambda$, which stands for the temperature rise ratio induced by other active cores, as shown in \eqref{eq:t_compensation}. 
+The basic idea of this method is to compensate for the temperature rise caused by other active cores in \eqref{eq:1_ppw} with a parameter $\lambda$, which stands for the temperature rise ratio induced by other active cores, as shown in \eqref{eq:t_compensation}. With $\lambda$, the thermal impact other active cores have on the isolated core can be introduced, therefore the error induced by isolation can be corrected.
 
+The temperature compensation can be perfectly accurate, if for fixed active core distribution, for core $i$ we obtain a $\lambda$, which is calculated as:
+\begin{equation}\label{eq:lambda_accuracy}
+\lambda =\frac{\sum_{l=1}^{n}a_{il}p_{l}-a_{ii}p_{i}}{a_{ii}p_{i}},
+\end{equation}
+then the temperature rise caused by other active cores can be compensated without error, however, the overhead would be too high. We find out if we generate a $\lambda$ for each active core number for each kind of core, and assume the power of every active core are the same, the accuracy and overhead can both be satisfactory. $\lambda_{ij}$, which stand for the $\lambda$ for core $i$ when active core number is $j$ can be calculated as:
+\begin{equation}\label{eq:lambda}
+\lambda =\frac{j \cdot \sum_{l=1}^{n}a_{il}-a_{ii}}{a_{ii}},
+\end{equation}
 
+% The approximation accuracy of this method depends on how many $\lambda$ we generate. If for each active core distribution we generate a $\lambda_{i}$ to stand for the temperature rise ratio caused by other active cores of core $i$, then calculation would be perfectly accurate. However, the computational complexity will be too high. If we generate a single $\lambda$ to stand for the temperature rise ratio for all cores in all cases, the error would be too large, because the temperature rise induced by other active cores may vary dramatically for different active core numbers in dark silicon. 
 
-The approximation accuracy of this method depends on how often is $\lambda$ updated. If 
-
-
-If for each active core distribution we generate a $\lambda_{i}$ to stand for the temperature rise ratio caused by other active cores of core $i$, then calculation would be perfectly accurate. However, the computational complexity will be too high. If we generate a single $\lambda$ to stand for the temperature rise ratio for all cores in all cases, the error would be too large, because the temperature rise induced by other active cores may vary dramatically for different active core numbers in dark silicon. We find out if we generate a $\lambda$ for each active core number for each kind of core, the accuracy and overhead can both be satisfactory. 
-
-\begin{figure}
-\centering
-\includegraphics[width=0.9\linewidth]{fig/tavg.eps}
-\caption{The process of obtaining $\lambda$ for each active core number.}
-\label{fig:tavg}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.9\linewidth]{fig/tavg.eps}
+% \caption{The process of obtaining $\lambda$ for each active core number.}
+% \label{fig:tavg}
+% \end{figure}
 
 \begin{table}
   \caption{The energy-efficient power budget induced temperature error for cases with and without $\lambda$. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
@@ -216,22 +220,24 @@ If for each active core distribution we generate a $\lambda_{i}$ to stand for th
 \end{table}
 
 
-As shown in Fig.~\ref{fig:tavg}, for core $i$, to obtain its $\lambda$ for $4$ active cores, first we calculate the temperature rise $T_{0}$ with core $i$ being the only active core. Then we generate several random active cores distributions with $4$ active cores, note that core $i$ is always included in active cores. Note that the power of all active cores are set to be the same. By comparing the averaged temperature rise $T_{avg}$ of core $i$ in the random distributions with $T_{0}$, $\lambda$ for core $i$ with $4$ active cores can be obtained:
-\begin{equation}\label{eq:lambda}
-\lambda = \frac{T_{avg}-T_{0}}{T_{0}}.
+% As shown in Fig.~\ref{fig:tavg}, for core $i$, to obtain its $\lambda$ for $4$ active cores, first we calculate the temperature rise $T_{0}$ with core $i$ being the only active core. Then we generate several random active cores distributions with $4$ active cores, and core $i$ is always included in active cores. Note that the power of all active cores are set to be the same. By comparing the averaged temperature rise $T_{avg}$ of core $i$ in the random distributions with $T_{0}$, $\lambda$ for core $i$ with $4$ active cores can be obtained:
+% \begin{equation}\label{eq:lambda}
+% \lambda = \frac{T_{avg}-T_{0}}{T_{0}}.
+% \end{equation}
+
+By repeating the process, we can generate a matrix $\Lambda$, in which $\lambda_{ij}$ stands for the compensation parameter for core $i$ when the active core number is $j$. We substitute the $T_{i}$ in \eqref{eq:1_ppw} with the compensated temperature in \eqref{eq:t_compensation} and get:
+\begin{equation}\label{eq:1_ppw_3}
+\begin{split}
+\text{PPW} =& (\frac{(1+\lambda)(V_{dd}(a_{s}\cdot T_{a}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
+&-\frac{\lambda(p_{d}+V_{dd}(a_{s}\cdot T_{a}+p_{0}))}{f})^{-1},
+\end{split}
 \end{equation}
 
-% However, the temperature rise induced by other cores may vary dramatically, for different active core numbers and various active core distributions. If for a single core, only a single $\lambda$ is used to compensate temperature for all scenarios, the error could still be large. In our work, for each core, we implement a $\lambda$ for each active core number to eliminate large error. In another word, for each core, 
-By repeating the process, we can generate a matrix $\Lambda$, in which $\lambda_{ij}$ stands for the compensation parameter for core $i$ when the active core number is $j$. By solving \eqref{eq:c_full_1_ppw} for every $\lambda$, the energy-efficient power budget matrix can be obtained, in which $P_{ij}$ stands for the power budget for core $i$ when the active core number is $j$.
+By solving \eqref{eq:c_full_1_ppw} for every $\lambda$, the energy-efficient optimal temperature matrix can be obtained, in which $T_{ij}$ stands for the optimal temperature for core $i$ when the active core number is $j$.
 
 In order to test the effectiveness of $\lambda$, for example, we first choose a $9$-core system with $4$ active cores, several active core distributions can be generated with core $i$ always turned on. We can obtain the $\lambda_{i}$ for core $i$ for each active core distribution, which is accurate, therefore the energy-efficient power budget calculated in this case can be considered "golden". We also obtain the energy-efficient power budgets calculated with $\lambda_{i4}$ and without $\lambda$ both. By comparing the power budget induced temperature of the latter $2$ cases with "golden", the effective of $\lambda$ can be verified.
 
-% the optimal temperature for a specified core with temperature compensation parameter can be computed in \eqref{eq:c_full_1_ppw} and \eqref{eq:t_ap}. Then, we randomly generate several $4$ active core distributions of a $9$-core system, and compute the real optimal temperature of each of the distribution. Note that the specified core in the previous step is included in the active cores. By comparing the difference of the optimal temperature, the effective of the temperature compensation parameter can be verified.
-
 In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table~\ref{tab:compensation}.
-
-
-
 
 \subsection{Energy-efficient power budgeting with optimal performance in steady state}
 Now that the energy-efficient power budget for all cores in each active core number is obtained, as long as the active cores' power is as close to the corresponding $P_{opt}$ as possible, the energy efficiency of the system is maximized, no matter what active core distribution it may be. However, it's not only energy efficiency we are seeking, the throughput of the system is also an important metric, which are affected by the active core distribution greatly in dark silicon system. Therefore, the next goal of our energy-efficient power budgeting is to maximize the throughput while the energy efficiency is maximized.
