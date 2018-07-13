@@ -28,7 +28,7 @@ Before we solve this optimization problem, in Appendix A, for a fixed active cor
 
 To find the unique solution for the optimization problem in \eqref{eq:opt_ppw} is very hard, because of the high computational complexity of the problem, which comes from the fact that the cores have thermal impact on each other, changing the DVFS stage of one core not only would change the PPW of the core itself, but would also change the temperature rise of other cores, therefore changing the PPW of them, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain the optimal solution. Therefore, we need to transform this problem into a problem with low complexity.
 
-We can prove $T$ is convex w.r.t $f$, considering for a fixed active core distribution, there is a unique $f$ that can maximize PPW. Therefore, for a fixed active core distribution, a unique temperature vector, denoted by $\hat{T}_{opt}$, that can maximize PPW also exists. However, $\hat{T}_{opt}$ only works for a fixed active core distribution, obtaining $\hat{T}_{opt}$ for each active core distribution only complicates the problem. The reason $\hat{T}_{opt}$ only works for a fixed active core distribution is that the thermal impact among cores are different for different active core distributions. If the thermal interactions among cores can be neglected, then for each core we can obtain its optimal temperature independently, with which a vector $\hat{T}_{opt}$ is generated, the elements in $\hat{T}_{opt}$ are the optimal temperatures that lead to maximum PPW for each core.
+We can prove $T$ is convex w.r.t $f$, considering for a fixed active core distribution, there is a unique $f$ that can maximize PPW. Therefore, for a fixed active core distribution, a unique temperature vector, denoted by $T_{opt}$, that can maximize PPW also exists. However, $T_{opt}$ only works for a fixed active core distribution, obtaining $T_{opt}$ for each active core distribution only complicates the problem. The reason $T_{opt}$ only works for a fixed active core distribution is that the thermal impact among cores are different for different active core distributions. If the thermal interactions among cores can be neglected, then for each core we can obtain its optimal temperature independently, with which a vector $\hat{T}_{opt}$ is generated, the elements in $\hat{T}_{opt}$ are the optimal temperatures that lead to maximum PPW for each core.
 
 % The closer $T_{c}$ is to $\hat{T}_{opt}$, the higher the PPW. So instead of
 % directly maximizing PPW, the optimization problem in \eqref{eq:opt_ppw} can be transformed to minimizing the difference between $T_{c}$ and $\hat{T}_{opt}$:
@@ -44,7 +44,7 @@ We can prove $T$ is convex w.r.t $f$, considering for a fixed active core distri
 % \end{split}
 % \end{equation}
 
-A method to efficiently eliminate the thermal interactions among cores and calculate $\hat{T}_{opt}$  is shown in next section.
+A method to efficiently eliminate the thermal interactions among cores and calculate $\hat{T}_{opt}$ is shown in next section.
 
 \subsection{Obtaining optimal temperature for each core}
 Due to the thermal impact active cores have on each other, the optimal temperature of a core is not the same in different active core distributions. If we can isolate each of the core, the optimal temperature can be calculated easily. However, the optimal temperature we obtained for isolated cores deviate from the real optimal temperature in various situations, and can cause large error in dark silicon system. Therefore, an efficient method to isolate the cores and calculate $\hat{T}_{opt}$ for isolated cores is proposed first in $4.1.1$, and a temperature compensation method to correct the error are proposed in $4.1.2$.
@@ -69,7 +69,7 @@ T_{c} = B^{T}G^{-1}BP.
 \end{equation}
 Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$ to simplify notation, please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
 \eqref{eq:tc} can be expressed as
-\begin{equation}\label{sim_tc}
+\begin{equation}\label{eq:sim_tc}
 \begin{split}
 T_{c} &= AP,\\
 &=
@@ -92,7 +92,7 @@ T_{c} &= AP,\\
 \end{split}
 \end{equation}
 
-As \eqref{sim_tc} shows, the temperature rise $T_{i}$ can be expressed as
+As \eqref{eq:sim_tc} shows, the temperature rise $T_{i}$ can be expressed as
 \begin{equation}\label{eq:ti}
 T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}. 
 \end{equation}
@@ -227,15 +227,21 @@ In addition to the case shown above, we tested many other systems with different
 % \end{figure}
 \begin{figure}
   \centering
+  \includegraphics[width=0.8\columnwidth]{fig/mips_ppw.eps}
+  \caption{$9$-core system with $4$ active cores. The PPW and MIPS of $126$ possible active core distributions with $\hat{T}_{opt}$ applied are plotted.}
+  \label{fig:mips_ppw}
+\end{figure}
+\begin{figure}
+  \centering
   \includegraphics[width=0.8\columnwidth]{fig/resistor_line.eps}
   \caption{The equivalent heat dissipation circuit for normally
     packaged IC chip.}
   \label{fig:resistor_line}
 \end{figure}
 \subsection{Energy-efficient power budgeting with optimal performance in steady state}
-Now that the $\hat{T}_{opt}$ for each active core number is obtained, in order to find the optimal active core distribution that corresponds to maximum PPW, for a $9$-core system with $4$ active cores, we compare the PPW and power budget of all active core distributions when $\hat{T}_{opt}$ is applied to active cores, which is plotted in Fig.xx. As can be seen, when $\hat{T}_{opt}$ is applied to active cores, the PPW of different active core distribution are relatively the same, meaning as long as $\hat{T}_{opt}$ is applied to active cores, the energy efficiency of the system is maximized, no matter what active core distribution it is. However, the power budget for different active core distributions differs a lot, which means the power budget of the system is affected by the active core distribution greatly in dark silicon system.
+Now that the $\hat{T}_{opt}$ for each active core number is obtained, in order to find the optimal active core distribution that corresponds to maximum PPW, for a $9$-core system with $4$ active cores, we compare the PPW and performance of all active core distributions when $\hat{T}_{opt}$ is applied to active cores, which is plotted in Fig.~\ref{fig:mips_ppw}. As can be seen, when $\hat{T}_{opt}$ is applied to active cores, the PPW of different active core distribution are relatively the same, meaning as long as $\hat{T}_{opt}$ is applied to active cores, the energy efficiency of the system is maximized, no matter what active core distribution it is. However, the performance for different active core distributions differs a lot, which means the performance of the system is affected by the active core distribution greatly in dark silicon system.
 
-Therefore, the goal of our energy-efficient power budgeting is to find the optimal active core distribution that maximizes the power budget while the $\hat{T}_{opt}$ is applied to active cores. Considering it's a combinational problem to find the optimal active core distribution that leads to maximum power budget, in this section, we find out we can formulate an easier alternative problem in which we treat core temperature rise $T_{c}$ as a resource, which is limited by $\hat{T}_{opt}$. In the new problem, we seek to allocate power budget to cores, such that the temperature resource is fully used.
+Therefore, the goal of our energy-efficient power budgeting is to find the optimal active core distribution that maximizes the power budget, therefore the performance of the system, while the $\hat{T}_{opt}$ is applied to active cores. Considering it's a combinational problem to find the optimal active core distribution that leads to maximum power budget, in this section, we find out we can formulate an easier alternative problem in which we treat core temperature rise $T_{c}$ as a resource, which is limited by $\hat{T}_{opt}$. In the new problem, we seek to allocate power budget to cores, such that the temperature resource is fully used.
 
 To show the two mentioned problems are equal, we have the following
 proposition: 
@@ -287,10 +293,11 @@ AP \preceq \hat{T}_{opt}.\\
 \right.
 \end{split}
 \end{equation}
-$AP$ stands for $T_{c}$ from \eqref{sim_tc}.
+$AP$ stands for $T_{c}$ from \eqref{eq:sim_tc}.
 
 
-Finding the optimal solution of such optimization problem requires brute force search of all possible combinations of non-zero positions in $P$ which satisfies $\text{card}(P)=n_{a}$. The high complexity of this method makes it not suitable for multi-core system with large number of cores. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective value (measured by cost function) than that of the optimal solution. For example, consider a $25$-core system with $13$ cores active. The optimal solution of such system is shown in xx, and one sub-optimal solution is shown in xx. This is also verified in our experiments by comparing the optimal power budget and the sub-optimal power budget, as shown later.
+Finding the optimal solution of such optimization problem requires brute force search of all possible combinations of non-zero positions in $P$ which satisfies $\text{card}(P)=n_{a}$. The high complexity of this method makes it not suitable for multi-core system with large number of cores. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective value (measured by cost function) than that of the optimal solution. 
+%For example, consider a $25$-core system with $13$ cores active. The optimal solution of such system is shown in xx, and one sub-optimal solution is shown in xx. This is also verified in our experiments by comparing the optimal power budget and the sub-optimal power budget, as shown later.
 
 For a $n$-core system with $n_{a}$ active cores, the basic idea of finding such sub-optimal solution is described as follows: we first find the optimal solution for only one active core. Next, we $fix$ the first active core position determined by the first step, and find the optimal solution of two cores, with the second active core position determined. Please note that although we say "optimal" in the second step, such solution is only the optimal solution with the first active core fixed at the position determined by the first step, not the true optimal solution for general two active cores. Similarly, in the $(i+1)$-th step, we look for the optimal solution for $i+1$ active cores with the position of $i$ active cores found in all previous steps remain fixed. By proceeding such strategy for $n_{a}$ steps, we can arrive at a sub-optimal solution for $n_{a}$ active cores.
 
@@ -402,10 +409,10 @@ For \eqref{eq:gt}, we can discrete this model using backward Euler's method, and
 (\frac{C}{h}+G)\cdot T(t+h)=\frac{C}{h}T(t)+BP,
 \end{equation}
 and we are able to express $T_{c}(t+h)$ using $P$ and $T(t)$ as
-\begin{equation}\label{eq:discrete_gt}
+\begin{equation}\label{eq:discrete_tc}
   \begin{split}
 T_{c}(t+h)&=B^{T}T(t+h)\\
-&=B^{T}(\frac{C}{h}+G)^{-1}T(h)+B^{T}(\frac{C}{h}+G)^{-1}BP.
+&=B^{T}(\frac{C}{h}+G)^{-1}T(t)+B^{T}(\frac{C}{h}+G)^{-1}BP.
   \end{split}
 \end{equation}
 %\emph{constant}
@@ -414,11 +421,11 @@ The cost function of the steady state power budgeting problem in
 \eqref{eq:sim_opt_topt} will be changed by using the new $T_c(t+h)$ for
 transient case as
 \begin{equation}\label{eq:cost_trans}
-\|\hat{T}_{opt} -  B^{T}(\frac{C}{h}+G)^{-1}T(h)+B^{T}(\frac{C}{h}+G)^{-1}BP\|_2.
+\|\hat{T}_{opt} -  B^{T}(\frac{C}{h}+G)^{-1}T(t)+B^{T}(\frac{C}{h}+G)^{-1}BP\|_2.
 \end{equation}
 In order to simplify notation, we denote a new vector  
 \begin{equation}
-\bar{T}_{opt}=\hat{T}_{opt} - B^{T}(\frac{C}{h}+G)^{-1}T(h),
+\bar{T}_{opt}=\hat{T}_{opt} - B^{T}(\frac{C}{h}+G)^{-1}T(t),
 \end{equation}
 where $\bar{T}_{opt}$ has similar meaning of
 $\hat{T}_{opt}$ in steady state case, and it also accounts for the transient

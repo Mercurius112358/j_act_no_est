@@ -1,0 +1,38 @@
+\begin{appendices}
+\section{PROOF OF CONVEXITY OF $P$ AND $T$ W.R.T CLOCK FREQUENCY}
+We use the secodn-order necessary and sufficient conditions to prove the convexity of $P$ and $T$ w.r.t clock frequency $f$.
+
+The second-order necessary and sufficient conditions state that a function $F$, differentiable in the domain (\textbf{dom}) of $F$ is conves iff the domain of $F$ is convex and its \textit{Hessian} or second derivative is positive semi-definite, which is
+\begin{equation}\label{eq:hessian}
+\nabla^{2}F(x) \succeq 0, \forall x \in \textbf{dom} f.
+\end{equation}
+%both in steady state \eqref{eq:sim_tc} and 
+Since $T$ is linearly dependent on $P$ transient state \eqref{eq:discrete_tc}, proving the convexity of $P$ is sufficient to prove the convexity of $T$.
+
+$P$ can be expressed as:
+\begin{equation}\label{eq:p_detail}
+P =\alpha_{d}\cdot V_{dd}^{2} \cdot f+\alpha_{s}\cdot V_{dd} \cdot (P_{0}+A_{s} \cdot T).
+\end{equation}
+%\eqref{eq:sim_tc} for steady state and 
+By substituting $T$ with \eqref{eq:discrete_tc} for transient state, we can get:
+\begin{equation}\label{eq:p_transient}
+P =\frac{\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}(A_{s}(T_{amb}+T_{prev})+P_{0})}{1-\alpha_{s}V_{dd}A_{s}\bar{A}},
+\end{equation}
+where $T_{prev}=B^{T}(\frac{C}{h}+G)^{-1}T(t)$, which is a constant in this control cycle, therefore, a constant positive matrix $K$ can be used to stand for $A_{s}(T_{amb}+T_{prev})+P_{0}$. Note that $1-\alpha_{s}V_{dd}A_{s}\bar{A}>0$ is true for all $V_{dd}$ value between $V_{th}$ and $V_{max}$.
+
+The first and second-order derivatives of $P$ w.r.t $f$ are given by
+\begin{equation}\label{eq:p_transient_d1}
+\begin{split}
+\nabla P =&\frac{2\alpha_{d}V_{dd}f\nabla V_{dd}+\alpha_{d}V_{dd}^{2}+\alpha_{s}K\nabla V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
+&+\frac{(\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}K)(\alpha_{s}A_{s}\bar{A})\nabla V_{dd} }{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}},
+\end{split}
+\end{equation}
+
+\begin{equation}\label{eq:p_transient_d2}
+\begin{split}
+\nabla^{2} P =&\frac{2\alpha_{d}V_{dd}f\nabla V_{dd}+\alpha_{d}V_{dd}^{2}+\alpha_{s}K\nabla V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
+&+\frac{(2\alpha_{d}V_{dd}f\nabla V_{dd}+\alpha_{d}V_{dd}^{2}+\alpha_{s}K\nabla V_{dd})((\alpha_{s}A_{s}\bar{A})\nabla V_{dd} )}{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
+&+\frac{(\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}K)(\alpha_{s}A_{s}\bar{A})\nabla V_{dd} }{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}},
+\end{split}
+\end{equation}
+\end{appendices}
