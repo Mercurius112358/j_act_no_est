@@ -18,7 +18,7 @@ By substituting $T$ with \eqref{eq:discrete_tc} for transient state, we can get:
 \begin{equation}\label{eq:p_transient}
 P =\frac{\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}(A_{s}(T_{amb}+T_{prev})+P_{0})}{1-\alpha_{s}V_{dd}A_{s}\bar{A}},
 \end{equation}
-where $T_{prev}=B^{T}(\frac{C}{h}+G)^{-1}T(t)$, which is a constant in this control cycle, therefore, a constant positive matrix $K$ can be used to stand for $A_{s}(T_{amb}+T_{prev})+P_{0}$. Note that $1-\alpha_{s}V_{dd}A_{s}\bar{A}>0$ is true for all $V_{dd}$ value between $V_{th}$ and $V_{max}$.
+where $T_{prev}=B^{T}(\frac{C}{h}+G)^{-1}T(t)$, which is a constant in this control cycle, therefore, a constant positive matrix $K$ can be used to stand for $A_{s}(T_{amb}+T_{prev})+P_{0}$. Note that $1-\alpha_{s}V_{dd}A_{s}\bar{A}>0$ is true for all $V_{dd}$ value between $V_{th}$ and $V_{max}$. And $\alpha_{s}$, $\alpha_{d}$ and $A_{s}$ are constant matrix, with elements being positive too.
 
 The first and second-order derivatives of $P$ w.r.t $f$ are given by
 \begin{equation}\label{eq:p_transient_d1}
@@ -30,9 +30,37 @@ The first and second-order derivatives of $P$ w.r.t $f$ are given by
 
 \begin{equation}\label{eq:p_transient_d2}
 \begin{split}
-\nabla^{2} P =&\frac{2\alpha_{d}V_{dd}f\nabla V_{dd}+\alpha_{d}V_{dd}^{2}+\alpha_{s}K\nabla V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
+\nabla^{2} P =&\frac{(\nabla V_{dd}f+V_{dd}+2\alpha_{d}V_{dd})\nabla V_{dd}+(V_{dd}f+\alpha_{s}K)\nabla^{2}V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
 &+\frac{(2\alpha_{d}V_{dd}f\nabla V_{dd}+\alpha_{d}V_{dd}^{2}+\alpha_{s}K\nabla V_{dd})((\alpha_{s}A_{s}\bar{A})\nabla V_{dd} )}{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
-&+\frac{(\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}K)(\alpha_{s}A_{s}\bar{A})\nabla V_{dd} }{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}},
+&+\frac{(\alpha_{s}A_{s}\bar{A})(\alpha_{d}(2V_{dd}f\nabla V_{dd}+V_{dd}^{2}+\alpha_{s}K\nabla V_{dd})\nabla V_{dd}}{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
+&+\frac{(\alpha_{s}A_{s}\bar{A})(\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}K)\nabla^{2} V_{dd} }{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
+&+\frac{(\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}K)(\alpha_{s}A_{s}\bar{A}\nabla V_{dd})^{2} 2(1-\alpha_{s}V_{dd}A_{s}\bar{A})}{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{4}}.
 \end{split}
 \end{equation}
+
+
+$V_{dd}$ is related to $f$ from \eqref{eq:f_v}. The first and second-order derivatives of $V_{dd}$ w.r.t $f$ are given by
+\begin{equation}\label{eq:v_transient_d1}
+\frac {dV_{dd}}{df} =\frac{V_{max}-V_{th}}{f_{max}-f_{min}},
+\end{equation}
+
+\begin{equation}\label{eq:v_transient_d1}
+\frac {d^{2}V_{dd}}{df^{2}} =0.
+\end{equation}
+
+It can be easily shown that $\nabla^{2} P$ is above $0$ for $f$ between $f_{min}$ and $f_{max}$.
+Therefore, $P$ and $T$ are convex w.r.t $f$.
+
+\section{PROOF OF QUASICONCAVITY OF PPW W.R.T. CLOCK FREQUENCY}
+Let $g(f) = \frac{f}{P}$
+$g$ is \emph{quasiconcave} iff its domain (\textbf{dom}) and all its super level sets are convex. 
+
+Consider an ordinate $\beta$, which intersect the function $g$ at two points $(f_{1},g_{1})$ and $(f_{2},g_{2})$ as shown in Fig.~. We need to prove that the function between the two points is greater than or equal to $\beta$, i.e.
+\begin{equation}\label{eq:v_transient_d1}
+g(\epsilon f_{1}+(1-\epsilon)f_{2})\geq \beta,
+\end{equation}
+where $\epsilon \in [0,1]$. 
+
+
+
 \end{appendices}
