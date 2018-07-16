@@ -30,7 +30,8 @@ The first and second-order derivatives of $P$ w.r.t $f$ are given by
 
 \begin{equation}\label{eq:p_transient_d2}
 \begin{split}
-\nabla^{2} P =&\frac{(\nabla V_{dd}f+V_{dd}+2\alpha_{d}V_{dd})\nabla V_{dd}+(V_{dd}f+\alpha_{s}K)\nabla^{2}V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
+&\nabla^{2} P =\frac{(\nabla V_{dd}f+V_{dd}+2\alpha_{d}V_{dd})\nabla V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
+&+\frac{(V_{dd}f+\alpha_{s}K)\nabla^{2}V_{dd}}{1-\alpha_{s}V_{dd}A_{s}\bar{A}}\\
 &+\frac{(2\alpha_{d}V_{dd}f\nabla V_{dd}+\alpha_{d}V_{dd}^{2}+\alpha_{s}K\nabla V_{dd})((\alpha_{s}A_{s}\bar{A})\nabla V_{dd} )}{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
 &+\frac{(\alpha_{s}A_{s}\bar{A})(\alpha_{d}(2V_{dd}f\nabla V_{dd}+V_{dd}^{2}+\alpha_{s}K\nabla V_{dd})\nabla V_{dd}}{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
 &+\frac{(\alpha_{s}A_{s}\bar{A})(\alpha_{d}V_{dd}^{2}f+\alpha_{s}V_{dd}K)\nabla^{2} V_{dd} }{(1-\alpha_{s}V_{dd}A_{s}\bar{A})^{2}}\\
@@ -51,16 +52,31 @@ $V_{dd}$ is related to $f$ from \eqref{eq:f_v}. The first and second-order deriv
 It can be easily shown that $\nabla^{2} P$ is above $0$ for $f$ between $f_{min}$ and $f_{max}$.
 Therefore, $P$ and $T$ are convex w.r.t $f$.
 
-\section{PROOF OF QUASICONCAVITY OF PPW W.R.T. CLOCK FREQUENCY}
-Let $g(f) = \frac{f}{P}$
-$g$ is \emph{quasiconcave} iff its domain (\textbf{dom}) and all its super level sets are convex. 
 
-Consider an ordinate $\beta$, which intersect the function $g$ at two points $(f_{1},g_{1})$ and $(f_{2},g_{2})$ as shown in Fig.~. We need to prove that the function between the two points is greater than or equal to $\beta$, i.e.
-\begin{equation}\label{eq:v_transient_d1}
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]{fig/concave.eps}
+\caption{Figure of PPW against clock frequency.}
+\label{fig:concave}
+\end{figure}
+\section{PROOF OF QUASICONCAVITY OF PPW W.R.T. CLOCK FREQUENCY}
+Let $g(f) = \frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}$ be the PPW objective at some control cycle. $g$ is \emph{quasiconcave} iff its domain (\textbf{dom}) and all its super level sets $\mathit{S_{\beta}} = {f \in \textbf{dom } g~|~g(f)\geq \beta}$ are convex. 
+
+Consider an ordinate $\beta$, which intersect the function $g$ at two points $(f_{1},g_{1})$ and $(f_{2},g_{2})$ as shown in Fig.~\ref{fig:concave}. We need to prove that the function between the two points is greater than or equal to $\beta$, i.e.
+\begin{equation}\label{eq:ppw_transient_1}
 g(\epsilon f_{1}+(1-\epsilon)f_{2})\geq \beta,
 \end{equation}
-where $\epsilon \in [0,1]$. 
-
-
-
+where $\epsilon \in [0,1]$. $\beta$ can also be written as $\epsilon \frac{\left \| f_{1} \right \|_{1}}{\left \| P_{1} \right \|_{1}}+(1-\epsilon) (\frac{\left \| f_{2} \right \|_{1}}{\left \| P_{2} \right \|_{1}})$. And \eqref{eq:ppw_transient_1} can be written as
+\begin{equation}\label{eq:ppw_transient_2}
+\frac{\epsilon \left \| f_{1} \right \|_{1}+(1-\epsilon)\left \| f_{2} \right \|_{1}}{\left \|P(\epsilon f_{1}+(1-\epsilon)f_{2})\right \|_{1}} \geq \epsilon \frac{\left \| f_{1} \right \|_{1}}{\left \| P_{1} \right \|_{1}}+(1-\epsilon) (\frac{\left \| f_{2} \right \|_{1}}{\left \| P_{2} \right \|_{1}}).
+\end{equation}
+Let $P_{\epsilon}=P(\epsilon f_{1}+(1-\epsilon)f_{2})$, then \eqref{eq:ppw_transient_2} can be simplified to
+\begin{equation}\label{eq:ppw_transient_3}
+\epsilon\frac{\left \| f_{1} \right \|_{1}}{\left \| P_{1} \right \|_{1}}(\left \|P_{\epsilon}\right \|_{1}-\left \|P_{1}\right \|_{1})\leq(1-\epsilon)\frac{\left \| f_{2} \right \|_{1}}{\left \| P_{2} \right \|_{1}}(\left \|P_{2}\right \|_{1}-\left \|P_{\epsilon}\right \|_{1}).
+\end{equation}
+Since $\frac{\left \| f_{1} \right \|_{1}}{\left \| P_{1} \right \|_{1}}=\frac{\left \| f_{2} \right \|_{1}}{\left \| P_{2} \right \|_{1}}=\beta$, the above equation reduces to
+\begin{equation}\label{eq:ppw_transient_4}
+\left \|P_{\epsilon}\right \|_{1} \leq \epsilon \left \| P_{1} \right \|_{1}+(1-\epsilon)\left \| P_{2} \right \|_{1}.
+\end{equation}
+The above equation is a sufficient condition on convexity of $\left \| P \right \|_{1}$. It was shown in Appendix A that $P$ is convex w.r.t $f$. $\left \| P \right \|_{1}$ is the sum of elements in $P$. Therefore, $\left \| P \right \|_{1}$ is also a convex function w.r.t $f$. Hence, \eqref{eq:ppw_transient_4} is true and $g$ is a quasiconcave function of $f$.
 \end{appendices}
