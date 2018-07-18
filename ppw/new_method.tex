@@ -412,7 +412,7 @@ and we are able to express $T_{c}(t+h)$ using $P$ and $T(t)$ as
 \begin{equation}\label{eq:discrete_tc}
   \begin{split}
 T_{c}(t+h)&=B^{T}T(t+h)\\
-&=B^{T}(\frac{C}{h}+G)^{-1}T(t)+B^{T}(\frac{C}{h}+G)^{-1}BP.
+&=B^{T}(\frac{C}{h}+G)^{-1}\frac{C}{h}T(t)+B^{T}(\frac{C}{h}+G)^{-1}BP.
   \end{split}
 \end{equation}
 %\emph{constant}
@@ -421,11 +421,11 @@ The cost function of the steady state power budgeting problem in
 \eqref{eq:sim_opt_topt} will be changed by using the new $T_c(t+h)$ for
 transient case as
 \begin{equation}\label{eq:cost_trans}
-\|\hat{T}_{opt} -  B^{T}(\frac{C}{h}+G)^{-1}T(t)+B^{T}(\frac{C}{h}+G)^{-1}BP\|_2.
+\|\hat{T}_{opt} -  B^{T}(\frac{C}{h}+G)^{-1}\frac{C}{h}T(t)+B^{T}(\frac{C}{h}+G)^{-1}BP\|_2.
 \end{equation}
 In order to simplify notation, we denote a new vector  
 \begin{equation}
-\bar{T}_{opt}=\hat{T}_{opt} - B^{T}(\frac{C}{h}+G)^{-1}T(t),
+\bar{T}_{opt}=\hat{T}_{opt} - B^{T}(\frac{C}{h}+G)^{-1}\frac{C}{h}T(t),
 \end{equation}
 where $\bar{T}_{opt}$ has similar meaning of
 $\hat{T}_{opt}$ in steady state case, and it also accounts for the transient
