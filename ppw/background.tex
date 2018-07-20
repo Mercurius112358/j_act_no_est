@@ -10,9 +10,9 @@ p_{d} = \alpha_{d} \cdot V_{dd}^{2} \cdot f,
 \end{equation}
 where $V_{dd}$ stands for the operating voltage, $f$ stands for the clock frequency, and $\alpha_{d}$ is defined as:
 \begin{equation}\label{eq:alpha_d}
-\alpha_{d} = \frac{p^{max}_{d}}{V_{max}^{2}f_{max}},
+\alpha_{d} = \frac{p_{d_{max}}}{V_{max}^{2}f_{max}},
 \end{equation}
-in which $p^{max}_{d}$ is the dynamic power when the core is at the maximum clock frequency $f_{max}$ and maximum operating voltage $V_{max}$.
+in which $p_{d_{max}}$ is the dynamic power when the core is at the maximum clock frequency $f_{max}$ and maximum operating voltage $V_{max}$.
 
 It is assumed the clock frequency $f$ changes with $V_{dd}$ to the lowest allowable point:
 \begin{equation}\label{eq:f_v}
@@ -26,9 +26,9 @@ p_{s} = \alpha_{s}\cdot V_{dd} \cdot I_{leak},
 \end{equation}
 where $\alpha_{s}$ is defined as:
 \begin{equation}\label{eq:alpha_s}
-\alpha_{s} = \frac{p^{max}_{s}}{V_{max}\cdot I_{max}},
+\alpha_{s} = \frac{p_{s_{max}}}{V_{max}\cdot I_{max}},
 \end{equation}
-in which $p^{max}_{s}$ is the static power when the core is running at thermal limit, and $I_{max}$ is the corresponding maximum leakage current. Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain.
+in which $p_{s_{max}}$ is the static power when the core is running at thermal limit, and $I_{max}$ is the corresponding maximum leakage current. Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain.
 
 $I_{leak}$ is composed of many components, including subthreshold current, gate current, reverse-biased junction leakage current, et cetera. Among which, subthreshold current and gate current are the main parts of leakage current, therefore $I_{leak}$ can be approximated as:
 \begin{equation}\label{eq:leakage}
@@ -73,7 +73,7 @@ $p_{0}$ is a constant terms that are not associated with $T$, $a_{s}$ is the coe
 In this work, the multi-core dark silicon system is packaged in a common structure in Fig.~\ref{fig:chip_struct}. 
 Heat (power) generated from the chip is conducted through thermal interface material (TIM), heat spreader, heat sink, and finally dissipated to the air through convection. The secondary heat path is ignored hear, since much fewer heat is dissipated through that path.
 
-To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes, with partition granularity determined by the accuracy requirements. For the dark silicon multi-core system (a 16-core chip's floorplan example is shown in Fig.~\ref{fig:core_flp}), we treat each core as a thermal node with a current source, because each core has very small area and highly correlated internal power distribution. The other thermal nodes from the package are divided according to the chip thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes are determined, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig. x are fully compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal model for a chip with $n$ total thermal nodes can be generated:
+To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes, with partition granularity determined by the accuracy requirements. For the dark silicon multi-core system (a 16-core chip's floorplan example is shown in Fig.~\ref{fig:core_flp}), we treat each core as a thermal node with a current source, because each core has very small area and highly correlated internal power distribution. The other thermal nodes from the package are divided according to the chip thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes are determined, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig.~\ref{fig:core_flp} are fully compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal model for a chip with $n$ total thermal nodes can be generated:
 \begin{equation}\label{eq:gt}
 \begin{split}
 GT(t) + C\frac{dT(t)}{dt} &= BP(t)\\
