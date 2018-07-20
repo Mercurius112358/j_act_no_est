@@ -221,14 +221,16 @@ We first verify the effectiveness of new method and existing method. For the new
 the number of active cores. The power budget it provides is the same for each active core. Also, bacause the existing method lacks the capability of dynamically switching active core positions, the active core position is fixed for it. As for the free run case, due to lack of thermal management, the temperature of it exceeds the thermal threshold.
 
 Next, we compare the PPW of these $3$ cases. As Fig.~\ref{fig:PPW_new} shows, the PPW of both new method and existing method is higher than that of free run case. And the PPW of new method is higher than that of existing method and free run case except in the beginning control cycle, where the "PPW deterioration" occurs due to correcting over high temperature. After that, the PPW of the new method will fluctuate around the optimal PPW because of the dynamically changing active core distribution. Note that the PPW of our proposed power budget in transient state is higher than that in steady state, as the active core distribution changes, which leads to "PPW boost" for cores in lower temperatures. As for the existing method, due to the fixed active core distribution and DVFS stage, the PPW of it remains stable. Because of the incapability of considering the heat exchange among cores, the power budget the existing method provided deviates greatly from the optimal one, which accounts for the PPW difference between new method and existing method. 
-
-We have shown that both of the power budgets provided by new method and existing method can improve the PPW while keeping the system thermally safe, and the PPW of new method is higher than that of existing method. Next we compare the PPW of new method and existing method with different benchmark workload in Fig.\cite{fig:transient_ppw_spec}, in which the PPW improvement compared to free run case of both methods are shown. Clearly, the PPW improvement of using new method is always higher than existing method.
-
 \begin{figure}
 \centering
-\includegraphics[width=1\linewidth]{fig/transient_ppw.eps}\label{fig:transient_ppw_spec}
+\includegraphics[width=1\linewidth]{fig/transient_ppw.eps}
 \caption{PPW improvement comparison of new method and existing method.}
+\label{fig:transient_ppw_spec}
 \end{figure}
+
+We have shown that both of the power budgets provided by new method and existing method can improve the PPW while keeping the system thermally safe, and the PPW of new method is higher than that of existing method. Next we compare the PPW of new method and existing method with different benchmark workloads in 
+Fig.~\ref{fig:transient_ppw_spec}, in which the PPW improvement compared to free run case of both methods are shown. Clearly, the PPW improvement of using new method is always higher than existing method.
+
 
 
 
