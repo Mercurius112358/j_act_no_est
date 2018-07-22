@@ -9,15 +9,19 @@ The energy efficiency of multi-core IC systems has been studied by several resea
 
 As discussed above, some of the limitations of the aforementioned works are as follows:
 \begin{itemize}  
-\item The dependence of leakage power to voltage and temperature is neglected;
-\item The DVFS stages of core cannot be adjusted independently;
-\item The thermal model does not distinguish the die and the package;
-\item The thermal interaction among cores are neglected.
+\item The dependence of leakage power to voltage and temperature is neglected, which would cause large error;
+\item The DVFS stage of cores cannot be adjusted independently, which would limit the maximum PPW of the system;
+%\item The thermal model does not distinguish the die and the package;
+%due to the high overhead of providing optimal DVFS stage for each core, 
+\item The thermal interaction among cores are neglected, which would bring large error in dark silicon systems.
 \end{itemize} 
 
 In this work, we propose an energy-efficient dynamic power budgeting method to compute the power budget accurately and efficiently for dark silicon multi-core system, which can maximize the energy efficiency of the system. Our major contributions are summarized as follows:
 \begin{itemize}
-\item By analyzing the characteristics of PPW, we find that, for each active core number, we can generate a $\hat{T}_{opt}$, as long as the $\hat{T}_{opt}$ is applied to all active cores, maximum PPW of the system can be obtained, while the performance of the system varies with the active core distribution.
-\item Based on the analysis above, we propose to formulate the power budgeting problem as minimizing the difference between $\hat{T}_{opt}$ and all cores' temperature, with greedy based acceleration, our method is capable of providing accurate power budget at runtime.
-\item We show that our method can consider the transient temperature effect, by providing accurate power budget which automatically adapts to current running conditions of the system. We also show that our method can provide PPW boost when the system is at low temperature.
+% \item By analyzing the characteristics of PPW, we find that, for each active core number, we can generate a $\hat{T}_{opt}$, as long as the $\hat{T}_{opt}$ is applied to all active cores, maximum PPW of the system can be obtained, while the performance of the system varies with the active core distribution.
+% \item Based on the analysis above, we propose to formulate the power budgeting problem as minimizing the difference between $\hat{T}_{opt}$ and all cores' temperature, with greedy based acceleration, our method is capable of providing accurate power budget at runtime.
+% \item We show that our method can consider the transient temperature effect, by providing accurate power budget which automatically adapts to current running conditions of the system. We also show that our method can provide PPW boost when the system is at low temperature.
+
+\item By analyzing the characteristics of PPW, we find that, for a fixed active core distribution, there is a $T_{opt}$, the PPW of the system can be maximized by minimizing the difference between $T_{opt}$ and all cores' temperature $T_{c}$, therefore the power budget that leads to maximum PPW for this active core distribution can be obtained easily.
+\item 
 \end{itemize} 
