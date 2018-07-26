@@ -67,7 +67,7 @@ Let's begin with calculating the temperature rise $T_{c}$ of the chip, consideri
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
 \end{equation}
-Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$ to simplify notation, please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
+Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$, which is the \emph{steady-state thermal transfer matrix} in~\cite{Reda:SJ'18}. Please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
 \eqref{eq:tc} can be expressed as
 \begin{equation}\label{eq:sim_tc}
 \begin{split}
@@ -92,12 +92,14 @@ T_{c} &= AP,\\
 \end{split}
 \end{equation}
 
-As \eqref{eq:sim_tc} shows, the temperature rise $T_{i}$ can be expressed as
+As \eqref{eq:sim_tc} shows, the temperature rise of core $i$, $T_{i}$, can be expressed as
 \begin{equation}\label{eq:ti}
 T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}. 
 \end{equation}
 
-Therefore, the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. The diagonal element $a_{ii}$ can be extracted from $A$ to calculate the temperature rise of isolated core $i$ as:
+%the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. 
+
+To isolate core $i$, we need to express $T_{i}$ with only $p_{i}$. Therefore, the diagonal element $a_{ii}$ can be extracted from $A$ to calculate the temperature rise of isolated core $i$ as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
