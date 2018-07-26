@@ -5,14 +5,35 @@
 \subsection{Power modeling}
 
 It is widely acknowledged that the total power of a chip is composed of dynamic and static power. The dynamic power is dependent on the activities of the chip, most of which is the capacitive switching power consumed during circuit charging and discharging. $p_{d}$ can be expressed as:
+% \begin{equation}\label{eq:dyn_power}
+% p_{d} = \alpha_{d} \cdot V_{dd}^{2} \cdot f,
+% \end{equation}
+% where $V_{dd}$ stands for the operating voltage, $f$ stands for the clock frequency, and $\alpha_{d}$ is defined as:
+% \begin{equation}\label{eq:alpha_d}
+% \alpha_{d} = \frac{p_{d_{max}}}{V_{max}^{2}f_{max}},
+% \end{equation}
+% in which $p_{d_{max}}$ is the dynamic power when the core is at the maximum clock frequency $f_{max}$ and maximum operating voltage $V_{max}$.
+
+% It is assumed the clock frequency $f$ changes with $V_{dd}$ to the lowest allowable point:
+% \begin{equation}\label{eq:f_v}
+% f = (V_{dd}-V_{th}) \cdot (\frac{f_{max}-f_{min}}{V_{max}-V_{th}})+f_{min}.
+% \end{equation}
+% where $f_{min}$ stands for the minimum clock frequency, and $V_{th}$ stands for the threshold voltage.
+
+% Yet the static power $p_{s}$ of the chip is caused by leakage current $I_{leak}$ as:
+% \begin{equation}\label{eq:sta_power}
+% p_{s} = \alpha_{s}\cdot V_{dd} \cdot I_{leak},
+% \end{equation}
+% where $\alpha_{s}$ is defined as:
+% \begin{equation}\label{eq:alpha_s}
+% \alpha_{s} = \frac{p_{s_{max}}}{V_{max}\cdot I_{max}},
+% \end{equation}
+% in which $p_{s_{max}}$ is the static power when the core is running at thermal limit, and $I_{max}$ is the corresponding maximum leakage current. Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain.
+
 \begin{equation}\label{eq:dyn_power}
-p_{d} = \alpha_{d} \cdot V_{dd}^{2} \cdot f,
+p_{d} = C_{\text{eff}} \cdot V_{dd}^{2} \cdot f,
 \end{equation}
-where $V_{dd}$ stands for the operating voltage, $f$ stands for the clock frequency, and $\alpha_{d}$ is defined as:
-\begin{equation}\label{eq:alpha_d}
-\alpha_{d} = \frac{p_{d_{max}}}{V_{max}^{2}f_{max}},
-\end{equation}
-in which $p_{d_{max}}$ is the dynamic power when the core is at the maximum clock frequency $f_{max}$ and maximum operating voltage $V_{max}$.
+where $V_{dd}$ stands for the operating voltage, $f$ stands for the clock frequency, and $C_{\text{eff}}$ is the effective switching capacitance.
 
 It is assumed the clock frequency $f$ changes with $V_{dd}$ to the lowest allowable point:
 \begin{equation}\label{eq:f_v}
@@ -22,15 +43,10 @@ where $f_{min}$ stands for the minimum clock frequency, and $V_{th}$ stands for 
 
 Yet the static power $p_{s}$ of the chip is caused by leakage current $I_{leak}$ as:
 \begin{equation}\label{eq:sta_power}
-p_{s} = \alpha_{s}\cdot V_{dd} \cdot I_{leak},
+p_{s} =V_{dd} \cdot I_{leak}.
 \end{equation}
-where $\alpha_{s}$ is defined as:
-\begin{equation}\label{eq:alpha_s}
-\alpha_{s} = \frac{p_{s_{max}}}{V_{max}\cdot I_{max}},
-\end{equation}
-in which $p_{s_{max}}$ is the static power when the core is running at thermal limit, and $I_{max}$ is the corresponding maximum leakage current. Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain.
 
-$I_{leak}$ is composed of many components, including subthreshold current, gate current, reverse-biased junction leakage current, et cetera. Among which, subthreshold current and gate current are the main parts of leakage current, therefore $I_{leak}$ can be approximated as:
+Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain. $I_{leak}$ is composed of many components, including subthreshold current, gate current, reverse-biased junction leakage current, et cetera. Among which, subthreshold current and gate current are the main parts of leakage current, therefore $I_{leak}$ can be approximated as:
 \begin{equation}\label{eq:leakage}
 I_{leak}=I_{sub}+I_{gate}.
 \end{equation}
@@ -43,7 +59,7 @@ I_{sub}=K {v_T}^2e^{\frac{V_{GS}-V_{th}}{\eta v_T}}
 
 In~\cite{WangWan:TOC'18}, a local linearization of subthreshold current is implemented to eliminate the non-linear dependency of subthreshold current on temperature. The scalar result is
 \begin{equation}\label{eq:lin_leakage}
-p_{s} = \alpha_{s}\cdot V_{dd} (p_{0}+a_{s} \cdot T).
+p_{s} =V_{dd} (p_{0}+a_{s} \cdot T).
 \end{equation}
 $p_{0}$ is a constant terms that are not associated with $T$, $a_{s}$ is the coefficient associated with $T$. $P_{0}$ and $A_{s}$ are the constants corresponding for $p_{0}$ and $a_{s}$ in vector/matrix form.
 
