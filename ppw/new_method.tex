@@ -286,7 +286,7 @@ chip temperature rise limited by the heat dissipation capability is
 $T_{th}$, but for temperature higher than $\hat{T}_{opt}$, the energy efficiency will not be maximum. Therefore, the optimization problem of maximizing PPW and optimize power budget can be expressed as:
 \begin{equation}\label{eq:sim_opt_topt}
 \begin{split}
-\text{minimize } &  \left \| \hat{T}_{opt} - AP \right \|_{2}\\
+\text{minimize } &  \left \| \hat{T}_{opt_{n_{a}}} - AP \right \|_{2}\\
 \text{subject to} &\left\{
 \begin{array}{lr}
 \text{card}(P) = n_{a},\\
@@ -295,7 +295,7 @@ AP \preceq \hat{T}_{opt}.\\
 \right.
 \end{split}
 \end{equation}
-$AP$ stands for $T_{c}$ from \eqref{eq:sim_tc}.
+$\hat{T}_{opt_{n_{a}}}$ is the $\hat{T}_{opt}$ for $n_{a}$ active cores, and $AP$ stands for $T_{c}$ from \eqref{eq:sim_tc}.
 
 
 Finding the optimal solution of such optimization problem requires brute force search of all possible combinations of non-zero positions in $P$ which satisfies $\text{card}(P)=n_{a}$. The high complexity of this method makes it not suitable for multi-core system with large number of cores. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective value (measured by cost function) than that of the optimal solution. 
@@ -307,7 +307,7 @@ For a $n$-core system with $n_{a}$ active cores, the basic idea of finding such 
 To demonstrate the greedy based method in details, we give an example of finding the sub-optimal active core distribution for $n_{a}$ active cores and begin with finding solution for one active core. The optimization problem for one active core is
 \begin{equation}\label{eq:1_sim_opt_topt}
 \begin{split}
-\text{minimize } &  \left \| \hat{T}_{opt_{na}} - AP \right \|_{2}\\
+\text{minimize } &  \left \| \hat{T}_{opt_{n_{a}}} - AP \right \|_{2}\\
 \text{subject to} &\left\{
 \begin{array}{lr}
 \text{card}(P) = 1,\\
@@ -316,7 +316,6 @@ AP \preceq T_{th}.\\
 \right.
 \end{split}
 \end{equation}
-$\hat{T}_{opt_{na}}$ stands for the $\hat{T}_{opt}$ when active core number is $n_{a}$.
 
 We have to find a way to determine if one core is superior than the other one, measured by the cost function in \eqref{eq:1_sim_opt_topt}. For the first active core, the way to determine it is simply compare the performance of each core when the $\hat{T}_{opt_{na}}$ is reached, and choose the core with maximum performance.
 
@@ -327,7 +326,7 @@ we can form the following optimization problem to describe the power
 budgeting problem with these $i$ active cores:
 \begin{equation}\label{eq:temp_ss_i_pb}
   \begin{split}
-    &\text{minimize~~} \|\hat{T}_{opt_{na}}-A_i P_i\|_2\\
+    &\text{minimize~~} \|\hat{T}_{opt_{n_{a}}}-A_i P_i\|_2\\
     &\text{subject to~~} A_i P_i\preceq T_{th}.
   \end{split}
 \end{equation}
@@ -364,7 +363,7 @@ budgeting problem with these $i$ active cores:
 \label{fig:ppw_boost}
 \end{figure*}
 
-In order to find the position of the $(i+1)$-th core, we subtract the temperature rise caused by power budget of $i$ active cores from $\hat{T}_{opt_{na}}$, and obtain $T_{rm}=\hat{T}_{opt_{na}}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the power budget of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum power budget
+In order to find the position of the $(i+1)$-th core, we subtract the temperature rise caused by power budget of $i$ active cores from $\hat{T}_{opt_{n_{a}}}$, and obtain $T_{rm}=\hat{T}_{opt_{n_{a}}}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the power budget of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum power budget
 %One example of comparing two possible active core positions (the $j$-th core and $k$-th core are took as examples) is shown in Fig.x.
 %By turning on $j$-th core only, the corresponding temperature rise of the chip is $a_{j}p_{j}$, where $p_{j}$ is the $j$-th elements in $P$ which should be determined by solving \eqref{eq:1_sim_opt_topt}. Assume $p_{j}$ is correctly computed, then the $T_{j}$ component (temperature rise at position $j$) of $a_{j}p_{j}$ should be the same as the $\hat{T}_{opt}$, and $T_{k}$ component of $a_{j}p_{j}$ will be lower than $\hat{T}_{opt}$. Instead, by turning on the $k$-th core only, the corresponding solved power value $p_{k}$ will heat the chip to $a_{k}p_{k}$, with its $T_{j}$ component being lower than $\hat{T}_{opt}$ and its $T_{k}$ component just being equal to $\hat{T}_{opt}$. Between the $j$-th core and $k$-th core, we prefer to turn on the $j$-th core, 
 
@@ -441,11 +440,11 @@ state case, but accounts for transient thermal effect. The power
 budgeting optimization problem for transient case is updated as 
 \begin{equation}\label{eq:temp_ts_opt}
 \begin{split}
-\text{minimize } &  \left \| \bar{T}_{opt}-\bar{A}P \right \|_{2}\\
+\text{minimize } &  \left \| \bar{T}_{opt_{n_{a}}}-\bar{A}P \right \|_{2}\\
 \text{subject to} &\left\{
 \begin{array}{lr}
 \text{card}(P) = n_{a},\\
-\bar{A}P \preceq \bar{T}_{opt}.\\
+\bar{A}P \preceq \bar{T}_{opt_{n_{a}}}.\\
 \end{array}
 \right.
 \end{split}

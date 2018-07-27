@@ -9,11 +9,11 @@ The energy efficiency of multi-core IC systems has been studied by several resea
 
 As discussed above, some of the limitations of the aforementioned works are as follows:
 \begin{itemize}  
-\item The dependence of leakage power to voltage and temperature is neglected, which would cause large error;
-\item The DVFS stage of cores cannot be adjusted independently, which would limit the maximum PPW of the system;
+\item The dependence of leakage power to voltage and temperature is neglected. In dark silicon systems, leakage power is a major component of the whole power, and the simplified expression of leakage power may cause large error in leakage power estimation, which would result in energy efficiency degradation of the provided power budget;
+\item The DVFS stage of cores cannot be adjusted independently. Considering the DVFS stages of cores in optimal energy efficiency may not be the same, this independence would limit the maximum PPW of the system;
 %\item The thermal model does not distinguish the die and the package;
 %due to the high overhead of providing optimal DVFS stage for each core, 
-\item The thermal interaction among cores are neglected, which would bring large error in dark silicon systems.
+\item The thermal interaction among cores are neglected. In dark silicon systems, the thermal impact cores have on each other are considerable. The energy-efficient power budget obtained without consideration of the thermal interaction among cores will notably deviate from the optimal one, which would bring energy efficiency degradation of the system.
 \end{itemize} 
 
 In this work, we propose an energy-efficient dynamic power budgeting method to compute the power budget accurately and efficiently for dark silicon multi-core system, which can maximize the energy efficiency of the system. Our major contributions are summarized as follows:
