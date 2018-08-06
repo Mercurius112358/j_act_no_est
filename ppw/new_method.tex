@@ -24,11 +24,13 @@ T_{c} \preceq T_{th}.\\
 \end{equation}
 where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector containing the maximum allowed temperature rises from the ambient temperature; card$(P)$ means the cardinality or size of the vector $P$, which is defined as the number of the nonzero components in $P$. In our case, card$(P) = n_{a}$ means there are $n_{a}$ active cores.
 
-Before we solve this optimization problem, in Appendix B, for a fixed active core distribution we prove that $\text{PPW}=\frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}$ is a quasi-concave function of the clock frequency $f$, which can make sure the optimization problem has a unique solution of $f$ that maximizes PPW.
+Before we solve this optimization problem, in Appendix B, we prove that $\text{PPW}=\frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}$ is a quasi-concave function of the clock frequency $f$, which can make sure the optimization problem has a unique solution of $f$ that maximizes PPW.
 
 To find the unique solution for the optimization problem in \eqref{eq:opt_ppw} is very hard, because of the high computational complexity of the problem, which comes from the fact that the cores have thermal impact on each other, changing the DVFS stage of one core not only would change the PPW of the core itself, but would also change the temperature rise of other cores, therefore changing the PPW of them, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain the optimal solution. Therefore, we need to transform this problem into a problem with low complexity.
 
-We can prove $T$ is convex w.r.t $f$ in Appendix A, considering for a fixed active core distribution, there is a unique $f$ that can maximize PPW. Therefore, for a fixed active core distribution, a unique temperature vector, denoted by $T_{opt}$, that can maximize PPW also exists. However, $T_{opt}$ only works for a fixed active core distribution, obtaining $T_{opt}$ for each active core distribution only complicates the problem. The reason $T_{opt}$ only works for a fixed active core distribution is that the thermal impact among cores are different for different active core distributions. If the thermal interactions among cores can be neglected, then for each core we can obtain its optimal temperature independently, with which a vector $\hat{T}_{opt}$ is generated, the elements in $\hat{T}_{opt}$ are the optimal temperatures that lead to maximum PPW for each core.
+A temperature rise oriented method to efficiently obtaining sub-optimal solution of such problem is shown in next section.
+
+
 
 % The closer $T_{c}$ is to $\hat{T}_{opt}$, the higher the PPW. So instead of
 % directly maximizing PPW, the optimization problem in \eqref{eq:opt_ppw} can be transformed to minimizing the difference between $T_{c}$ and $\hat{T}_{opt}$:
@@ -44,12 +46,19 @@ We can prove $T$ is convex w.r.t $f$ in Appendix A, considering for a fixed acti
 % \end{split}
 % \end{equation}
 
-A method to efficiently eliminate the thermal interactions among cores and calculate $\hat{T}_{opt}$ is shown in next section.
+% A method to efficiently eliminate the thermal interactions among cores and calculate $\hat{T}_{opt}$ is shown in next section.
 
 \subsection{Obtaining optimal temperature for each core}
-Due to the thermal impact active cores have on each other, the optimal temperature of a core is not the same in different active core distributions. If we can isolate each of the core, the optimal temperature can be calculated easily. However, the optimal temperature we obtained for isolated cores deviate from the real optimal temperature in various situations, and can cause large error in dark silicon system. Therefore, an efficient method to isolate the cores and calculate $\hat{T}_{opt}$ for isolated cores is proposed first in $4.1.1$, and a temperature compensation method to correct the error are proposed in $4.1.2$.
+In this section, we use steady state example to show how to transform the optimization problem in \eqref{eq:opt_ppw} to a temperature rise oriented problem. Please note that we present the steady state example mainly for the purpose of clarity.
 
-\subsubsection{Calculating optimal temperature for isolated cores}
+First we prove $T$ is convex w.r.t $f$ in Appendix A, considering for a fixed active core distribution, there is a unique $f$ that can maximize PPW. Therefore, for a fixed active core distribution, there is a unique temperature vector, denoted by $T_{target}$, as long as all cores' temperature rise is the same with the corresponding temperature rise in $T_{target}$, PPW of the system can be maximized. However, $T_{target}$ only works for a fixed active core distribution, the reason is that the thermal interaction among cores varies for different active core distributions. The overhead of obtaining $T_{target}$ for each active core distribution is too high. It is also notices that for a specific core, the optimal temperature rise of it in different active core distributions of the same active core number varies a little. 
+Therefore, for a specific core, we can use a single value to stand for the sub-optimal temperature rise of it in all active core distributions of the same active core number. Then, for each active core number, a vector $T_{opt}$ can be generated, the elements in $T_{opt}$ are the temperature rise that lead to sub-optimal PPW of each core for a specific active core number.
+
+If we can isolate each of the core, $T_{opt}$ for $1$ active core can be obtained. For other active core numbers, because of the thermal impact active cores have on each other, we need to compensate for the thermal impact of other active cores.
+
+An efficient method to isolate the cores and calculate $T_{opt}$ for $1$ active core is proposed first in $4.1.1$, and a temperature compensation method to correct the error is proposed in $4.1.2$.
+
+\subsubsection{Calculating optimal temperature for $1$ active core}
 In order to isolate the cores, we first express the PPW of a single core $i$ in steady state as:
 \begin{equation}\label{eq:min_ppw}
 \text{PPW}=\frac{f}{p_{d}+p_{s}},
@@ -124,7 +133,7 @@ Note that we do not need to repeat the calculating process for all cores to obta
 
 However, the optimal temperature obtained for isolated cores ignores the thermal impact of other active cores, which is only accurate when there is only $1$ active core. For cases with active cores more than $1$, the temperature rise caused by other active cores will make the optimal temperature deviate from the one we obtained from \eqref{eq:1_ppw_2}. Also, for different active core distributions, the thermal impact active cores have on each other will be different, the $\hat{T}_{opt}$ is different. Therefore, a compensation method is need to correct the error induced by different active core number and active core distribution.
 
-\subsubsection{Calculating optimal temperature for isolated cores with temperature compensation}
+\subsubsection{Calculating optimal temperature for active cores more than $1$}
 The optimal temperature calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
 
 % \begin{equation}\label{eq:c_full_1_ppw}
@@ -339,29 +348,30 @@ budgeting problem with these $i$ active cores:
 %   \end{split}
 % \end{equation}
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 \centering
 \subfigure[Previous temperature is below $\hat{T}_{opt}$.]{
-\begin{minipage}{.3\linewidth}
+\begin{minipage}{.45\linewidth}
 \centering
 \includegraphics[width=\textwidth]{fig/ppw_boost_1.eps}\label{fig:ppw_boost_1}
 \end{minipage}
 }
+\hfill
 \subfigure[Previous temperature is above $\hat{T}_{opt}$.]{
-\begin{minipage}{.3\linewidth}
+\begin{minipage}{.45\linewidth}
 \centering
 \includegraphics[width=\textwidth]{fig/ppw_boost_2.eps}\label{fig:ppw_boost_2}
 \end{minipage}
 }
-\subfigure[Previous temperature is $\hat{T}_{opt}$.]{
-\begin{minipage}{.3\linewidth}
-\centering
-\includegraphics[width=\textwidth]{fig/ppw_boost_3.eps}\label{fig:ppw_boost_3}
-\end{minipage}
-}
+% \subfigure[Previous temperature is $\hat{T}_{opt}$.]{
+% \begin{minipage}{.3\linewidth}
+% \centering
+% \includegraphics[width=\textwidth]{fig/ppw_boost_3.eps}\label{fig:ppw_boost_3}
+% \end{minipage}
+% }
 \caption{Demonstration of changing temperature and the corresponding PPW. $f_{1}>f_{2}>f_{3}$, and $f_{2}$ can lead to $\hat{T}_{opt}$ in $T(t+h)$.}
 \label{fig:ppw_boost}
-\end{figure*}
+\end{figure}
 
 In order to find the position of the $(i+1)$-th core, we subtract the temperature rise caused by power budget of $i$ active cores from $\hat{T}_{opt_{n_{a}}}$, and obtain $T_{rm}=\hat{T}_{opt_{n_{a}}}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the power budget of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum power budget
 %One example of comparing two possible active core positions (the $j$-th core and $k$-th core are took as examples) is shown in Fig.x.
