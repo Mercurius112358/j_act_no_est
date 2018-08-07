@@ -28,7 +28,7 @@ Before we solve this optimization problem, in Appendix B, we prove that $\text{P
 
 To find the unique solution for the optimization problem in \eqref{eq:opt_ppw} is very hard, because of the high computational complexity of the problem, which comes from the fact that the cores have thermal impact on each other, changing the DVFS stage of one core not only would change the PPW of the core itself, but would also change the temperature rise of other cores, therefore changing the PPW of them, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain the optimal solution. Therefore, we need to transform this problem into a problem with low complexity.
 
-We assume optimal PPW of the system can be obtained if the PPW of each core is optimal. A temperature rise oriented method to obtain sub-optimal PPW of each core is shown in next section.
+We assume PPW of the system is optimal if the PPW of each core is optimal. Therefore, the problem of maximizing the PPW of the system can be transformed to maximizing the PPW of each individual core. A temperature rise oriented method to obtain sub-optimal PPW of each core is shown in next section.
 
 
 % The closer $T_{c}$ is to $T_{opt_{n_{a}}}$, the higher the PPW. So instead of
@@ -246,6 +246,9 @@ In addition to the case shown above, we tested many other systems with different
     packaged IC chip.}
   \label{fig:resistor_line}
 \end{figure}
+
+
+
 \subsection{Energy-efficient power budgeting with optimal performance in steady state}
 Now that the $T_{opt}$ is obtained, in order to prove $T_{opt_{n_{a}}}$ can leads to sub-optimal PPW of the system, for a $9$-core system with $4$ active cores, we compare the PPW and performance of all active core distributions when $T_{opt_{n_{a}}}$ is applied to active cores, which is plotted in Fig.~\ref{fig:mips_ppw}. As can be seen, the PPW of different active core distribution are relatively the same, meaning as long as $T_{opt_{n_{a}}}$ is applied to active cores, the PPW of the system is sub-optimal, no matter what active core distribution it is. However, the performance for different active core distributions differs a lot, which means the performance of the system is affected by the active core distribution greatly in dark silicon system.
 
@@ -283,9 +286,7 @@ $T_{amb}$. In another word, a higher average temperature of
 the chip $T_{chip} = \frac{1}{n}\|T_c\|_1 + T_{amb}$ leads to a higher total power of the
 chip $\|P\|_1$, which proves the proposition.
 \end{proof}
-% a steady state example is given to show how to efficiently find a sub-optimal solution using a greedy based method. Please note that, we present our method in steady state mainly for the purpose of clarity.
 
-% We plug \eqref{sim_tc} into the optimization problem \eqref{eq:opt_topt} and get
 We have shown that higher average temperature of the chip means a higher
 total power, and the highest
 chip temperature rise limited by the heat dissipation capability is
@@ -296,12 +297,12 @@ $T_{th}$, but for temperature higher than $T_{opt_{n_{a}}}$, the energy efficien
 \text{subject to} &\left\{
 \begin{array}{lr}
 \text{card}(P) = n_{a},\\
-AP \preceq T_{opt_{n_{a}}}.\\
+AP \preceq T_{opt_{n_{a}}},\\
 \end{array}
 \right.
 \end{split}
 \end{equation}
-$\hat{T}_{opt_{n_{a}}}$ is the $T_{opt_{n_{a}}}$ for $n_{a}$ active cores, and $AP$ stands for $T_{c}$ from \eqref{eq:sim_tc}.
+where $AP$ stands for $T_{c}$ from \eqref{eq:sim_tc}.
 
 
 Finding the optimal solution of such optimization problem requires brute force search of all possible combinations of non-zero positions in $P$ which satisfies $\text{card}(P)=n_{a}$. The high complexity of this method makes it not suitable for multi-core system with large number of cores. It is also noticed that for such systems, finding the optimal solution is not necessary. This is due to the fact that when core number is large, each core takes relatively small area, so there exist many sub-optimal active core distributions which only have slightly larger objective value (measured by cost function) than that of the optimal solution. 
@@ -313,17 +314,17 @@ For a $n$-core system with $n_{a}$ active cores, the basic idea of finding such 
 To demonstrate the greedy based method in details, we give an example of finding the sub-optimal active core distribution for $n_{a}$ active cores and begin with finding solution for one active core. The optimization problem for one active core is
 \begin{equation}\label{eq:1_sim_opt_topt}
 \begin{split}
-\text{minimize } &  \left \| \hat{T}_{opt_{n_{a}}} - AP \right \|_{2}\\
+\text{minimize } &  \left \| T_{opt_{n_{a}}} - AP \right \|_{2}\\
 \text{subject to} &\left\{
 \begin{array}{lr}
 \text{card}(P) = 1,\\
-AP \preceq T_{th}.\\
+AP \preceq T_{opt_{n_{a}}}.\\
 \end{array}
 \right.
 \end{split}
 \end{equation}
 
-We have to find a way to determine if one core is superior than the other one, measured by the cost function in \eqref{eq:1_sim_opt_topt}. For the first active core, the way to determine it is simply compare the performance of each core when the $\hat{T}_{opt_{na}}$ is reached, and choose the core with maximum performance.
+We have to find a way to determine if one core is superior than the other one, measured by the cost function in \eqref{eq:1_sim_opt_topt}. For the first active core, the way to determine it is simply compare the performance of each core when the $T_{opt_{na}}$ is reached, and choose the core with maximum performance.
 
 Then we show the general iterative steps which are used to find the distribution of $n_{a}$ active cores. Assume we have already fixed the position of $i$ active cores. The corresponding $i$ columns of $A$ are collected into
 matrix $A_i \in \mathbb{R}^{i \times n}$, and power budget of these $i$
@@ -332,8 +333,8 @@ we can form the following optimization problem to describe the power
 budgeting problem with these $i$ active cores:
 \begin{equation}\label{eq:temp_ss_i_pb}
   \begin{split}
-    &\text{minimize~~} \|\hat{T}_{opt_{n_{a}}}-A_i P_i\|_2\\
-    &\text{subject to~~} A_i P_i\preceq T_{th}.
+    &\text{minimize~~} \|T_{opt_{n_{a}}}-A_i P_i\|_2\\
+    &\text{subject to~~} A_i P_i\preceq T_{opt_{n_{a}}}.
   \end{split}
 \end{equation}
 % The power budget $P_i$ is readily solved by changing
@@ -370,7 +371,7 @@ budgeting problem with these $i$ active cores:
 \label{fig:ppw_boost}
 \end{figure}
 
-In order to find the position of the $(i+1)$-th core, we subtract the temperature rise caused by power budget of $i$ active cores from $\hat{T}_{opt_{n_{a}}}$, and obtain $T_{rm}=\hat{T}_{opt_{n_{a}}}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the power budget of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum power budget
+In order to find the position of the $(i+1)$-th core, we subtract the temperature rise caused by power budget of $i$ active cores from $T_{opt_{n_{a}}}$, and obtain $T_{rm}=\hat{T}_{opt_{n_{a}}}-A_iP_i$. Next, in order to find which core can complement the impact of the fixed $i$ active cores best, we compare the power budget of each of the rest $n-i$ cores when $T_{rm}$ is reached, and choose the core with maximum power budget
 %One example of comparing two possible active core positions (the $j$-th core and $k$-th core are took as examples) is shown in Fig.x.
 %By turning on $j$-th core only, the corresponding temperature rise of the chip is $a_{j}p_{j}$, where $p_{j}$ is the $j$-th elements in $P$ which should be determined by solving \eqref{eq:1_sim_opt_topt}. Assume $p_{j}$ is correctly computed, then the $T_{j}$ component (temperature rise at position $j$) of $a_{j}p_{j}$ should be the same as the $T_{opt_{n_{a}}}$, and $T_{k}$ component of $a_{j}p_{j}$ will be lower than $T_{opt_{n_{a}}}$. Instead, by turning on the $k$-th core only, the corresponding solved power value $p_{k}$ will heat the chip to $a_{k}p_{k}$, with its $T_{j}$ component being lower than $T_{opt_{n_{a}}}$ and its $T_{k}$ component just being equal to $T_{opt_{n_{a}}}$. Between the $j$-th core and $k$-th core, we prefer to turn on the $j$-th core, 
 
@@ -383,40 +384,35 @@ In order to find the position of the $(i+1)$-th core, we subtract the temperatur
 \subsection{Energy-efficient power budgeting with optimal power budget considering transient effects}
 The power budgeting method introduced in Section $4.3$ is for steady state condition and serves mostly for illustration of the basic idea of the dynamic power budgeting method. It may work just fine on the aspect of reliability if the computed steady state power budget is followed strictly during the power management process. However, it is frequent that chip switches between high performance mode and high energy efficiency mode, it is also possible that power management makes false decisions occasionally, the computed steady state power budget is not suitable for such scenarios. Therefore, we develop a power budgeting method by considering previous transient thermal/power behaviors as follows.
 
-Before we demonstrate any details, it's necessary to examine the PPW metric in transient state, and prove why the $T_{opt_{n_{a}}}$ obtained in steady state can lead to maximum PPW in transient state.
+Before we demonstrate any details, it's necessary to examine the PPW metric in transient state, and prove that the $T_{opt_{n_{a}}}$ obtained in steady state can lead to maximum PPW in transient state.
 
-We focus on a single core $i$, the optimal temperature of it is denoted by $T_{opt_{i}}$. There are generally $3$ cases in transient state, the previous temperature of a core is below $T_{opt_{i}}$, or above $T_{opt_{i}}$, or just $T_{opt_{i}}$. For each case, based on the target temperature, $3$ scenarios can be classified, which are $T_{1}$, $T_{2}$ and $T_{3}$. $T_{1}>T_{2}>T_{3}$, and $T_{2} = T_{opt_{i}}$.
+We focus on a single core $i$, the optimal temperature of it is denoted by $T_{opt_{i}}$. There are generally $2$ cases in transient state, the previous temperature of the core is below $T_{opt_{i}}$, or above $T_{opt_{i}}$. For each case, based on the target temperature, $3$ scenarios can be classified, which are $T_{1}$, $T_{2}$ and $T_{3}$, where $T_{1}>T_{2}>T_{3}$, and $T_{2} = T_{opt_{i}}$.
 
 %We assume the clock frequency in one control cycle is fixed, therefore, the $3$ scenarios for each case can be viewed as with different clock frequencies, which are $f_{1}>f_{2}>f_{3}$, and by applying $f_{2}$, $T_{opt_{n_{a}}}$ can be reached in $T(t+h)$, where $h$ is the length of control cycle. We will talk each of the cases in details next.
 %in order to improve the PPW of the core, it's necessary to improve the temperature, the difference is how much to improve. We assume the clock frequency in the process is fixed, the goal is to improve the PPW during $t$ and $t+h$, and maintain the temperature of $T_{t+h}$ until $t+2h$. $h$ is the length of control cycle.  Therefore, the $3$ senerios with different frequencies can also be classified by the target temperature by $T(t+h)$. For $f_{1}$, $T(t+h)$ will be higher than $T_{opt_{n_{a}}}$, $f_{2}$ will lead to $T_{opt_{n_{a}}}$ in $t+h$, and for $f_{3}$, $T_{t+h}$ will be lower than $T_{opt_{n_{a}}}$. 
 
-We begin with the case where previous temperature is below $T_{opt_{i}}$, as Fig.~\ref{fig:ppw_boost_1} shows, for all $3$ target temperatures, the target temperature can be reached by the end of the $1^{st}$ control cycle, and in the $2^{nd}$ control cycle, steady state is reached.
+We begin with the case where previous temperature is below $T_{opt_{i}}$, as Fig.~\ref{fig:ppw_boost_1} shows, for all $3$ scenarios, the target temperature can be reached by the end of the $1^{st}$ control cycle, and in the $2^{nd}$ control cycle, steady state is reached.
 
 Note that there is a sudden drop of frequency in $t+h$ for all target temperatures, which comes from the fact that the power budget provided by our method to increase temperature to target temperature is higher than that of the target temperature in steady state. This means our method can provides "performance boost" when previous temperature is lower than target temperature.
 
 Also as shown in Fig.~\ref{fig:ppw_boost_1}, PPW will increase dramatically in the beginning of the $1^{st}$ control cycle. Especially for target temperature equals to or above $T_{opt_{i}}$, PPW will temporarily exceed the optimal PPW of steady state, denoted by $\text{PPW}_{opt}$, which means besides "performance boost", our method can also provides "PPW boost". The reason can be obtained from the definition of PPW as
+% \begin{equation}\label{eq:ppw_detail}
+% \text{PPW} = \frac{\left \| f \right \|_{1}}{\left \| P_{d}+P_{s}(T) \right \|_{1}},
+% \end{equation}
 \begin{equation}\label{eq:ppw_detail}
-\text{PPW} = \frac{\left \| f \right \|_{1}}{\left \| P_{d}+P_{s}(T) \right \|_{1}},
+\text{PPW} = \frac{f }{p_{d}+p_{s}(T)},
 \end{equation}
-As shown in Fig.~\ref{fig:ppw_boost_1}, after the instant value change in $t$, $f$and $P_{d}$ will remain constant in the $1^{st}$ control cycle. However, $P_{s}$ is relative to $T$ and $V_{dd}$, as the change of $T$ is not instant, after the instant rise in $t$ caused by $V_{dd}$, $P_{s}$ will slowly rise in the $1^{st}$ control cycle, until the sudden drop in $t+h$ caused by $V_{dd}$. As $P_{s}$ rises in the $1^{st}$ control cycle, PPW first increases to maximum instantly, then declines to the corresponding value in steady state.
+As shown in Fig.~\ref{fig:ppw_boost_1}, after the instant value change in $t$, $f$and $p_{d}$ will remain constant in the $1^{st}$ control cycle. However, $p_{s}$ is relative to $T$ and $V_{dd}$, as the change of $T$ is not instant, after the instant rise in $t$ caused by $V_{dd}$, $p_{s}$ will slowly rise in the $1^{st}$ control cycle, until the sudden drop in $t+h$ caused by $V_{dd}$. As $p_{s}$ rises in the $1^{st}$ control cycle, PPW first increases to maximum instantly, then declines as $p_{s}$ rises, until to the corresponding value in steady state.
+
+Then we focus on the case where previous temperature is above $T_{opt_{i}}$, as Fig.~\ref{fig:ppw_boost_2} shows, for all $3$ target temperatures, contrary to the first case, to correct the previous over high temperature, we have to suffer from "performance deterioration" and "PPW deterioration". The "performance deterioration" comes from the fact that in order to reach target temperature by the end of the $1^{st}$ control cycle, the power budget given by our method is lower than that of corresponding target temperature in steady state. The reason of "PPW deterioration" is relatively the same as "PPW boost", which is, as $p_{s}$declines along with $T$ in the $1^{st}$ control cycle, PPW will first decrease to minimum instantly, then increase to the corresponding value in steady state.
 
 
-
-%By the end of the $1^{st}$ control cycle, PPW for all cases will still be higher than that of corresponding temperature in steady state. For $f_{2}$, PPW in the $1^{st}$ control cycle remains higher than $\text{PPW}_{opt}$ in steady state.
-
-
-%This means, when previous temperature is lower than $T_{opt_{n_{a}}}$, our method can provide a PPW higher than the $\text{PPW}_{opt}$ in steady state.
-% For in the first case, $T(t+h)$ is higher than $T_{opt_{n_{a}}}$, PPW will gradually decrease, until $t+h$, it will be lower than optimal PPW. 
-
-Then we focus on the case where previous temperature is above $T_{opt_{i}}$, as Fig.~\ref{fig:ppw_boost_2} shows, for all $3$ target temperatures, contrary to the first case, to correct the previous over high temperature, we have to suffer from "performance deterioration" and "PPW deterioration". The "performance deterioration" comes from the fact that in order to reach target temperature by the end of the $1^{st}$ control cycle, the power budget given by our method is lower than that of corresponding target temperature in steady state. The reason of "PPW deterioration" is relatively the same as "PPW boost", which is, as $P_{s}$declines along with $T$ in the $1^{st}$ control cycle, PPW will first decrease to minimum instantly, then increase to the corresponding value in steady state.
+% For the last case where previous temperature is $T_{opt_{i}}$, as Fig.~\ref{fig:ppw_boost_3} shows, for $T_{2}$, the power budget is the same as in steady state, therefore, we focus on the other $2$ scenarios. For $T_{1}$, because the target temperature is higher than $T_{opt_{i}}$, there is "PPW boost" in the $1^{st}$ control cycle. For $T_{3}$, it has to suffer from "PPW deterioration" due to lowering temperature.
 
 
-For the last case where previous temperature is $T_{opt_{i}}$, as Fig.~\ref{fig:ppw_boost_3} shows, for $T_{2}$, the power budget is the same as in steady state, therefore, we focus on the other $2$ scenarios. For $T_{1}$, because the target temperature is higher than $T_{opt_{i}}$, there is "PPW boost" in the $1^{st}$ control cycle. For $T_{3}$, it has to suffer from "PPW deterioration" due to lowering temperature.
+Next, we focus on verifying the effectiveness of $T_{opt_{n_{a}}}$ in transient state, which equals to proving the overall PPW during a control cycle of $T_{2}$ is the highest among all target temperatures. We can see in Fig.~\ref{fig:ppw_boost}, no matter what previous temperature it is, the PPW of $T_{3}$ is always lower than that of $T_{2}$ in a control cycle. As for $T_{1}$, although the PPW of higher clock frequency will be higher than that of $T_{2}$ in the beginning of the control cycle, the deviation of the target temperature from $T_{opt_{i}}$ makes the PPW of it lower than that of $T_{2}$ in the second half of the control cycle. Overall, the PPW of $T_{1}$ and $T_{2}$ is approximately the same in this control cycle. However, the PPW in the next control cycle is what sets them apart. By remaining the current temperature, the PPW of $T_{1}$ will be lower than that of $T_{2}$. Or, if the temperature is corrected to $T_{opt_{i}}$, the PPW will be even worse because of "PPW deterioration" mentioned above. Therefore, the PPW of applying $T_{2}$ in all circumstances will be maximum among all target temperatures.
 
-
-We next focus on verifying the effectiveness of $T_{opt_{n_{a}}}$ in transient state, which equals to proving the overall PPW during a control cycle of $T_{2}$ is the highest among all target temperatures. We can see in Fig.~\ref{fig:ppw_boost}, no matter what previous temperature it is, the PPW of $T_{3}$ is always lower than that of $T_{2}$ in a control cycle. As for $T_{1}$, although the PPW of higher clock frequency will be higher than that of $T_{2}$ in the beginning of the control cycle, the deviation of the target temperature from $T_{opt_{i}}$ makes the PPW of it lower than that of $T_{2}$ in the second half of the control cycle. Overall, the PPW of $T_{1}$ and $T_{2}$ is approximately the same in this control cycle. However, the PPW in the next control cycle is what sets them apart. By remaining the current temperature, the PPW of $T_{1}$ will be lower than that of $T_{2}$. Or, if the temperature is corrected to $T_{opt_{i}}$, the PPW will be even worse because of "PPW deterioration" mentioned above. Therefore, the PPW of applying $T_{2}$ in all circumstances will be maximum among all target temperatures.
-
-With $T_{opt_{n_{a}}}$ being effective, the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:sim_opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.2$.
+With $T_{opt_{n_{a}}}$ being effective in transient state, the basic problem in dynamic power budgeting is to represent temperature rise $T_{c}(t+h)$ using the input power $P$ and initial temperature rise $T_{t}$. Once the formulation of $T_{c}(t+h)$ is available, we can input it into the basic optimization problem \eqref{eq:sim_opt_topt}, and get the sub-optimal $P$ using the similar greedy based method presented in Section $4.2$.
 
 For \eqref{eq:gt}, we can discrete this model using backward Euler's method, and get
 \begin{equation}\label{eq:discrete_gt}
