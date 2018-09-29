@@ -1,10 +1,11 @@
-\section{SYSTEM MODELS}
+\section{Power and Thermal Models}
+In this section, we present the power and thermal models used in this work. 
 % In order to determine the energy-efficient power budget of a multi-core dark silicon system, the 
 % we present power modeling and thermal modeling techniques in this section, which are important basic knowledges for our new work.
 
-\subsection{Power modeling}
+\subsection{Power model}
 
-It is widely acknowledged that the total power of a chip is composed of dynamic and static power. The dynamic power is dependent on the activities of the chip, most of which is the capacitive switching power consumed during circuit charging and discharging. $p_{d}$ can be expressed as:
+The total power of a chip, denoted as $p$, is composed of dynamic power and static power. The dynamic power, denoted as $p_d$, depends on the activities of the chip, which is expressed as
 % \begin{equation}\label{eq:dyn_power}
 % p_{d} = \alpha_{d} \cdot V_{dd}^{2} \cdot f,
 % \end{equation}
@@ -31,15 +32,16 @@ It is widely acknowledged that the total power of a chip is composed of dynamic 
 % in which $p_{s_{max}}$ is the static power when the core is running at thermal limit, and $I_{max}$ is the corresponding maximum leakage current. Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain.
 
 \begin{equation}\label{eq:dyn_power}
-p_{d} = C_{\text{eff}} \cdot V_{dd}^{2} \cdot f,
+p_{d} = C_{eff} \cdot V_{dd}^{2} \cdot f,
 \end{equation}
-where $V_{dd}$ stands for the operating voltage, $f$ stands for the clock frequency, and $C_{\text{eff}}$ is the effective switching capacitance.
+where $V_{dd}$ stands for the operating voltage, $f$ is the clock frequency, and $C_{eff}$ is the effective switching capacitance.
 
-It is assumed the clock frequency $f$ changes with $V_{dd}$ to the lowest allowable point:
+For modern processors, the clock frequency $f$ and the operating voltage $V_{dd}$ of each core are changed at runtime (widely known as dynamic voltage and frequency scaling (DVFS)), in order to adjust the core's energy efficiency and performance. 
+A widely used model to discribe the relationship between $f$ and $V_{dd}$ is [cite ???]
 \begin{equation}\label{eq:f_v}
 f = (V_{dd}-V_{th}) \cdot (\frac{f_{max}-f_{min}}{V_{max}-V_{th}})+f_{min}.
 \end{equation}
-where $f_{min}$ stands for the minimum clock frequency, and $V_{th}$ stands for the threshold voltage.
+where $f_{min}$ and $f_{max}$ stands for the minimum and maximum clock frequencies, respectively, $V_{th}$ stands for the threshold voltage, and $V_{max}$ stands for ???.
 
 Yet the static power $p_{s}$ of the chip is caused by leakage current $I_{leak}$ as:
 \begin{equation}\label{eq:sta_power}
