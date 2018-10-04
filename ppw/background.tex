@@ -33,9 +33,9 @@ The total power of a chip, denoted as $p$, is composed of dynamic power and stat
 % in which $p_{s_{max}}$ is the static power when the core is running at thermal limit, and $I_{max}$ is the corresponding maximum leakage current. Due to the non-linear relationship between $I_{leak}$ and temperature, static power is also sensitive to temperature, which makes it hard to obtain.
 
 \begin{equation}\label{eq:dyn_power}
-p_{d} = C_{eff} \cdot V_{dd}^{2} \cdot f,
+p_{d} = C_{e} \cdot V_{dd}^{2} \cdot f,
 \end{equation}
-where $V_{dd}$ stands for the operating voltage, $f$ is the clock frequency, and $C_{eff}$ is the effective switching capacitance.
+where $V_{dd}$ stands for the operating voltage, $f$ is the clock frequency, and $C_{e}$ is the effective switching capacitance.
 
 In equation~\eqref{eq:dyn_power}, the clock frequency $f$ and the operating voltage $V_{dd}$ of each modern processor core are changed at runtime (widely known as dynamic voltage and frequency scaling (DVFS)), in order to adjust the core's energy efficiency and performance. 
 A widely used model to discribe such relationship between $f$ and $V_{dd}$ is [cite ???]
@@ -107,10 +107,22 @@ $I_{0}$ contains constant terms that are not associated with $T_p$ in \eqref{eq:
 \end{figure}
 
 \subsection{Thermal model}\label{sec:therm_model}
-In this work, the multi-core dark silicon system is packaged in a common structure in Fig.~\ref{fig:chip_struct}. 
-Heat (power) generated from the chip is conducted through thermal interface material (TIM), heat spreader, heat sink, and finally dissipated to the air through convection. The secondary heat path is ignored hear, since much fewer heat is dissipated through that path.
+Because leakage power is highly related to temperature, thermal
+model is needed to connect the temperature and power.
+In this work, we build the thermal model of a multi-core dark silicon system packaged in a common structure in Fig.~\ref{fig:chip_struct}. 
+Heat (power) generated from the chip is conducted through thermal interface material (TIM), heat spreader, heat sink, and finally dissipated to the air through convection.
+% The secondary heat path is ignored, since much fewer heat is dissipated through that path.
 
-To estimate the power consumption of a IC chip, we first divide the chip and its package into multiple blocks called thermal nodes, with partition granularity determined by the accuracy requirements. For the dark silicon multi-core system (a 16-core chip's floorplan example is shown in Fig.~\ref{fig:core_flp}), we treat each core as a thermal node with a current source, because each core has very small area and highly correlated internal power distribution. The other thermal nodes from the package are divided according to the chip thermal nodes. Then, the thermal resistance and capacitance among these thermal nodes are determined, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig.~\ref{fig:core_flp} are fully compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal model for a chip with $n$ total thermal nodes can be generated:
+To build the thermal model, we first divide the chip and its package
+into multiple blocks called thermal nodes, with partition granularity
+determined by the accuracy requirements. For the dark silicon
+multi-core system (the floorplan of a 16-core chip is shown in
+Fig.~\ref{fig:core_flp}), we treat each core as a thermal node,
+because each core has small area and highly correlated internal power
+distribution. The other thermal nodes from the package are divided
+according to the thermal nodes. Power (including both dynamic power
+and static power) of each core is modeled as a current source from the
+ground to the thermal node of the core. Then, the thermal resistance and capacitance among these thermal nodes are determined, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig.~\ref{fig:core_flp} are fully compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal model for a chip with $n$ total thermal nodes can be generated:
 \begin{equation}\label{eq:therm_model}
 \begin{split}
 GT(t) + C\frac{dT(t)}{dt} &= BP(t)\\
