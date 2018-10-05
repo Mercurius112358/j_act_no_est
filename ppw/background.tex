@@ -116,17 +116,39 @@ Heat (power) generated from the chip is conducted through thermal interface mate
 To build the thermal model, we first divide the chip and its package
 into multiple blocks called thermal nodes, with partition granularity
 determined by the accuracy requirements. For the dark silicon
-multi-core system (the floorplan of a 16-core chip is shown in
+multi-core system (as an example, the floorplan of a 16-core chip is shown in
 Fig.~\ref{fig:core_flp}), we treat each core as a thermal node,
 because each core has small area and highly correlated internal power
 distribution. The other thermal nodes from the package are divided
 according to the thermal nodes. Power (including both dynamic power
 and static power) of each core is modeled as a current source from the
-ground to the thermal node of the core. Then, the thermal resistance and capacitance among these thermal nodes are determined, which model the thermal transport and power response behaviors. Please note that multi-core system floorplan different from the one shown in Fig.~\ref{fig:core_flp} are fully compatible with this work, and each core's internal structure can also be modeled if necessary. With above mentioned information, the thermal model for a chip with $n$ total thermal nodes can be generated:
+ground to the thermal node of the core. Then, the thermal resistance
+and capacitance among these thermal nodes are determined, which model
+the thermal transport and power response behaviors. Please note that
+multi-core systems with floorplans different from the one shown in
+Fig.~\ref{fig:core_flp} are fully compatible with this work, and each
+core's internal structure can also be modeled if necessary. By
+following the modeling policies provided above, the thermal model for
+a chip with $n$ total thermal nodes is generated in ordinary
+differential equations as
 \begin{equation}\label{eq:therm_model}
 \begin{split}
 GT(t) + C\frac{dT(t)}{dt} &= BP(t)\\
 T_{c}(t) &= B^{T}T(t)
 \end{split}
 \end{equation}
-where $T(t) \in \mathbb{R}^m$ is the temperature rise vector , representing temperature rise (from the ambient temperature) at $m$ places of the chip and package; $G \in \mathbb{R}^{m\times m}$ and  $C \in \mathbb{R}^{m \times m}$ contain equivalent thermal resistance and capacitance information respectively; $B \in \mathbb{R}^{m \times n}$ stores the information of how powers are injected into the thermal nodes; $P(T, t) \in \mathbb{R}^{n}$ is the power vector, which contains power consumptions of $l$ components on chip, including both dynamic power vector $P_d$ and static power vector $P_s$, i.e., $P(T, t)=P_s(T, t)+P_d(t)$. $T_{c}(t) \in \mathbb{R}^n$ is the output temperature vector, containing only temperatures of cores only. For detailed structure of $G$, $C$, and $B$ matrices, please refer to the thermal modeling works such as~\cite{Huang:TVLSI'06,Huang:TC'08,WangTan:TODAES'13,Hanumaiah:TCAD'11}.
+where $T(t) \in \mathbb{R}^m$ is the temperature rise vector,
+representing temperature rise (from the ambient temperature) of the $m$
+thermal nodes of the chip and package;\footnote{To be specific, there are $n$ chip thermal
+nodes and $m-n$ package thermal nodes.} $G \in \mathbb{R}^{m\times m}$
+and  $C \in \mathbb{R}^{m \times m}$ contain equivalent thermal
+resistance and capacitance information respectively; $B \in
+\mathbb{R}^{m \times n}$ stores the information of how powers are
+injected into the thermal nodes; $P(T, t) \in \mathbb{R}^{n}$ is the
+power vector, which contains power consumptions of the $n$ cores on
+chip, including both dynamic power $P_d$ and static power vector
+$P_s$, i.e., there is $P(T, t)=P_s(T, t)+P_d(t)$. $T_{c}(t) \in
+\mathbb{R}^n$ is the output temperature vector, containing only
+temperatures of the $n$ cores only. For the detailed structures of $G$, $C$,
+and $B$ matrices, please refer to the thermal modeling works such
+as~\cite{Huang:TVLSI'06,Huang:TC'08,WangTan:TODAES'13,Hanumaiah:TCAD'11}. 

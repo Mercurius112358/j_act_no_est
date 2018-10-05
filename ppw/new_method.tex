@@ -1,6 +1,26 @@
-\section{ENERGY-EFFICIENT POWER BUDGETING FOR MULTI-CORE DARK SILICON SYSTEMS}
+\section{The Energy-Efficient Power Bugeting Method for Multi-Core
+  Dark Silicon Systems}
 
-Power budgeting, by the name, provides a power budget, which servers as a guidance and constraint for the system. The power budget in dark silicon includes the active core distribution and the corresponding DVFS stages of active cores. Typically, the given power budget should be conservative in order to keep the system in thermally safe state. The energy-efficient power budgeting gives a power budget not only keeps the system thermally safe, but also maximizes the energy efficiency of the system while keeping the power budget as high as possible.
+Power budgeting, by the name, provides a power budget which servers
+as the maximum allowed/advised system power consumption. For modern multi-core
+systems, power consumption is limited by the system heat dissipation
+ability. As a result, existing power budgeting methods compute power budget using the maximum
+allowed system temperature as the contraint, which enables
+high-performance computing for the system. However, the existing power
+budgeting methods do not suit for energy-efficient computing
+because the temperature dependent leakage power makes the high-performance
+(high temperature) state less energy-efficient than some lower-performance
+(lower temperature) state. 
+In addition, for the dark silicon
+multi-core system where not all cores are turned on at the same time,
+the system performance and energy-efficiency also depend on the active core distribution, because
+different active core distributions lead to different system heat
+dissipation abilities.
+
+In this section, we present the energy-efficient power budgeting
+method for multi-core dark silicon systems. 
+The new method gives a power budget which not only maximizes the
+energy efficiency of the system but also keeps the power budget as high as possible.
 
 
 The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
