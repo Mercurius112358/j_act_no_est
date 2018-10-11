@@ -30,29 +30,32 @@ PPW is defined as the ratio of the total performance (MIPS) to the
 total power. Because the performance of an active core is linearly promotional to its clock frequency $f$,
 we express PPW using clock frequency instead of performance as
 \begin{equation}\label{eq:ppw}
-\text{PPW} = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}.
+\ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}.
 \end{equation}
 where $F = [f_1, f_2, \ldots, f_{n_a}]^T$ is a vector containing the
 clock frequencies of all active cores (with $f_i$ represents the clock
 frequency of the $i$-th active core). 
 
-the energy-efficient power budgeting problem can be formulated as the following optimization problem
+Then, the energy-efficient power budgeting problem can be formulated as the following optimization problem
 \begin{equation}\label{eq:opt_ppw}
 \begin{split}
-\text{maximize } & \text{PPW} = \frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}\\
+\text{maximize} & \ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}\\
 \text{subject to} &\left\{
 \begin{array}{lr}
-\text{card}(P) = n_{a},\\
+\card(P) = n_{a},\\
 T_{c} \preceq T_{th}.\\
 \end{array}
 \right.
 \end{split}
 \end{equation}
-where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold vector containing the maximum allowed temperature rises from the ambient temperature; card$(P)$ means the cardinality or size of the vector $P$, which is defined as the number of the nonzero components in $P$. In our case, card$(P) = n_{a}$ means there are $n_{a}$ active cores.
+where $T_{th} \in \mathbb{R}^{n}$ is the temperature rise threshold
+vector containing the maximum allowed temperature rises from the
+ambient temperature, $\card(P)$ means the cardinality or size of the vector $P$, which is defined as the number of the nonzero components in $P$. In our case, $\card(P) = n_{a}$ means there are $n_{a}$ active cores.
 
-Before we solve this optimization problem, in Appendix B, we prove that $\text{PPW}=\frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}$ is a quasi-concave function of the clock frequency $f$, which can make sure the optimization problem has a unique solution of $f$ that maximizes PPW.
+% Before we solve this optimization problem, in Appendix B, we prove that $\text{PPW}=\frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}$ is a quasi-concave function of the clock frequency $f$, which can make sure the optimization problem has a unique solution of $f$ that maximizes PPW.
 
-To find the unique solution for the optimization problem in \eqref{eq:opt_ppw} is very hard, because of the high computational complexity of the problem, which comes from the fact that the cores have thermal impact on each other, changing the DVFS stage of one core not only would change the PPW of the core itself, but would also change the temperature rise of other cores, therefore changing the PPW of them, which makes enumerating all possible active core distribution and DVFS stages the only way to obtain the optimal solution. Therefore, we need to transform this problem into a problem with low complexity.
+Solving the optimization problem in \eqref{eq:opt_ppw} directly is
+difficult, because power $P$ and clock frequency $F$ are connected by 
 
 We assume PPW of the system is optimal if the PPW of each core is optimal. Therefore, the problem of maximizing the PPW of the system can be transformed to maximizing the PPW of each individual core. A temperature rise oriented method to obtain sub-optimal PPW of each core is shown in next section.
 
