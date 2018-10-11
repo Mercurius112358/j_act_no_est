@@ -19,18 +19,24 @@ dissipation abilities.
 
 In this section, we present the energy-efficient power budgeting
 method for multi-core dark silicon systems. 
-The new method gives a power budget which not only maximizes the
-energy efficiency of the system but also keeps the power budget as high as possible.
+The new method gives a power budget with an optimal/sub-optimal active core distribution which not only maximizes the
+energy efficiency (measured as PPW) of the system but also keeps the power budget as high as possible.
 
 
-The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
+% The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
 
-PPW is defined as the ratio of the total performance (MIPS) to the total power.
+\subsection{Problem formulation}
+PPW is defined as the ratio of the total performance (MIPS) to the
+total power. Because the performance of an active core is linearly promotional to its clock frequency $f$,
+we express PPW using clock frequency instead of performance as
 \begin{equation}\label{eq:ppw}
-\text{PPW} = \frac{\left \| s \right \|_{1}}{\left \| P \right \|_{1}}
+\text{PPW} = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}.
 \end{equation}
+where $F = [f_1, f_2, \ldots, f_{n_a}]^T$ is a vector containing the
+clock frequencies of all active cores (with $f_i$ represents the clock
+frequency of the $i$-th active core). 
 
-$s$ stands for the performance of the system in MIPS, which can be converted to the clock frequency $f$ of the active cores. Then the energy-efficient power budgeting problem can be formulated as the following optimization problem
+the energy-efficient power budgeting problem can be formulated as the following optimization problem
 \begin{equation}\label{eq:opt_ppw}
 \begin{split}
 \text{maximize } & \text{PPW} = \frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}\\
