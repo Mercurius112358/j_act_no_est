@@ -110,29 +110,42 @@ this method is fully functional for transient case.
 % sub-optimal temperature rise for multiply active cores is proposed
 % in $4.1.2$.
 
-we first express the PPW of a single core in steady state as:
+We first express the PPW of the $i$-th core ($\ppw_i$) in steady state as:
 \begin{equation}\label{eq:min_ppw}
-\text{PPW}=\frac{f}{p_{d}+p_{s}},
+\ppw_i=\frac{f_i}{p_{d_i}+p_{s_i}},
 \end{equation}
+where $p_{d_i}$ and $p_{s_i}$ are the dynamic power and static power
+of the $i$-th core, respectively. 
 
-By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:sta_power_lin} into \eqref{eq:min_ppw}, we have
+In order to eliminate the nonlinearity in~\eqref{eq:min_ppw}, we
+integrate the linearized static power in \eqref{eq:sta_power_lin} into
+\eqref{eq:min_ppw} and obtain
 \begin{equation}\label{eq:1_ppw}
-\text{PPW} = \frac{f}{p_{d}+V_{dd}(a_pT_p+p_{0})},
+\ppw_i = \frac{f}{p_{d_i}+V_{dd_i}(a_pT_i+I_{0})},
 \end{equation}
-where $T_p$ is the temperature of the core and $P_{0} = V_{dd}I_0$ is
-a constant. In \eqref{eq:1_ppw}, there are multiple variables
-including $f$, $p_{d}$, $V_{dd}$, and $T_p$. Fortunately, they are all
-related to each other and thus can be expressed by only one
-variable. In this work, we choose to convert all variables into $p_{d}$, therefore minimizing to only $1$ variable. Note that, $T_{i}$ in \eqref{eq:1_ppw} is affected by other active cores, in order express it with only $p_{d}$, we need to isolate the core.
+where $T_i$ is the temperature of the $i$-th core. In \eqref{eq:1_ppw}, there are multiple variables
+including $f_i$, $p_{d_i}$, $V_{dd_i}$, and $T_i$. Fortunately, they are all
+related to each other in the thermal and power models and thus can be expressed by only one
+variable as shown next. Next, we show how to convert all these variables into
+$p_{d_i}$, leaving only one variable in~\eqref{eq:1_ppw}.
 
+The major problem of converting all variables into $p_{d_i}$ is that
+$T_{i}$ in \eqref{eq:1_ppw} is \emph{not} only influenced by its own
+powers $p_{d_i}$ and $p_{s_i}$, but is also affected by powers from
+other active cores. As a result, in order to express $T_{i}$ using $p_{d_i}$, we need to
+decouple the $i$-th core from the other cores. Please note that the error caused by the
+decouple process can be compensated later. 
 
-\subsection{Calculating sub-optimal temperature rise for isolated cores}
-
-Let's begin with calculating the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state, the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
+Let us first express temperature $T_i$ using $p_{d_i}$. In steady
+state, we can express the core temperature vector 
+$T_c$ using power vector $P$ as 
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
 \end{equation}
-Let $A = B^{T}G^{-1}B \in \mathbb{R}^{n \times n}$, which is the \emph{steady-state thermal transfer matrix} in~\cite{Reda:SJ'18}. Please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
+simply by ignoring the dynamic term $C\frac{dT(t)}{dt}$ in the thermal
+model~\eqref{eq:gt}. 
+To simplify notification, we let $A = B^{T}G^{-1}B \in \mathbb{R}^{n
+  \times n}$, which is defined as the \emph{steady-state thermal transfer matrix}~\cite{Reda:SJ'18}. Please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
 \eqref{eq:tc} can be expressed as
 \begin{equation}\label{eq:sim_tc}
 \begin{split}
