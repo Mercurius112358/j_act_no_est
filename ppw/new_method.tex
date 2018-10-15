@@ -121,7 +121,7 @@ In order to eliminate the nonlinearity in~\eqref{eq:min_ppw}, we
 integrate the linearized static power in \eqref{eq:sta_power_lin} into
 \eqref{eq:min_ppw} and obtain
 \begin{equation}\label{eq:1_ppw}
-\ppw_i = \frac{f}{p_{d_i}+V_{dd_i}(a_pT_i+I_{0})},
+\ppw_i = \frac{f_i}{p_{d_i}+V_{dd_i}(a_pT_i+I_{0})},
 \end{equation}
 where $T_i$ is the temperature of the $i$-th core. In \eqref{eq:1_ppw}, there are multiple variables
 including $f_i$, $p_{d_i}$, $V_{dd_i}$, and $T_i$. Fortunately, they are all
@@ -134,23 +134,38 @@ $T_{i}$ in \eqref{eq:1_ppw} is \emph{not} only influenced by its own
 powers $p_{d_i}$ and $p_{s_i}$, but is also affected by powers from
 other active cores. As a result, in order to express $T_{i}$ using $p_{d_i}$, we need to
 decouple the $i$-th core from the other cores. Please note that the error caused by the
-decouple process can be compensated later. 
+decoupling process can be compensated later. 
 
 Let us first express temperature $T_i$ using $p_{d_i}$. In steady
-state, we can express the core temperature vector 
-$T_c$ using power vector $P$ as 
+state, the core temperature vector 
+$T_c$ is represented by the power vector $P$ as 
 \begin{equation}\label{eq:tc}
 T_{c} = B^{T}G^{-1}BP.
 \end{equation}
-simply by ignoring the dynamic term $C\frac{dT(t)}{dt}$ in the thermal
-model~\eqref{eq:gt}. 
+The above formula is obtained by solving the thermal
+model~\eqref{eq:therm_model} with the dynamic term $C\frac{dT(t)}{dt}$ ignored
+for steady state analysis.
 To simplify notification, we let $A = B^{T}G^{-1}B \in \mathbb{R}^{n
-  \times n}$, which is defined as the \emph{steady-state thermal transfer matrix}~\cite{Reda:SJ'18}. Please note that, compared to $G$ matrix, although the size of $A$ matrix is reduced, all thermal model information including packages are reserved. The simplified 
-\eqref{eq:tc} can be expressed as
+  \times n}$, which is defined as the \emph{steady-state thermal
+  transfer matrix}~\cite{Reda:SJ'18}.
+% Please note that, compared to $G$ matrix, although the size of $A$
+% matrix is reduced, all thermal model information including packages
+% are reserved.
+Then, we can rewrite \eqref{eq:tc} using $A$ matrix as
 \begin{equation}\label{eq:sim_tc}
-\begin{split}
-T_{c} &= AP,\\
-&=
+  T_{c} = AP.
+\end{equation}
+By showing the matrix/vector elements of the above equation, there is
+\begin{equation}
+{\left[
+\begin{matrix}
+ T_{1}   \\
+ T_{2}   \\
+ \vdots  \\
+ T_{n}   \\
+\end{matrix}
+\right]}
+=
 {\left[
 \begin{matrix}
  a_{11} & a_{12} & \cdots & a_{1n} \\
@@ -167,17 +182,16 @@ T_{c} &= AP,\\
  p_{n}   \\
 \end{matrix}
 \right]}.\\
-\end{split}
 \end{equation}
-
-As \eqref{eq:sim_tc} shows, $T_{i}$ can be expressed as
+Then, $T_{i}$ can be expressed as
 \begin{equation}\label{eq:ti}
 T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}. 
 \end{equation}
 
 %the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. 
 
-Therefore, the diagonal element $a_{ii}$ can be extracted from $A$ to approximate $T_{i}$ as:
+In order to express $T_i$ using $p_i$, we \emph{temporally} ignore all
+the off-diagonal elements in the $A$ matrix and use only $a_{ii}p_i$ in \eqref{eq:ti} to approximate $T_{i}$ as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
@@ -185,12 +199,12 @@ T_{i}&\approx a_{ii} \cdot p_{i}\\
 &=a_{ii}(p_{d}+V_{dd}(p_{0}+a_{s}(T_{i}+T_{amb}))),
 \end{split}
 \end{equation}
-
-\begin{equation}\label{eq:ti}
+Then, $T_i$ can be readily solved from \eqref{eq:t_ap} as
+\begin{equation}\label{eq:ti_new}
 T_{i}=\frac{a_{ii}(p_{d}+V_{dd}\cdot p_{0}+V_{dd}\cdot a_{s}\cdot T_{amb})}{1-a_{ii} \cdot a_{s} \cdot V_{dd}}.
 \end{equation}
 
-By substituting $T_{i}$ in \eqref{eq:1_ppw} with \eqref{eq:ti}, we can have:
+By substituting $T_{i}$ in \eqref{eq:1_ppw} with \eqref{eq:ti_new}, we can have:
 \begin{equation}\label{eq:1_ppw_2}
 \text{PPW} = \frac{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}{V_{dd}(a_{s}\cdot T_{amb}+p_{0})+p_{d}},
 \end{equation}

@@ -147,8 +147,10 @@ resistance and capacitance information respectively; $B \in
 injected into the thermal nodes; $P(T, t) \in \mathbb{R}^{n}$ is the
 power vector, which contains power consumptions of the $n$ cores on
 chip, including both dynamic power $P_d$ and static power vector
-$P_s$, i.e., there is $P(T, t)=P_s(T, t)+P_d(t)$. $T_{c}(t) \in
+$P_s$, i.e., there is $P(T, t)=P_s(T, t)+P_d(t)$. $T_{c}(t) = [T_1,
+T_2, \ldots, T_n]^T \in
 \mathbb{R}^n$ is the output temperature vector, containing only
-temperatures of the $n$ cores only. For the detailed structures of $G$, $C$,
+temperatures of the $n$ cores only, with $T_i$ representing the
+temperature of the $i$-th core. For the detailed structures of $G$, $C$,
 and $B$ matrices, please refer to the thermal modeling works such
 as~\cite{Huang:TVLSI'06,Huang:TC'08,WangTan:TODAES'13,Hanumaiah:TCAD'11}. 
