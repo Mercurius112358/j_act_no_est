@@ -26,8 +26,12 @@ energy efficiency (measured as PPW) of the system but also keeps the power budge
 % The energy-efficient dynamic power budgeting aims to find the optimal active core distributions and their corresponding DVFS stages, which can maximize the PPW of the multi-core system. While some systems may have constraints other than thermal constraint, such as total power supply limit. But the dark silicon systems are extremely thermal limited, therefore, we focus on the major problem of thermal limits, and other constraints can be added with minor modification if needed.
 
 \subsection{Problem formulation}
-PPW is defined as the ratio of the total performance (MIPS) to the
-total power. Because the performance of an active core is linearly promotional to its clock frequency $f$,
+PPW is defined as the ratio of the total performance (measured as
+instruction per second (IPS)) to the
+total power. Because the performance of an active core is linearly
+proportional to its clock frequency $f$ as $\ips = \ipc \times f$ where
+$\ipc$ stands for instruction per
+clock~\cite{Hennessy:Book'12},
 we express PPW using clock frequency instead of performance as
 \begin{equation}\label{eq:ppw}
 \ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}.
@@ -39,7 +43,7 @@ frequency of the $i$-th active core).
 Then, the energy-efficient power budgeting problem can be formulated as the following optimization problem
 \begin{equation}\label{eq:opt_ppw}
 \begin{split}
-\text{maximize} & \ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}\\
+\text{maximize}~ & \ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}\\
 \text{subject to} &\left\{
 \begin{array}{lr}
 \card(P) = n_{a},\\
