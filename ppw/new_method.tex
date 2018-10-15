@@ -43,8 +43,8 @@ frequency of the $i$-th active core).
 Then, the energy-efficient power budgeting problem can be formulated as the following optimization problem
 \begin{equation}\label{eq:opt_ppw}
 \begin{split}
-\text{maximize}~ & \ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}\\
-\text{subject to} &\left\{
+&\text{maximize}~ \ppw = \frac{\left \| F \right \|_{1}}{\left \| P \right \|_{1}}\\
+&\text{subject to}  \left\{
 \begin{array}{lr}
 \card(P) = n_{a},\\
 T_{c} \preceq T_{th}.\\
@@ -59,9 +59,22 @@ ambient temperature, $\card(P)$ means the cardinality or size of the vector $P$,
 % Before we solve this optimization problem, in Appendix B, we prove that $\text{PPW}=\frac{\left \| f \right \|_{1}}{\left \| P \right \|_{1}}$ is a quasi-concave function of the clock frequency $f$, which can make sure the optimization problem has a unique solution of $f$ that maximizes PPW.
 
 Solving the optimization problem in \eqref{eq:opt_ppw} directly is
-difficult, because power $P$ and clock frequency $F$ are connected by 
+difficult, because power $P$ and clock frequency $F$ are connected by
+power model and thermal model (please note that static power is highly
+related to temperature) in a complex way as shown previously in
+Section~\ref{sec:power_therm_model}. To be specific, the difficulty
+comes from two ways. First, the leakage is nonlinear. Second,
+temperature of one core is affected by all other cores. 
 
-We assume PPW of the system is optimal if the PPW of each core is optimal. Therefore, the problem of maximizing the PPW of the system can be transformed to maximizing the PPW of each individual core. A temperature rise oriented method to obtain sub-optimal PPW of each core is shown in next section.
+In order to find the solution in a practical way, we will analyze the PPW
+behavior of a single core first, and then consider the temperature coupling
+effects to obtain a sub-optimal system PPW as shown in the next part.
+
+% We assume PPW of the system is optimal if the PPW of each core is
+% optimal. Therefore, the problem of maximizing the PPW of the system
+% can be transformed to maximizing the PPW of each individual core. A
+% temperature rise oriented method to obtain sub-optimal PPW of each
+% core is shown in next section. 
 
 
 % The closer $T_{c}$ is to $T_{opt_{n_{a}}}$, the higher the PPW. So instead of
@@ -80,28 +93,40 @@ We assume PPW of the system is optimal if the PPW of each core is optimal. There
 
 % A method to efficiently eliminate the thermal interactions among cores and calculate $T_{opt_{n_{a}}}$ is shown in next section.
 
-\subsection{Obtaining sub-optimal PPW for each core}
-In this section, we use steady state example to show how to obtain sub-optimal PPW of each core. Please note that we present the steady state example mainly for the purpose of clarity.
+\subsection{Energy-efficient power budgeting for a single core}
+In this section, we use steady state example to show how to compute
+the power budget with the maximum PPW for each core. Please note that
+we present the steady state example mainly for the purpose of clarity,
+this method is fully functional for transient case. 
 
-First we prove $T$ is convex w.r.t $f$ in Appendix A, considering for a fixed active core distribution, there is a unique $f$ that can maximize PPW. Therefore, for a fixed active core distribution, there is a unique temperature vector, denoted by $T_{target}$, as long as all cores' temperature rise is the same with the corresponding temperature rise in $T_{target}$, PPW of the system can be maximized. However, $T_{target}$ only works for a fixed active core distribution, the reason is that the thermal interaction among cores varies for different active core distributions. The overhead of obtaining $T_{target}$ for each active core distribution is too high. It is also notices that for a specific core, the optimal temperature rise of it in different active core distributions of the same active core number varies a little. 
-Therefore, for a specific core, we can use a single value to stand for the sub-optimal temperature rise of it in all active core distributions of the same active core number.
+% First we prove $T$ is convex w.r.t $f$ in Appendix A, considering for a fixed active core distribution, there is a unique $f$ that can maximize PPW. Therefore, for a fixed active core distribution, there is a unique temperature vector, denoted by $T_{target}$, as long as all cores' temperature rise is the same with the corresponding temperature rise in $T_{target}$, PPW of the system can be maximized. However, $T_{target}$ only works for a fixed active core distribution, the reason is that the thermal interaction among cores varies for different active core distributions. The overhead of obtaining $T_{target}$ for each active core distribution is too high. It is also notices that for a specific core, the optimal temperature rise of it in different active core distributions of the same active core number varies a little. 
+% Therefore, for a specific core, we can use a single value to stand for the sub-optimal temperature rise of it in all active core distributions of the same active core number.
 
-To obtain the sub-optimal temperature rise of each core, we need to isolate the cores. For active core numbers more that $1$, because of the thermal impact active cores have on each other, we need to compensate for the thermal impact of other active cores to correct the error due to isolation of cores.
+% To obtain the sub-optimal temperature rise of each core, we need to isolate the cores. For active core numbers more that $1$, because of the thermal impact active cores have on each other, we need to compensate for the thermal impact of other active cores to correct the error due to isolation of cores.
 
-An efficient method to isolate the cores and calculate sub-optimal temperature rise of each core is proposed in $4.1.1$, and a temperature-compensation based method to correctly calculate sub-optimal temperature rise for multiply active cores is proposed in $4.1.2$.
+% An efficient method to isolate the cores and calculate sub-optimal
+% temperature rise of each core is proposed in $4.1.1$, and a
+% temperature-compensation based method to correctly calculate
+% sub-optimal temperature rise for multiply active cores is proposed
+% in $4.1.2$.
 
-\subsubsection{Calculating sub-optimal temperature rise for isolated cores}
-In order to isolate the cores, we first express the PPW of a single core $i$ in steady state as:
+we first express the PPW of a single core in steady state as:
 \begin{equation}\label{eq:min_ppw}
 \text{PPW}=\frac{f}{p_{d}+p_{s}},
 \end{equation}
 
-By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:lin_leakage} into \eqref{eq:min_ppw}, we have
-
+By integrating the linearized subthreshold current $I_{sub}$ in \eqref{eq:sta_power_lin} into \eqref{eq:min_ppw}, we have
 \begin{equation}\label{eq:1_ppw}
-\text{PPW} = \frac{f}{p_{d}+V_{dd}(a_{s}(T_{i}+T_{amb})+p_{0})},
+\text{PPW} = \frac{f}{p_{d}+V_{dd}(a_pT_p+p_{0})},
 \end{equation}
-where $T_{amb}$ is the ambient temperature, $T_{i}$ is the temperature rise of core $i$. In \eqref{eq:1_ppw}, there are multiple variables, $f$, $p_{d}$, $V_{dd}$ and $T_{i}$. Fortunately, they can all be converted to each other. In our work, we choose to convert them all to $p_{d}$, therefore minimizing to only $1$ variable. Note that, $T_{i}$ in \eqref{eq:1_ppw} is affected by other active cores, in order express it with only $p_{d}$, we need to isolate the core.
+where $T_p$ is the temperature of the core and $P_{0} = V_{dd}I_0$ is
+a constant. In \eqref{eq:1_ppw}, there are multiple variables
+including $f$, $p_{d}$, $V_{dd}$, and $T_p$. Fortunately, they are all
+related to each other and thus can be expressed by only one
+variable. In this work, we choose to convert all variables into $p_{d}$, therefore minimizing to only $1$ variable. Note that, $T_{i}$ in \eqref{eq:1_ppw} is affected by other active cores, in order express it with only $p_{d}$, we need to isolate the core.
+
+
+\subsection{Calculating sub-optimal temperature rise for isolated cores}
 
 Let's begin with calculating the temperature rise $T_{c}$ of the chip, considering the calculation is done in steady state, the differential term $C\frac{dT(t)}{dt}$ is neglected in \eqref{eq:gt}, leading to
 \begin{equation}\label{eq:tc}
@@ -208,7 +233,7 @@ However, the optimal temperature obtained for isolated cores ignores the thermal
 \end{table}
 
 
-\subsubsection{Calculating sub-optimal temperature rise with temperature compensation}
+\subsection{Calculating sub-optimal temperature rise with temperature compensation}
 The sub-optimal temperature rise calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
 
 % \begin{equation}\label{eq:c_full_1_ppw}
