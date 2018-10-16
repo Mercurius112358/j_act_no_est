@@ -1,0 +1,2 @@
+- how to handle T_amb properly, like in (16)
+- check a_s should be a_p, p_0 should be I_0

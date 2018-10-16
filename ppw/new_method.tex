@@ -112,7 +112,7 @@ this method is fully functional for transient case.
 
 We first express the PPW of the $i$-th core ($\ppw_i$) in steady state as:
 \begin{equation}\label{eq:min_ppw}
-\ppw_i=\frac{f_i}{p_{d_i}+p_{s_i}},
+\ppw_i=\frac{f_i}{p_i}=\frac{f_i}{p_{d_i}+p_{s_i}},
 \end{equation}
 where $p_{d_i}$ and $p_{s_i}$ are the dynamic power and static power
 of the $i$-th core, respectively. 
@@ -155,7 +155,7 @@ Then, we can rewrite \eqref{eq:tc} using $A$ matrix as
 \begin{equation}\label{eq:sim_tc}
   T_{c} = AP.
 \end{equation}
-By showing the matrix/vector elements of the above equation, there is
+By revealing the matrix/vector elements of the above equation, there is
 \begin{equation}
 {\left[
 \begin{matrix}
@@ -191,24 +191,37 @@ T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}.
 %the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. 
 
 In order to express $T_i$ using $p_i$, we \emph{temporally} ignore all
-the off-diagonal elements in the $A$ matrix and use only $a_{ii}p_i$ in \eqref{eq:ti} to approximate $T_{i}$ as:
+the off-diagonal elements in the $A$ matrix and also plug in the
+linear static power model in \eqref{eq:sta_power_lin} as:
 \begin{equation}\label{eq:t_ap}
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
-&=a_{ii}(p_{d}+p_{s})\\
-&=a_{ii}(p_{d}+V_{dd}(p_{0}+a_{s}(T_{i}+T_{amb}))),
+&=a_{ii}(p_{d_i}+p_{s_i})\\
+&=a_{ii}(p_{d_i}+V_{dd_i}(I_{0}+a_{p}(T_{i}+T_{amb}))).
 \end{split}
 \end{equation}
 Then, $T_i$ can be readily solved from \eqref{eq:t_ap} as
 \begin{equation}\label{eq:ti_new}
-T_{i}=\frac{a_{ii}(p_{d}+V_{dd}\cdot p_{0}+V_{dd}\cdot a_{s}\cdot T_{amb})}{1-a_{ii} \cdot a_{s} \cdot V_{dd}}.
+T_{i}=\frac{a_{ii}(p_{d_i}+V_{dd_i}\cdot I_{0}+V_{dd_i}\cdot a_{p}\cdot T_{amb})}{1-a_{ii} \cdot a_{p} \cdot V_{dd_i}}.
 \end{equation}
 
-By substituting $T_{i}$ in \eqref{eq:1_ppw} with \eqref{eq:ti_new}, we can have:
+By integrating \eqref{eq:ti_new} into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:1_ppw_2}
-\text{PPW} = \frac{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}{V_{dd}(a_{s}\cdot T_{amb}+p_{0})+p_{d}},
+\ppw_i = \frac{f(1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{amb}+I_{0})+p_{d_i}},
 \end{equation}
-which eliminates the thermal impact of other active cores. By substituting $f$ and $V_{dd}$ with $p_{d}$ in \eqref{eq:1_ppw_2}, we can express PPW with only $p_{d}$. The $p_{d}$ that leads to maximum PPW can be obtained with standard gradient search techniques~\cite{Boyd:Convex_BOOK'06}, with which the sub-optimal temperature rise of core $i$ can be calculated from \eqref{eq:ti}.
+which successfully eliminated $T_i$ by expressing it using $p_{d_i}$.
+
+Next, we only need to express $f_i$ and $V_{dd_i}$ using $p_{d_i}$ in
+\eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
+using the dynamic power model in~\eqref{eq:dyn_power} and the
+relationship model between $f_i$ and $V_{dd_i}$
+in~\eqref{eq:f_v}. Finally, we can express PPW with only $p_{d_i}$ as ???.
+
+Since there is only one variable $p_{d_i}$,  the optimal $p_{d_i}$ that leads to
+maximum $\ppw_i$ can be obtained with standard gradient search
+techniques~\cite{Boyd:Convex_BOOK'06}. Subsequently, the optimal
+$T_i$, denoted as $T_{opt_i}$, that leads to the optimal $\ppw_i$ can
+be computed by using the optimal $p_{d_i}$.
 
 \begin{figure}
 \centering
@@ -217,7 +230,7 @@ which eliminates the thermal impact of other active cores. By substituting $f$ a
 \label{fig:unique_position}
 \end{figure}
 
-Note that we do not need to repeat the calculating process for all cores to obtain all the optimal temperature. All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. The cores of the same kind share the same diagonal elements in $A$ matrix. Therefore, calculating the optimal temperature for each kind of core instead of all cores can greatly reduce the computation time.
+Please note that we do not need to repeat the calculating process above for all cores to obtain all the optimal temperature. All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. The cores of the same kind share the same diagonal elements in $A$ matrix. Therefore, calculating the optimal temperature for each kind of core instead of all cores can greatly reduce the computation time.
 
 However, the optimal temperature obtained for isolated cores ignores the thermal impact of other active cores, which is only accurate when there is only $1$ active core. For cases with active cores more than $1$, the thermal interaction among active cores will make the sub-optimal temperature rise deviate from the one we obtained from \eqref{eq:1_ppw_2}. Therefore, a temperature-compensation based method to correctly calculate sub-optimal temperature rise for multiply active cores is introduced in next section.
 
