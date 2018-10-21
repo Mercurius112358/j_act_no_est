@@ -93,7 +93,7 @@ effects to obtain a sub-optimal system PPW as shown in the next part.
 
 % A method to efficiently eliminate the thermal interactions among cores and calculate $T_{opt_{n_{a}}}$ is shown in next section.
 
-\subsection{Energy-efficient power budgeting for a single core}
+\subsection{Optimal temperature computing for energy-efficient power budgeting}
 In this section, we use steady state example to show how to compute
 the power budget with the maximum PPW for each core. Please note that
 we present the steady state example mainly for the purpose of clarity,
@@ -109,6 +109,9 @@ this method is fully functional for transient case.
 % temperature-compensation based method to correctly calculate
 % sub-optimal temperature rise for multiply active cores is proposed
 % in $4.1.2$.
+
+\subsubsection{Finding the optimal temperature and power budget for an
+  isolated core}\label{sec:opt_temp_iso}
 
 We first express the PPW of the $i$-th core ($\ppw_i$) in steady state as:
 \begin{equation}\label{eq:min_ppw}
@@ -234,9 +237,14 @@ obtain the optimal static power $\bar{p}_{s_i}$. Finally, $\bar{p}_i =
 \label{fig:unique_position}
 \end{figure}
 
-Please note that we do not need to repeat the calculating process above for all cores to obtain all the optimal temperature. All cores can be divided into several kinds based on their position in the system, for a $16$-core system, there are only $3$ kinds of cores which are shown in Fig.~\ref{fig:unique_position}. The cores of the same kind share the same diagonal elements in $A$ matrix. Therefore, calculating the optimal temperature for each kind of core instead of all cores can greatly reduce the computation time.
-
-However, the optimal temperature obtained for isolated cores ignores the thermal impact of other active cores, which is only accurate when there is only $1$ active core. For cases with active cores more than $1$, the thermal interaction among active cores will make the sub-optimal temperature rise deviate from the one we obtained from \eqref{eq:1_ppw_2}. Therefore, a temperature-compensation based method to correctly calculate sub-optimal temperature rise for multiply active cores is introduced in next section.
+Please note that it is unnecessary to repeat the computing process
+above for all cores due to the symmetry property of the core
+distribution. For example, for a $16$-core system, there are only
+three kinds of cores which as shown in
+Fig.~\ref{fig:unique_position}. The cores of the same kind share the
+same diagonal elements in $A$ matrix. Therefore, we only need to
+calculate the optimal temperature and power budget for each kind of
+core to reduce computation time.
 
 \begin{table}
   \caption{The energy-efficient power budget induced temperature error for cases with and without $\lambda$. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
@@ -277,8 +285,19 @@ However, the optimal temperature obtained for isolated cores ignores the thermal
 \end{table}
 
 
-\subsection{Calculating sub-optimal temperature rise with temperature compensation}
-The sub-optimal temperature rise calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. Therefore, a compensation method to modify the isolated core's temperature rise $T_{i}$ is proposed in this section.
+\subsubsection{Finding the optimal temperatures for all cores}
+
+The optimal temperature and power budget obtained for the
+isolated cores in Section~\ref{sec:opt_temp_iso} ignores the thermal impact of other active cores, which
+is accurate when there is only one active core. For the general
+case with multiple active cores, the thermal interaction among active
+cores will make the optimal temperature deviate from the one we
+obtained from \eqref{eq:1_ppw_2} due to the thermal impact from the
+other active cores. Therefore, a temperature-compensation based method to correctly calculate sub-optimal temperature rise for multiply active cores is introduced in next section.
+% The sub-optimal temperature rise calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. 
+In this section, a compensation method is proposed to compute the true
+optimal temperatures for all ative cores considering without the
+thermal isolation restriction.
 
 % \begin{equation}\label{eq:c_full_1_ppw}
 % \text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
