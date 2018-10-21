@@ -295,10 +295,14 @@ cores will make the optimal temperature deviate from the one we
 obtained from \eqref{eq:1_ppw_2} due to the thermal impact from the
 other active cores. Therefore, a temperature-compensation based method to correctly calculate sub-optimal temperature rise for multiply active cores is introduced in next section.
 % The sub-optimal temperature rise calculated in previous section does not consider of other cores' thermal impact, which could cause major error in dark silicon system, where the temperature rise caused by other cores could make up of a considerable part of the whole temperature rise. 
-In this section, a compensation method is proposed to compute the true
+In this section, a low complexity compensation method is proposed to compute the true
 optimal temperatures for all ative cores considering without the
 thermal isolation restriction.
 
+The basic idea is to compensate the temperature
+impact of other active cores ignored in \eqref{eq:t_ap} with a parameter
+$\lambda$, which stands for the temperature rise ratio induced by
+other active cores. This compensation process is expressed as
 % \begin{equation}\label{eq:c_full_1_ppw}
 % \text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
 % \end{equation}
@@ -308,8 +312,9 @@ T_{i} &=a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n},\\
 &\approx(1+\lambda)a_{ii}p_{i}.
 \end{split}
 \end{equation}
-
-The basic idea of this method is to compensate for the temperature rise caused by other active cores in \eqref{eq:1_ppw} with a parameter $\lambda$, which stands for the temperature rise ratio induced by other active cores, as shown in \eqref{eq:t_compensation}. With $\lambda$, the thermal impact other active cores have on the isolated core can be introduced, therefore the error induced by isolation can be corrected.
+With $\lambda$, the thermal impact other active cores have on the isolated
+core can be introduced, therefore the error induced by isolation can
+be corrected.
 
 The temperature compensation can be perfectly accurate, if for fixed active core distribution, for core $i$ we obtain a $\lambda$, which is calculated as:
 \begin{equation}\label{eq:lambda_accuracy}
