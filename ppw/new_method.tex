@@ -299,28 +299,38 @@ In this section, a low complexity compensation method is proposed to compute the
 optimal temperatures for all ative cores considering without the
 thermal isolation restriction.
 
-The basic idea is to compensate the temperature
-impact of other active cores ignored in \eqref{eq:t_ap} with a parameter
-$\lambda$, which stands for the temperature rise ratio induced by
-other active cores. This compensation process is expressed as
+The basic idea is to consider the temperature
+impact of other active cores ignored in \eqref{eq:t_ap} by introducing a
+\emph{impact factor} $\lambda$, which stands for the temperature
+impact ratio induced by
+other active cores. Then, the accurate temperature of the $i$-th core is expressed as
 % \begin{equation}\label{eq:c_full_1_ppw}
 % \text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
 % \end{equation}
 \begin{equation}\label{eq:t_compensation}
 \begin{split}
 T_{i} &=a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n},\\
-&\approx(1+\lambda)a_{ii}p_{i}.
+&=(1+\lambda)a_{ii}p_{i}.
 \end{split}
 \end{equation}
-With $\lambda$, the thermal impact other active cores have on the isolated
-core can be introduced, therefore the error induced by isolation can
-be corrected.
 
-The temperature compensation can be perfectly accurate, if for fixed active core distribution, for core $i$ we obtain a $\lambda$, which is calculated as:
+In order to make $T_i$ in~\eqref{eq:t_compensation} perfectly accurate, the
+impact factor $\lambda$ is directly solved
+from~\eqref{eq:t_compensation} as
 \begin{equation}\label{eq:lambda_accuracy}
-\lambda =\frac{\sum_{l=1}^{n}a_{il}p_{l}-a_{ii}p_{i}}{a_{ii}p_{i}},
+\lambda =\frac{\sum_{l=1}^{n}a_{il}p_{l}-a_{ii}p_{i}}{a_{ii}p_{i}}.
 \end{equation}
-then the temperature rise caused by other active cores can be compensated without error. However, the overhead would be too high. We find out if we generate a $\lambda$ for each active core number for each kind of core, and assume the power of every active core are the same, the accuracy and overhead can both be satisfactory.
+However, it is impossible to compute such absolutely accurate impact
+factor due to the following two reasons. First, the impact factor for
+each core differs with the spatial power distributions (i.e., the
+power value combinations of the cores), as seen from~\eqref{eq:lambda_accuracy}. Since there are
+infinite possible power distributions for a multi-core system, the impact
+factor has infinite possible values, which surely cannot be computed. What is even worse, the powers
+in~\eqref{eq:lambda_accuracy} are unknown values (they are actually
+the final computing target), making the impact factor unable to be computed.
+
+Fortunately, we can still approximately compute $\lambda$ for each
+core. This approximation is made by assuming ??? and assume the power of every active core are the same, the accuracy and overhead can both be satisfactory.
 \begin{equation}\label{eq:lambda}
 \lambda =\frac{j \cdot \sum_{l=1}^{n}a_{il}-a_{ii}}{a_{ii}},
 \end{equation}
