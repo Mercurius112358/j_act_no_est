@@ -210,17 +210,42 @@ T_{i}=\frac{a_{ii}(p_{d_i}+V_{dd_i}\cdot I_{0}+V_{dd_i}\cdot a_{p}\cdot T_{amb})
 
 By integrating \eqref{eq:ti_new} into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:1_ppw_2}
-\ppw_i = \frac{f(1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{amb}+I_{0})+p_{d_i}},
+\ppw_i = \frac{ f(1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{amb}+I_{0})+p_{d_i}},
 \end{equation}
 which successfully eliminated $T_i$ by expressing it using $p_{d_i}$.
+
+
+
+
 
 Next, we only need to express $f_i$ and $V_{dd_i}$ using $p_{d_i}$ in
 \eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
 using the dynamic power model in~\eqref{eq:dyn_power} and the
 relationship model between $f_i$ and $V_{dd_i}$
-in~\eqref{eq:f_v}. Finally, we can express PPW with only $p_{d_i}$ as ???.
+in~\eqref{eq:f_v}. Finally, we can express PPW with only $p_{d_i}$ as \eqref{eq:1_ppw_2_1}.
+\begin{equation}\label{eq:1_ppw_2_1}
+  \begin{split}
+\ppw_i =& \frac{-(2Y_{0}+\sqrt[3]{Y_{1}}+\sqrt[3]{Y_{2}})} {3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}}\\
+&\times \frac{(3-a_{ii} \cdot a_{p} (V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}}))}{3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}},
+\end{split}
+\end{equation}
+where
 
-Since there is only one variable $p_{d_i}$ in ???,  the optimal $p_{d_i}$,
+\begin{figure*}
+\begin{equation*}
+\begin{split}
+Y_{0}=&\frac{V_{th}f_{max}-V_{max}f_{min}}{V_{max}-V_{th}},\\
+Y_{1,2}=&2Y_{0}^{3}-1.5(2Y_{0}^{3}+9\frac{p_{d_i}(f_{max}-f_{min})}{C_{e}(V_{max}-V_{th})}
+\pm \sqrt{12Y_{0}^{3}\frac{p_{d_i}(f_{max}-f_{min})}{C_{e}(V_{max}-V_{th})}+81\frac{(p_{d_i}(f_{max}-f_{min}))^{2}}{(C_{e}(V_{max}-V_{th}))^{2}}}),\\
+Y_{3,4}=&-V_{th}^{3}+13.5\frac{ (f_{min}-p_{d_i})(V_{max}-V_{th})} {C_{e}(f_{max}-f_{min})}
+\pm1.5\sqrt{81\frac{ ((f_{min}-p_{d_i})(V_{max}-V_{th}))^{2}} {(C_{e}(f_{max}-f_{min}))^{2}}-12V_{th}^{3}\frac{ (f_{min}-p_{d_i})(V_{max}-V_{th})} {C_{e}(f_{max}-f_{min})}}
+\end{split}
+\end{equation*}
+\end{figure*}
+
+
+
+Since there is only one variable $p_{d_i}$ in \eqref{eq:1_ppw_2_1},  the optimal $p_{d_i}$,
 denoted as $\bar{p}_{d_i}$ that leads to
 the maximum $\ppw_i$ can be obtained with standard gradient search
 techniques~\cite{Boyd:Convex_BOOK'06}. Subsequently, the optimal
@@ -330,9 +355,9 @@ in~\eqref{eq:lambda_accuracy} are unknown values (they are actually
 the final computing target), making the impact factor unable to be computed.
 
 Fortunately, we can still approximately compute $\lambda$ for each
-core. This approximation is made by assuming ??? and assume the power of every active core are the same, the accuracy and overhead can both be satisfactory.
+core. This approximation is made by assuming the thermal impact induced by other active cores for the same active core number stays the same, we also assume the power of every active core are the same. We find the accuracy and overhead of such approximation can both be satisfactory.
 \begin{equation}\label{eq:lambda}
-\lambda =\frac{j \cdot \sum_{l=1}^{n}a_{il}-a_{ii}}{a_{ii}},
+\lambda =\frac{j \cdot \sum_{l=1}^{n}\frac{a_{il}}{n}-a_{ii}}{a_{ii}},
 \end{equation}
 
 
