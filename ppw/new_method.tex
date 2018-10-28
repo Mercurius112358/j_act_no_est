@@ -212,48 +212,62 @@ By integrating \eqref{eq:ti_new} into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:1_ppw_2}
 \ppw_i = \frac{ f(1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{amb}+I_{0})+p_{d_i}},
 \end{equation}
-which successfully eliminated $T_i$ by expressing it using $p_{d_i}$.
+which successfully eliminated $T_i$ by expressing it using $p_{d_i}$ and $V_{dd_i}$.
 
 
 
+% Next, we only need to express $f_i$ and $V_{dd_i}$ using $p_{d_i}$ in
+% \eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
+% using the dynamic power model in~\eqref{eq:dyn_power} and the
+% relationship model between $f_i$ and $V_{dd_i}$
+% in~\eqref{eq:f_v}. Finally, we can express PPW with only $p_{d_i}$ as \eqref{eq:1_ppw_2_1}.
 
 
-Next, we only need to express $f_i$ and $V_{dd_i}$ using $p_{d_i}$ in
-\eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
+Next, we can express $V_{dd_i}$ and $p_{d_i}$ using $f_{i}$ in \eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
 using the dynamic power model in~\eqref{eq:dyn_power} and the
 relationship model between $f_i$ and $V_{dd_i}$
-in~\eqref{eq:f_v}. Finally, we can express PPW with only $p_{d_i}$ as \eqref{eq:1_ppw_2_1}.
+in~\eqref{eq:f_v}. Therefore, we can express PPW with only $f_{i}$ as~\eqref{eq:1_ppw_2_1}.
 \begin{equation}\label{eq:1_ppw_2_1}
-  \begin{split}
-\ppw_i =& \frac{-(2Y_{0}+\sqrt[3]{Y_{1}}+\sqrt[3]{Y_{2}})} {3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}}\\
-&\times \frac{(3-a_{ii} \cdot a_{p} (V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}}))}{3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}},
-\end{split}
+\ppw_i =\frac{-a_{ii}a_{p}Y_{1}f_{i}^{2}+(1-a_{ii}a_{p}Y_{2})f_{i}}{C_{e}Y^{2}_{1}f_{i}^{3}+2Y_{1}Y_{2}C_{e}f_{i}^{2}+(Y_{1}Y_{3}+C_{e}Y_{2}^{2})f_{i}+Y_{2}Y_{3}},
 \end{equation}
 where
-
-\begin{figure*}
 \begin{equation*}
-\begin{split}
-Y_{0}=&\frac{V_{th}f_{max}-V_{max}f_{min}}{V_{max}-V_{th}},\\
-Y_{1,2}=&2Y_{0}^{3}-1.5(2Y_{0}^{3}+9\frac{p_{d_i}(f_{max}-f_{min})}{C_{e}(V_{max}-V_{th})}
-\pm \sqrt{12Y_{0}^{3}\frac{p_{d_i}(f_{max}-f_{min})}{C_{e}(V_{max}-V_{th})}+81\frac{(p_{d_i}(f_{max}-f_{min}))^{2}}{(C_{e}(V_{max}-V_{th}))^{2}}}),\\
-Y_{3,4}=&-V_{th}^{3}+13.5\frac{ (f_{min}-p_{d_i})(V_{max}-V_{th})} {C_{e}(f_{max}-f_{min})}
-\pm1.5\sqrt{81\frac{ ((f_{min}-p_{d_i})(V_{max}-V_{th}))^{2}} {(C_{e}(f_{max}-f_{min}))^{2}}-12V_{th}^{3}\frac{ (f_{min}-p_{d_i})(V_{max}-V_{th})} {C_{e}(f_{max}-f_{min})}}
-\end{split}
+	\begin{split}
+	Y_{1}=&\frac{V_{max}-V_{th}}{f_{max}-f_{min}},\\
+	Y_{2}=&\frac{V_{th}\cdot f_{max}-f_{min}\cdot V_{max}}{f_{max}-f_{min}},\\
+	Y_{3}=&a_{p}\cdot T_{amb}+I_{0}.
+	\end{split}
 \end{equation*}
-\end{figure*}
+% \begin{equation}\label{eq:1_ppw_2_1}
+%   \begin{split}
+% \ppw_i =& \frac{-(2Y_{0}+\sqrt[3]{Y_{1}}+\sqrt[3]{Y_{2}})} {3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}}\\
+% &\times \frac{(3-a_{ii} \cdot a_{p} (V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}}))}{3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}},
+% \end{split}
+% \end{equation}
+% \begin{figure*}
+% \begin{equation*}
+% \begin{split}
+% Y_{0}=&\frac{V_{th}f_{max}-V_{max}f_{min}}{V_{max}-V_{th}},\\
+% Y_{1,2}=&2Y_{0}^{3}-1.5(2Y_{0}^{3}+9\frac{p_{d_i}(f_{max}-f_{min})}{C_{e}(V_{max}-V_{th})}
+% \pm \sqrt{12Y_{0}^{3}\frac{p_{d_i}(f_{max}-f_{min})}{C_{e}(V_{max}-V_{th})}+81\frac{(p_{d_i}(f_{max}-f_{min}))^{2}}{(C_{e}(V_{max}-V_{th}))^{2}}}),\\
+% Y_{3,4}=&-V_{th}^{3}+13.5\frac{ (f_{min}-p_{d_i})(V_{max}-V_{th})} {C_{e}(f_{max}-f_{min})}
+% \pm1.5\sqrt{81\frac{ ((f_{min}-p_{d_i})(V_{max}-V_{th}))^{2}} {(C_{e}(f_{max}-f_{min}))^{2}}-12V_{th}^{3}\frac{ (f_{min}-p_{d_i})(V_{max}-V_{th})} {C_{e}(f_{max}-f_{min})}}
+% \end{split}
+% \end{equation*}
+% \end{figure*}
 
 
-
-Since there is only one variable $p_{d_i}$ in \eqref{eq:1_ppw_2_1},  the optimal $p_{d_i}$,
-denoted as $\bar{p}_{d_i}$ that leads to
+Since there is only one variable $f_{i}$ in \eqref{eq:1_ppw_2_1},  the optimal $f_{i}$,
+denoted as $\bar{f}_{i}$ that leads to
 the maximum $\ppw_i$ can be obtained with standard gradient search
 techniques~\cite{Boyd:Convex_BOOK'06}. Subsequently, the optimal
-$T_i$, denoted as $\bar{T}_i$, that leads to the maximum $\ppw_i$ can
-be computed by using the optimal $\bar{p}_{d_i}$. Then, we can immediately
+$p_{d_i}$, denoted as $\bar{p}_{d_i}$, that leads to the maximum $\ppw_i$ can
+be easily computed using~\eqref{eq:dyn_power} and~\eqref{eq:f_v}.
+With $\bar{p}_{d_i}$, the optimal $T_{i}$, denoted as $\bar{T}_{i}$ that leads to
+the maximum $\ppw_i$ can be computed. Then, we can immediately
 obtain the optimal static power $\bar{p}_{s_i}$. Finally, $\bar{p}_i =
 \bar{p}_{s_i}+\bar{p}_{d_i}$ is the energy-efficient power
-  budget for the $i$-th core by \emph{temporally} ignoring the other active cores. 
+budget for the $i$-th core by \emph{temporally} ignoring the other active cores. 
 
 \begin{figure}
 \centering
