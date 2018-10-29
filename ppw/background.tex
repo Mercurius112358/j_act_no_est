@@ -40,7 +40,7 @@ where $V_{dd}$ stands for the operating voltage, $f$ is the clock frequency, and
 In equation~\eqref{eq:dyn_power}, the clock frequency $f$ and the operating voltage $V_{dd}$ of each modern processor core are changed at runtime (widely known as dynamic voltage and frequency scaling (DVFS)), in order to adjust the core's energy efficiency and performance. 
 A widely used model to discribe such relationship between $f$ and $V_{dd}$ is [cite ???]
 \begin{equation}\label{eq:f_v}
-f = (V_{dd}-V_{th}) \cdot (\frac{f_{max}-f_{min}}{V_{max}-V_{th}})+f_{min}.
+f = (V_{dd}-V_{th}) \cdot \left(\frac{f_{max}-f_{min}}{V_{max}-V_{th}}\right)+f_{min}.
 \end{equation}
 where $f_{min}$ and $f_{max}$ stands for the minimum and maximum clock frequencies, respectively, $V_{th}$ stands for the threshold voltage, and $V_{max}$ stands for ???.
 
@@ -57,10 +57,10 @@ In~\eqref{eq:leakage}, $I_{gate}$ is considered as a constant because it does no
 \begin{equation}\label{eq:sub_current_lin}
   \begin{split}
     I_{sub} \approx & I_{lin} \\
-     =& K (\frac{k_b}{q})^2 e^{\frac{q(V_{GS}-V_{th})}{\eta k_b
+     =& K \left(\frac{k_b}{q}\right)^2 e^{\frac{q(V_{GS}-V_{th})}{\eta k_b
     T_{p_0}}}\\
-&\times ({T_{p_0}}^2 + (2T_{p_0} - \frac{q(V_{GS}-V_{th})}{\eta
-  k_b})(T_p-T_{p_0})).
+&\times \left({T_{p_0}}^2 + \left(2T_{p_0} - \frac{q(V_{GS}-V_{th})}{\eta
+  k_b}\right)(T_p-T_{p_0})\right).
 \end{split}
 \end{equation}
 where $k_b$ is the Boltzmann constant, $q$ is the elementary charge, $T_{p}$ is a scalar representing temperature at one place,~\footnote{$T$

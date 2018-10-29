@@ -200,17 +200,17 @@ linear static power model in \eqref{eq:sta_power_lin} as:
 \begin{split}
 T_{i}&\approx a_{ii} \cdot p_{i}\\
 &=a_{ii}(p_{d_i}+p_{s_i})\\
-&=a_{ii}(p_{d_i}+V_{dd_i}(I_{0}+a_{p}(T_{i}+T_{amb}))).
+&=a_{ii}(p_{d_i}+V_{dd_i}(I_{0}+a_{p}(T_{i}+T_{a}))).
 \end{split}
 \end{equation}
 Then, $T_i$ can be readily solved from \eqref{eq:t_ap} as
 \begin{equation}\label{eq:ti_new}
-T_{i}=\frac{a_{ii}(p_{d_i}+V_{dd_i}\cdot I_{0}+V_{dd_i}\cdot a_{p}\cdot T_{amb})}{1-a_{ii} \cdot a_{p} \cdot V_{dd_i}}.
+T_{i}=\frac{a_{ii}(p_{d_i}+V_{dd_i}\cdot I_{0}+V_{dd_i}\cdot a_{p}\cdot T_{a})}{1-a_{ii} \cdot a_{p} \cdot V_{dd_i}}.
 \end{equation}
 
 By integrating \eqref{eq:ti_new} into \eqref{eq:1_ppw}, we have
 \begin{equation}\label{eq:1_ppw_2}
-\ppw_i = \frac{ f(1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{amb}+I_{0})+p_{d_i}},
+\ppw_i = \frac{ f_i (1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{a}+I_{0})+p_{d_i}},
 \end{equation}
 which successfully eliminated $T_i$ by expressing it using $p_{d_i}$ and $V_{dd_i}$.
 
@@ -228,14 +228,16 @@ using the dynamic power model in~\eqref{eq:dyn_power} and the
 relationship model between $f_i$ and $V_{dd_i}$
 in~\eqref{eq:f_v}. Therefore, we can express PPW with only $f_{i}$ as~\eqref{eq:1_ppw_2_1}.
 \begin{equation}\label{eq:1_ppw_2_1}
-\ppw_i =\frac{-a_{ii}a_{p}Y_{1}f_{i}^{2}+(1-a_{ii}a_{p}Y_{2})f_{i}}{C_{e}Y^{2}_{1}f_{i}^{3}+2Y_{1}Y_{2}C_{e}f_{i}^{2}+(Y_{1}Y_{3}+C_{e}Y_{2}^{2})f_{i}+Y_{2}Y_{3}},
+\ppw_i =\frac{-a_{ii}a_{p}\alpha
+  f_{i}^{2}+(1-a_{ii}a_{p}\beta)f_{i}}{C_{e}\alpha^{2}f_{i}^{3}+2\alpha
+  \beta C_{e}f_{i}^{2}+(\alpha \gamma+C_{e}\beta^{2})f_{i}+\beta \gamma},
 \end{equation}
-where
+where $\alpha$, $\beta$, and $\gamma$ are constants as
 \begin{equation*}
 	\begin{split}
-	Y_{1}=&\frac{V_{max}-V_{th}}{f_{max}-f_{min}},\\
-	Y_{2}=&\frac{V_{th}\cdot f_{max}-f_{min}\cdot V_{max}}{f_{max}-f_{min}},\\
-	Y_{3}=&a_{p}\cdot T_{amb}+I_{0}.
+	\alpha=&\frac{V_{max}-V_{th}}{f_{max}-f_{min}},\\
+	\beta=&\frac{V_{th}\cdot f_{max}-f_{min}\cdot V_{max}}{f_{max}-f_{min}},\\
+	\gamma=&a_{p}\cdot T_{a}+I_{0}.
 	\end{split}
 \end{equation*}
 % \begin{equation}\label{eq:1_ppw_2_1}
@@ -339,10 +341,10 @@ optimal temperatures for all ative cores considering without the
 thermal isolation restriction.
 
 The basic idea is to consider the temperature
-impact of other active cores ignored in \eqref{eq:t_ap} by introducing a
+impact of other active cores (which is ignored in \eqref{eq:t_ap}) to the $i$-th core by introducing a
 \emph{impact factor} $\lambda$, which stands for the temperature
 impact ratio induced by
-other active cores. Then, the accurate temperature of the $i$-th core is expressed as
+other active cores to the $i$-th core. Then, the accurate temperature of the $i$-th core is expressed as
 % \begin{equation}\label{eq:c_full_1_ppw}
 % \text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
 % \end{equation}
@@ -368,10 +370,15 @@ factor has infinite possible values, which surely cannot be computed. What is ev
 in~\eqref{eq:lambda_accuracy} are unknown values (they are actually
 the final computing target), making the impact factor unable to be computed.
 
-Fortunately, we can still approximately compute $\lambda$ for each
-core. This approximation is made by assuming the thermal impact induced by other active cores for the same active core number stays the same, we also assume the power of every active core are the same. We find the accuracy and overhead of such approximation can both be satisfactory.
+Fortunately, we can still approximately compute $\lambda$ for a
+specific core with a specific active core number. This approximation is made by assuming the thermal impact
+induced by other active cores for the same active core number stays
+the same, we also assume the power of every active core are the
+same. We find the accuracy and overhead of such approximation can both
+be satisfactory. The impact factor for the $i$-the core with $n_a$
+active cores is approximately expressed as
 \begin{equation}\label{eq:lambda}
-\lambda =\frac{j \cdot \sum_{l=1}^{n}\frac{a_{il}}{n}-a_{ii}}{a_{ii}},
+\lambda _{i,n_a} =\frac{n_a \cdot \sum_{l=1}^{n}\frac{a_{il}}{n}-a_{ii}}{a_{ii}},
 \end{equation}
 
 
@@ -382,11 +389,17 @@ core. This approximation is made by assuming the thermal impact induced by other
 % \lambda = \frac{T_{avg}-T_{0}}{T_{0}}.
 % \end{equation}
 
-By repeating the process, we can generate a matrix $\Lambda$, in which $\lambda_{ij}$ stands for the compensation parameter for core $i$ when the active core number is $j$. We substitute the $T_{i}$ in \eqref{eq:1_ppw} with the compensated temperature in \eqref{eq:t_compensation} and get:
+By applying~\eqref{eq:lambda} for all cores with all possible active core
+numbers, we can generate a matrix $\Lambda \in \mathbb{R}^{n\times
+  n}$, where the element in the $i$-th column and $j$-th row of
+$\Lambda$ is $\lambda_{ij}$ which stands for the impact factor for
+core $i$ when the active core number is $j$. We substitute the $T_{i}$
+in \eqref{eq:1_ppw} with the compensated temperature in
+\eqref{eq:t_compensation} and get: 
 \begin{equation}\label{eq:1_ppw_3}
 \begin{split}
-\text{PPW} =& (\frac{(1+\lambda)(V_{dd}(a_{s}\cdot T_{amb}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
-&-\frac{\lambda(p_{d}+V_{dd}(a_{s}\cdot T_{amb}+p_{0}))}{f})^{-1},
+\text{PPW} =& (\frac{(1+\lambda)(V_{dd}(a_{s}\cdot T_{a}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
+&-\frac{\lambda(p_{d}+V_{dd}(a_{s}\cdot T_{a}+p_{0}))}{f})^{-1},
 \end{split}
 \end{equation}
 
@@ -433,8 +446,8 @@ To show the two mentioned problems are equal, we have the following
 proposition: 
 \begin{proposition}
 Providing a normally packaged IC chip, a higher average temperature of
-the chip $T_{chip} = \frac{1}{n}\|T_c\|_1 + T_{amb}$ means a higher total power of the
-chip $\|P\|_1$, where $T_{amb}$ represents the ambient temperature.
+the chip $T_{chip} = \frac{1}{n}\|T_c\|_1 + T_{a}$ means a higher total power of the
+chip $\|P\|_1$, where $T_{a}$ represents the ambient temperature.
 \end{proposition}
 \begin{proof}
 The proposition above is proved in the following way. The typical structure
@@ -447,18 +460,18 @@ resistance in the chip ($R_{chip}$), TIM ($R_{TIM}$), heat spreader
 ($R_{spreader}$), heat sink ($R_{sink}$), and convection from heat
 sink to the air ($R_{conv}$). The two thermal nodes at the two ends of
 the thermal circuit denote average temperature of the chip
-($T_{chip}=\frac{1}{n}\|T_c\|_1 + T_{amb}$) and average temperature of the
-ambient air ($T_{amb}$). 
+($T_{chip}=\frac{1}{n}\|T_c\|_1 + T_{a}$) and average temperature of the
+ambient air ($T_{a}$). 
 Because heat is only generated at the chip and only
 dissipated into the air, we have an equivalent current source with
 current value $\|P\|_1$ (the total power of the chip) connected
 at $T_{chip}$ to represent power generation. Also, an equivalent voltage
-source is connected at $T_{amb}$ to stand for the ambient air
+source is connected at $T_{a}$ to stand for the ambient air
 temperature. Now if we increase the average temperature of the chip,
-i.e., increase the value of $T_{chip}=\frac{1}{n}\|T_c\|_1+T_{amb}$, the current flow $\|P\|_1$ in the thermal
+i.e., increase the value of $T_{chip}=\frac{1}{n}\|T_c\|_1+T_{a}$, the current flow $\|P\|_1$ in the thermal
 resistor circuit has to increase due to the fixed ambient air temperature
-$T_{amb}$. In another word, a higher average temperature of
-the chip $T_{chip} = \frac{1}{n}\|T_c\|_1 + T_{amb}$ leads to a higher total power of the
+$T_{a}$. In another word, a higher average temperature of
+the chip $T_{chip} = \frac{1}{n}\|T_c\|_1 + T_{a}$ leads to a higher total power of the
 chip $\|P\|_1$, which proves the proposition.
 \end{proof}
 
