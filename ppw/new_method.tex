@@ -371,14 +371,39 @@ in~\eqref{eq:lambda_accuracy} are unknown values (they are actually
 the final computing target), making the impact factor unable to be computed.
 
 Fortunately, we can still approximately compute $\lambda$ for a
-specific core with a specific active core number. This approximation is made by assuming the thermal impact
-induced by other active cores for the same active core number stays
-the same, we also assume the power of every active core are the
-same. We find the accuracy and overhead of such approximation can both
-be satisfactory. The impact factor for the $i$-the core with $n_a$
-active cores is approximately expressed as
+specific core with a specific active core number. This approximation
+is based on two assumptions.
+
+First, it assumes that the thermal impact
+strengths (the thermal impact strength of the $j$-th core on the $i$-th
+core is actually $a_{ij}$) from other cores are the same, regardless of the active core
+distribution. With this assumption, the temperature of the $i$-th core
+in~\eqref{eq:t_compensation} is simplified to
+\begin{equation}\label{eq:t_avg_imp}
+T_{i} \approx a_{ii}p_{i} + \frac{1}{n-1} \sum_{l=1, l \ne
+  i}^{n} a_{il} \cdot \sum_{l=1, l \ne  i}^{n} p_l
+\end{equation}
+where $\frac{1}{n-1} \sum_{l=1, l \ne i}^{n} a_{il}$ is the average
+thermal impact strength of a core other than the $i$-th core on the
+$i$-th core.
+
+Second, we assume all active cores have the same power
+budget as the $i$-th core ($p_l = p_i$ for active cores and $p_l = 0$
+for dark cores). Then, \eqref{eq:t_avg_imp} is further
+simplified to
+\begin{equation}\label{eq:t_avg_p}
+T_{i} \approx a_{ii}p_{i} + \frac{n_a p_i}{n-1} \sum_{l=1, l \ne
+  i}^{n} a_{il}.
+\end{equation}
+Please note that $\sum_{l=1, l \ne  i}^{n} p_l$ in \eqref{eq:t_avg_imp} equals to
+$n_a p_i$ now because
+there are only $n_a$ active cores with non-zero power. 
+Now, the impact factor for the $i$-the core with $n_a$
+active cores can be solved using \eqref{eq:t_compensation} and \eqref{eq:t_avg_p} as
 \begin{equation}\label{eq:lambda}
-\lambda _{i,n_a} =\frac{n_a \cdot \sum_{l=1}^{n}\frac{a_{il}}{n}-a_{ii}}{a_{ii}},
+% \lambda _{i,n_a} =\frac{n_a \cdot
+% \sum_{l=1}^{n}\frac{a_{il}}{n}-a_{ii}}{a_{ii}},
+  \lambda _{i,n_a} =\frac{\frac{n_a}{n-1} \sum_{l=1, l \ne i}^{n}a_{il}-a_{ii}}{a_{ii}},
 \end{equation}
 
 
