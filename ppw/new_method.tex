@@ -416,19 +416,23 @@ active cores can be solved using \eqref{eq:t_compensation} and \eqref{eq:t_avg_p
 
 By applying~\eqref{eq:lambda} for all cores with all possible active core
 numbers, we can generate a matrix $\Lambda \in \mathbb{R}^{n\times
-  n}$, where the element in the $i$-th column and $j$-th row of
-$\Lambda$ is $\lambda_{ij}$ which stands for the impact factor for
-core $i$ when the active core number is $j$. We substitute the $T_{i}$
-in \eqref{eq:1_ppw} with the compensated temperature in
-\eqref{eq:t_compensation} and get: 
+  n}$, where the element in the $i$-th column and the $j$-th row of
+$\Lambda$ is $\lambda_{ij}$, which stands for the impact factor for
+core $i$ when the active core number is $j$.
+
+Now, we can substitute the $T_{i}$
+in \eqref{eq:1_ppw} with the more accurate temperature expression in
+\eqref{eq:t_compensation} and also consider the active core number
+$n_a$, the $\ppw$ for core $i$ with $n_a$ active core numbers is
+expressed as
 \begin{equation}\label{eq:1_ppw_3}
 \begin{split}
-\text{PPW} =& (\frac{(1+\lambda)(V_{dd}(a_{s}\cdot T_{a}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
-&-\frac{\lambda(p_{d}+V_{dd}(a_{s}\cdot T_{a}+p_{0}))}{f})^{-1},
+\ppw_{i,n_a} =& ( \frac{(1+\lambda_{i,n_a})(V_{dd}(a_{s}\cdot T_{a}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
+&-\frac{\lambda_{i,n_a} (p_{d}+V_{dd}(a_{s}\cdot T_{a}+p_{0}))}{f} ) ^{-1},
 \end{split}
 \end{equation}
 
-By solving \eqref{eq:1_ppw_3} for every $\lambda$, the sub-optimal temperature rise matrix $T_{opt}$ can be obtained, in which $T_{ij}$ stands for the sub-optimal temperature rise for core $i$ when the active core number is $j$. We can denote each column of $T_{opt}$ as $T_{opt_{n_{a}}}$, where $n_{a}$ is the active core number. 
+By solving \eqref{eq:1_ppw_3} for every $\lambda_{i,n_a}$, the sub-optimal temperature rise matrix $T_{opt}$ can be obtained, in which $T_{ij}$ stands for the sub-optimal temperature rise for core $i$ when the active core number is $j$. We can denote each column of $T_{opt}$ as $T_{opt_{n_{a}}}$, where $n_{a}$ is the active core number. 
 
 In order to test the effectiveness of $\lambda$, for example, we first choose a $9$-core system with $4$ active cores, several active core distributions can be generated with core $i$ always turned on. We can obtain the $\lambda_{i}$ for core $i$ for each active core distribution with \eqref{eq:lambda_accuracy}, which ensures perfect accuracy, therefore the sub-optimal temperature rise calculated in this case can be considered "golden". We also obtain the sub-optimal temperature rise calculated both with $\lambda_{i4}$ and without $\lambda$. By comparing the sub-optimal temperature rise of these $2$ cases with "golden", the effective of $\lambda$ can be verified.
 
