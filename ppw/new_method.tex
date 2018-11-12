@@ -110,8 +110,7 @@ this method is fully functional for transient case.
 % sub-optimal temperature rise for multiply active cores is proposed
 % in $4.1.2$.
 
-\subsubsection{Finding the optimal temperature and power budget for an
-  isolated core}\label{sec:opt_temp_iso}
+\subsubsection{Linearization of the static power in PPW expression}\label{sec:opt_temp_iso}
 
 We first express the PPW of the $i$-th core ($\ppw_i$) in steady state as:
 \begin{equation}\label{eq:min_ppw}
@@ -132,12 +131,12 @@ related to each other in the thermal and power models and thus can be expressed 
 variable as shown next. Next, we show how to convert all these variables into
 $p_{d_i}$, leaving only one variable in~\eqref{eq:1_ppw}.
 
+\subsubsection{Power impact decoupling in PPW expression}
 The major problem of converting all variables into $p_{d_i}$ is that
 $T_{i}$ in \eqref{eq:1_ppw} is \emph{not} only influenced by its own
 powers $p_{d_i}$ and $p_{s_i}$, but is also affected by powers from
 other active cores. As a result, in order to express $T_{i}$ using $p_{d_i}$, we need to
-decouple the $i$-th core from the other cores. Please note that the error caused by the
-decoupling process can be compensated later. 
+decouple the $i$-th core from the other cores through approximation. 
 
 Let us first express temperature $T_i$ using $p_{d_i}$. In steady
 state, the core temperature vector 
@@ -191,28 +190,59 @@ Then, $T_{i}$ can be expressed as
 T_{i} =a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n}. 
 \end{equation}
 
-%the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. 
-
-In order to express $T_i$ using $p_i$, we \emph{temporally} ignore all
-the off-diagonal elements in the $A$ matrix and also plug in the
-linear static power model in \eqref{eq:sta_power_lin} as:
-\begin{equation}\label{eq:t_ap}
+It is clear from \eqref{eq:ti} that the temperature of the $i$-th core
+($T_i$) is affected by the powers of
+other active cores. 
+The basic idea of power impact decoupling is to introduce a
+\emph{impact factor} $\lambda$, which stands for the
+impact ratio induced by powers of 
+other active cores compared to the self power impact of the $i$-th core. Then, the accurate temperature of the $i$-th core is expressed as
+% \begin{equation}\label{eq:c_full_1_ppw}
+% \text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
+% \end{equation}
+\begin{equation}\label{eq:t_compensation}
 \begin{split}
-T_{i}&\approx a_{ii} \cdot p_{i}\\
-&=a_{ii}(p_{d_i}+p_{s_i})\\
-&=a_{ii}(p_{d_i}+V_{dd_i}(I_{0}+a_{p}(T_{i}+T_{a}))).
+T_{i} &=a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n},\\
+&=(1+\lambda)a_{ii}p_{i}.
 \end{split}
 \end{equation}
-Then, $T_i$ can be readily solved from \eqref{eq:t_ap} as
-\begin{equation}\label{eq:ti_new}
-T_{i}=\frac{a_{ii}(p_{d_i}+V_{dd_i}\cdot I_{0}+V_{dd_i}\cdot a_{p}\cdot T_{a})}{1-a_{ii} \cdot a_{p} \cdot V_{dd_i}}.
+
+Now, we can substitute the $T_{i}$
+in \eqref{eq:1_ppw} with the more accurate temperature expression in
+\eqref{eq:t_compensation} and also consider the active core number
+$n_a$, the $\ppw$ for core $i$ with $n_a$ active core numbers is
+expressed as
+\begin{equation}\label{eq:1_ppw_3}
+\begin{split}
+\ppw_{i,n_a} =& ( \frac{(1+\lambda_{i,n_a})(V_{dd}(a_{s}\cdot T_{a}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
+&-\frac{\lambda_{i,n_a} (p_{d}+V_{dd}(a_{s}\cdot T_{a}+p_{0}))}{f} ) ^{-1},
+\end{split}
 \end{equation}
 
-By integrating \eqref{eq:ti_new} into \eqref{eq:1_ppw}, we have
-\begin{equation}\label{eq:1_ppw_2}
-\ppw_i = \frac{ f_i (1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{a}+I_{0})+p_{d_i}},
-\end{equation}
-which successfully eliminated $T_i$ by expressing it using $p_{d_i}$ and $V_{dd_i}$.
+By solving \eqref{eq:1_ppw_3} for every $\lambda_{i,n_a}$, the sub-optimal temperature rise matrix $T_{opt}$ can be obtained, in which $T_{ij}$ stands for the sub-optimal temperature rise for core $i$ when the active core number is $j$. We can denote each column of $T_{opt}$ as $T_{opt_{n_{a}}}$, where $n_{a}$ is the active core number. 
+
+%the diagonal elements $a_{ii}$ in $A$ can be seen as the thermal resistance of core $i$ itself, and the non-diagonal elements $a_{ij}$ in $A$ can be seen as the thermal resistance between core $i$ and $j$. 
+
+% In order to express $T_i$ using $p_i$, we \emph{temporally} ignore all
+% the off-diagonal elements in the $A$ matrix and also plug in the
+% linear static power model in \eqref{eq:sta_power_lin} as:
+% \begin{equation}\label{eq:t_ap}
+% \begin{split}
+% T_{i}&\approx a_{ii} \cdot p_{i}\\
+% &=a_{ii}(p_{d_i}+p_{s_i})\\
+% &=a_{ii}(p_{d_i}+V_{dd_i}(I_{0}+a_{p}(T_{i}+T_{a}))).
+% \end{split}
+% \end{equation}
+% Then, $T_i$ can be readily solved from \eqref{eq:t_ap} as
+% \begin{equation}\label{eq:ti_new}
+% T_{i}=\frac{a_{ii}(p_{d_i}+V_{dd_i}\cdot I_{0}+V_{dd_i}\cdot a_{p}\cdot T_{a})}{1-a_{ii} \cdot a_{p} \cdot V_{dd_i}}.
+% \end{equation}
+
+% By integrating \eqref{eq:ti_new} into \eqref{eq:1_ppw}, we have
+% \begin{equation}\label{eq:1_ppw_2}
+% \ppw_i = \frac{ f_i (1-a_{ii} \cdot a_{p} \cdot V_{dd_i})}{V_{dd_i}(a_{p}\cdot T_{a}+I_{0})+p_{d_i}},
+% \end{equation}
+% which successfully eliminated $T_i$ by expressing it using $p_{d_i}$ and $V_{dd_i}$.
 
 
 
@@ -223,23 +253,24 @@ which successfully eliminated $T_i$ by expressing it using $p_{d_i}$ and $V_{dd_
 % in~\eqref{eq:f_v}. Finally, we can express PPW with only $p_{d_i}$ as \eqref{eq:1_ppw_2_1}.
 
 
-Next, we can express $V_{dd_i}$ and $p_{d_i}$ using $f_{i}$ in \eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
-using the dynamic power model in~\eqref{eq:dyn_power} and the
-relationship model between $f_i$ and $V_{dd_i}$
-in~\eqref{eq:f_v}. Therefore, we can express PPW with only $f_{i}$ as~\eqref{eq:1_ppw_2_1}.
-\begin{equation}\label{eq:1_ppw_2_1}
-\ppw_i =\frac{-a_{ii}a_{p}\alpha
-  f_{i}^{2}+(1-a_{ii}a_{p}\beta)f_{i}}{C_{e}\alpha^{2}f_{i}^{3}+2\alpha
-  \beta C_{e}f_{i}^{2}+(\alpha \gamma+C_{e}\beta^{2})f_{i}+\beta \gamma},
-\end{equation}
-where $\alpha$, $\beta$, and $\gamma$ are constants as
-\begin{equation*}
-	\begin{split}
-	\alpha=&\frac{V_{max}-V_{th}}{f_{max}-f_{min}},\\
-	\beta=&\frac{V_{th}\cdot f_{max}-f_{min}\cdot V_{max}}{f_{max}-f_{min}},\\
-	\gamma=&a_{p}\cdot T_{a}+I_{0}.
-	\end{split}
-\end{equation*}
+% Next, we can express $V_{dd_i}$ and $p_{d_i}$ using $f_{i}$ in \eqref{eq:1_ppw_2}. Fortunately, this procedure is relatively easy by
+% using the dynamic power model in~\eqref{eq:dyn_power} and the
+% relationship model between $f_i$ and $V_{dd_i}$
+% in~\eqref{eq:f_v}. Therefore, we can express PPW with only $f_{i}$ as~\eqref{eq:1_ppw_2_1}.
+% \begin{equation}\label{eq:1_ppw_2_1}
+% \ppw_i =\frac{-a_{ii}a_{p}\alpha
+%   f_{i}^{2}+(1-a_{ii}a_{p}\beta)f_{i}}{C_{e}\alpha^{2}f_{i}^{3}+2\alpha
+%   \beta C_{e}f_{i}^{2}+(\alpha \gamma+C_{e}\beta^{2})f_{i}+\beta \gamma},
+% \end{equation}
+% where $\alpha$, $\beta$, and $\gamma$ are constants as
+% \begin{equation*}
+% 	\begin{split}
+% 	\alpha=&\frac{V_{max}-V_{th}}{f_{max}-f_{min}},\\
+% 	\beta=&\frac{V_{th}\cdot f_{max}-f_{min}\cdot V_{max}}{f_{max}-f_{min}},\\
+% 	\gamma=&a_{p}\cdot T_{a}+I_{0}.
+% 	\end{split}
+%       \end{equation*}
+      
 % \begin{equation}\label{eq:1_ppw_2_1}
 %   \begin{split}
 % \ppw_i =& \frac{-(2Y_{0}+\sqrt[3]{Y_{1}}+\sqrt[3]{Y_{2}})} {3(V_{th}-\sqrt[3]{Y_{3}}-\sqrt[3]{Y_{4}})(a_{p}\cdot T_{amb}+I_{0})+9p_{d_i}}\\
@@ -259,17 +290,17 @@ where $\alpha$, $\beta$, and $\gamma$ are constants as
 % \end{figure*}
 
 
-Since there is only one variable $f_{i}$ in \eqref{eq:1_ppw_2_1},  the optimal $f_{i}$,
-denoted as $\bar{f}_{i}$ that leads to
-the maximum $\ppw_i$ can be obtained with standard gradient search
-techniques~\cite{Boyd:Convex_BOOK'06}. Subsequently, the optimal
-$p_{d_i}$, denoted as $\bar{p}_{d_i}$, that leads to the maximum $\ppw_i$ can
-be easily computed using~\eqref{eq:dyn_power} and~\eqref{eq:f_v}.
-With $\bar{p}_{d_i}$, the optimal $T_{i}$, denoted as $\bar{T}_{i}$ that leads to
-the maximum $\ppw_i$ can be computed. Then, we can immediately
-obtain the optimal static power $\bar{p}_{s_i}$. Finally, $\bar{p}_i =
-\bar{p}_{s_i}+\bar{p}_{d_i}$ is the energy-efficient power
-budget for the $i$-th core by \emph{temporally} ignoring the other active cores. 
+% Since there is only one variable $f_{i}$ in \eqref{eq:1_ppw_2_1},  the optimal $f_{i}$,
+% denoted as $\bar{f}_{i}$ that leads to
+% the maximum $\ppw_i$ can be obtained with standard gradient search
+% techniques~\cite{Boyd:Convex_BOOK'06}. Subsequently, the optimal
+% $p_{d_i}$, denoted as $\bar{p}_{d_i}$, that leads to the maximum $\ppw_i$ can
+% be easily computed using~\eqref{eq:dyn_power} and~\eqref{eq:f_v}.
+% With $\bar{p}_{d_i}$, the optimal $T_{i}$, denoted as $\bar{T}_{i}$ that leads to
+% the maximum $\ppw_i$ can be computed. Then, we can immediately
+% obtain the optimal static power $\bar{p}_{s_i}$. Finally, $\bar{p}_i =
+% \bar{p}_{s_i}+\bar{p}_{d_i}$ is the energy-efficient power
+% budget for the $i$-th core by \emph{temporally} ignoring the other active cores. 
 
 \begin{figure}
 \centering
@@ -287,46 +318,8 @@ same diagonal elements in $A$ matrix. Therefore, we only need to
 calculate the optimal temperature and power budget for each kind of
 core to reduce computation time.
 
-\begin{table}
-  \caption{The energy-efficient power budget induced temperature error for cases with and without $\lambda$. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
-  \label{tab:compensation}
-  \centering
-  \begin{tabular}{c|c||p{1cm}<{\centering}|p{1cm}<{\centering}||p{1cm}<{\centering}|p{1cm}<{\centering}}
-    \hline
-    Core & Active     & \multicolumn{2}{c||}{With $\lambda$ ($^{\circ}$C)}  & \multicolumn{2}{c}{Without $\lambda$ ($^{\circ}$C)}\\
-\cline{3-6}
-    \#       &   \#       &  Avg    & Max &  Avg  &  Max  \\
-     \hline
-\hline
-  \multirow{3}{*}{9} &      2       &   1.1  &   1.9 &2.1&4.0\\
-             &      4       &    1.3    &   2.7  &7.0&11.7 \\
-             &      7       &   1.2     &   2.2   &13.7&16.1\\
-     \hline
-   \multirow{3}{*}{16} &      3        &   0.3 &   0.7   &1.5 &2.2 \\   
-             &      8       &    0.5     &  1.2  &7.2 &8.3   \\
-             &      13     &     0.4    &   1.2  &12.9 &13.7 \\
-     \hline
-  \multirow{3}{*}{25} &      5       &    0.4 & 1.1 & 3.2 &  4.2   \\ 
-              &     12      &    0.5     &    1.4   &  8.7 & 9.9 \\
-              &     20      &    0.4     &    1.1   & 13.5 & 14.1 \\ 
-     \hline
-  \multirow{3}{*}{36}  &     8        &    0.4  &    1.1 & 4.1 & 5.6\\
-              &     18      &   0.5      &   1.6  & 10.0 & 11.4  \\
-              &     28      &    0.4     &   0.9 & 14.4 & 15.2\\
-     \hline
-  \multirow{3}{*}{64}  &     12      &   0.4  &   1.2  & 3.8 &4.9 \\
-              &     32      &    0.5     &     1.6   & 9.6 & 10.6   \\
-              &     52      &     0.4   &     1.0   & 15.9 & 16.5\\
- \hline 
-\multirow{3}{*}{100}  & 16 & 	 0.5&	1.1& 3.3 &  4.3\\
-                      & 52 &	 0.7&	1.7& 11.4 & 13.0\\
-                      & 76 &	 0.5&	1.8& 16.6 & 17.6\\
-\hline
-\end{tabular}
-\end{table}
 
-
-\subsubsection{Finding the optimal temperatures for all cores}
+\subsubsection{Computation of the impact factor}
 
 The optimal temperature and power budget obtained for the
 isolated cores in Section~\ref{sec:opt_temp_iso} ignores the thermal impact of other active cores, which
@@ -339,21 +332,6 @@ other active cores. Therefore, a temperature-compensation based method to correc
 In this section, a low complexity compensation method is proposed to compute the true
 optimal temperatures for all ative cores considering without the
 thermal isolation restriction.
-
-The basic idea is to consider the temperature
-impact of other active cores (which is ignored in \eqref{eq:t_ap}) to the $i$-th core by introducing a
-\emph{impact factor} $\lambda$, which stands for the temperature
-impact ratio induced by
-other active cores to the $i$-th core. Then, the accurate temperature of the $i$-th core is expressed as
-% \begin{equation}\label{eq:c_full_1_ppw}
-% \text{PPW}=\frac{f}{p_{d}+V_{dd}(a_{s}((1+\lambda)T_{i}+T_{a})+p_{0})}.
-% \end{equation}
-\begin{equation}\label{eq:t_compensation}
-\begin{split}
-T_{i} &=a_{i1}p_{1} + a_{i2}p_{2} +\cdots + a_{in}p_{n},\\
-&=(1+\lambda)a_{ii}p_{i}.
-\end{split}
-\end{equation}
 
 In order to make $T_i$ in~\eqref{eq:t_compensation} perfectly accurate, the
 impact factor $\lambda$ is directly solved
@@ -420,23 +398,49 @@ numbers, we can generate a matrix $\Lambda \in \mathbb{R}^{n\times
 $\Lambda$ is $\lambda_{ij}$, which stands for the impact factor for
 core $i$ when the active core number is $j$.
 
-Now, we can substitute the $T_{i}$
-in \eqref{eq:1_ppw} with the more accurate temperature expression in
-\eqref{eq:t_compensation} and also consider the active core number
-$n_a$, the $\ppw$ for core $i$ with $n_a$ active core numbers is
-expressed as
-\begin{equation}\label{eq:1_ppw_3}
-\begin{split}
-\ppw_{i,n_a} =& ( \frac{(1+\lambda_{i,n_a})(V_{dd}(a_{s}\cdot T_{a}+p_{0})+p_{d})}{f(1-a_{ii} \cdot a_{s} \cdot V_{dd})}\\
-&-\frac{\lambda_{i,n_a} (p_{d}+V_{dd}(a_{s}\cdot T_{a}+p_{0}))}{f} ) ^{-1},
-\end{split}
-\end{equation}
-
-By solving \eqref{eq:1_ppw_3} for every $\lambda_{i,n_a}$, the sub-optimal temperature rise matrix $T_{opt}$ can be obtained, in which $T_{ij}$ stands for the sub-optimal temperature rise for core $i$ when the active core number is $j$. We can denote each column of $T_{opt}$ as $T_{opt_{n_{a}}}$, where $n_{a}$ is the active core number. 
-
 In order to test the effectiveness of $\lambda$, for example, we first choose a $9$-core system with $4$ active cores, several active core distributions can be generated with core $i$ always turned on. We can obtain the $\lambda_{i}$ for core $i$ for each active core distribution with \eqref{eq:lambda_accuracy}, which ensures perfect accuracy, therefore the sub-optimal temperature rise calculated in this case can be considered "golden". We also obtain the sub-optimal temperature rise calculated both with $\lambda_{i4}$ and without $\lambda$. By comparing the sub-optimal temperature rise of these $2$ cases with "golden", the effective of $\lambda$ can be verified.
 
-In addition to the case shown above, we tested many other systems with different number of cores and active cores. The results are collected in Table~\ref{tab:compensation}.
+In addition to the case shown above, we tested many other systems with
+different number of cores and active cores. The results are collected
+in Table~\ref{tab:compensation}.
+
+\begin{table}
+  \caption{The energy-efficient power budget induced temperature error for cases with and without $\lambda$. The fixed core is the $1^{st}$ core, for each active core number, $50$ random active core distributions are generated.}
+  \label{tab:compensation}
+  \centering
+  \begin{tabular}{c|c||p{1cm}<{\centering}|p{1cm}<{\centering}||p{1cm}<{\centering}|p{1cm}<{\centering}}
+    \hline
+    Core & Active     & \multicolumn{2}{c||}{With $\lambda$ ($^{\circ}$C)}  & \multicolumn{2}{c}{Without $\lambda$ ($^{\circ}$C)}\\
+\cline{3-6}
+    \#       &   \#       &  Avg    & Max &  Avg  &  Max  \\
+     \hline
+\hline
+  \multirow{3}{*}{9} &      2       &   1.1  &   1.9 &2.1&4.0\\
+             &      4       &    1.3    &   2.7  &7.0&11.7 \\
+             &      7       &   1.2     &   2.2   &13.7&16.1\\
+     \hline
+   \multirow{3}{*}{16} &      3        &   0.3 &   0.7   &1.5 &2.2 \\   
+             &      8       &    0.5     &  1.2  &7.2 &8.3   \\
+             &      13     &     0.4    &   1.2  &12.9 &13.7 \\
+     \hline
+  \multirow{3}{*}{25} &      5       &    0.4 & 1.1 & 3.2 &  4.2   \\ 
+              &     12      &    0.5     &    1.4   &  8.7 & 9.9 \\
+              &     20      &    0.4     &    1.1   & 13.5 & 14.1 \\ 
+     \hline
+  \multirow{3}{*}{36}  &     8        &    0.4  &    1.1 & 4.1 & 5.6\\
+              &     18      &   0.5      &   1.6  & 10.0 & 11.4  \\
+              &     28      &    0.4     &   0.9 & 14.4 & 15.2\\
+     \hline
+  \multirow{3}{*}{64}  &     12      &   0.4  &   1.2  & 3.8 &4.9 \\
+              &     32      &    0.5     &     1.6   & 9.6 & 10.6   \\
+              &     52      &     0.4   &     1.0   & 15.9 & 16.5\\
+ \hline 
+\multirow{3}{*}{100}  & 16 & 	 0.5&	1.1& 3.3 &  4.3\\
+                      & 52 &	 0.7&	1.7& 11.4 & 13.0\\
+                      & 76 &	 0.5&	1.8& 16.6 & 17.6\\
+\hline
+\end{tabular}
+\end{table}
 
 % \begin{figure}
 %   \centering
@@ -450,6 +454,12 @@ In addition to the case shown above, we tested many other systems with different
 %   \caption{Temperature distributions of a 9-core system with 5 cores active in maximum energy efficiency.}
 %   \label{fig:opt_tem}
 % \end{figure}
+
+
+
+\subsection{Energy-efficient power budgeting with optimal performance
+  in steady state}
+
 \begin{figure}
   \centering
   \includegraphics[width=0.9\columnwidth]{fig/mips_ppw.eps}
@@ -464,9 +474,6 @@ In addition to the case shown above, we tested many other systems with different
   \label{fig:resistor_line}
 \end{figure}
 
-
-
-\subsection{Energy-efficient power budgeting with optimal performance in steady state}
 Now that the $T_{opt}$ is obtained, in order to prove $T_{opt_{n_{a}}}$ can leads to sub-optimal PPW of the system for $n_{a}$ active cores, for a $9$-core system with $4$ active cores, we compare the PPW and performance of all active core distributions when $T_{opt_{4}}$ is applied to active cores, which is plotted in Fig.~\ref{fig:mips_ppw}. As can be seen, the PPW of different active core distribution are relatively the same, meaning as long as $T_{opt_{n_{a}}}$ is applied to active cores, the PPW of the system is sub-optimal, no matter what active core distribution it is. However, the performance for different active core distributions differs a lot, which means the performance of the system is affected by the active core distribution greatly in dark silicon system.
 
 Therefore, the goal of our energy-efficient power budgeting is to find the optimal active core distribution that maximizes the power budget, while $T_{opt_{n_{a}}}$ is applied to active cores. Considering it's a combinational problem to find the optimal active core distribution that leads to maximum power budget, in this section, we find out we can formulate an easier alternative problem in which we treat core temperature rise $T_{c}$ as a resource, which is limited by $T_{opt_{n_{a}}}$. In the new problem, we seek to allocate power budget to cores, such that the temperature resource is fully used.
